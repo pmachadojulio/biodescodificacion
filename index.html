@@ -268,17 +268,19 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
   .insp{position:fixed;right:0;top:56px;bottom:0;width:min(380px,92vw);z-index:50;box-shadow:var(--shadow-2)}
 }
 @media (max-width:760px){
-  body{grid-template-columns:1fr;grid-template-areas:"brand" "topbar" "main";height:auto;min-height:100dvh;overflow:auto}
-  .brand{border-right:none;border-bottom:1px solid var(--border);padding:10px 14px;position:sticky;top:0;z-index:30;background:var(--bg)}
-  .topbar{padding:8px 12px;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);position:sticky;top:53px;z-index:29;background:var(--bg)}
+  body{grid-template-columns:1fr;grid-template-areas:"brand" "topbar" "nav" "main";height:auto;min-height:100dvh;overflow:auto}
+  .brand{grid-area:brand;border-right:none;border-bottom:1px solid var(--border);padding:10px 14px;position:sticky;top:0;z-index:30;background:var(--bg)}
+  .topbar{grid-area:topbar;padding:8px 12px;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);position:sticky;top:48px;z-index:29;background:var(--bg)}
   .topbar .search-wrap{max-width:none;flex:1 1 100%}
   .topbar .legend{display:none}
-  .nav{border-right:none;border-bottom:1px solid var(--border);padding:8px;flex-direction:row;flex-wrap:wrap;gap:4px;overflow:visible}
-  .nav .group{width:100%;padding:6px 6px 2px}
-  .nav button{flex:1 1 auto;justify-content:center;padding:8px 10px;min-width:0}
+  .topbar #q::placeholder{font-size:13px}
+  .nav{grid-area:nav;border-right:none;border-bottom:1px solid var(--border);padding:6px 8px;flex-direction:row;flex-wrap:nowrap;gap:6px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav .group{display:none}
+  .nav button{flex:0 0 auto;white-space:nowrap;justify-content:center;padding:8px 12px;min-width:0;font-size:13px}
   .nav .spacer{display:none}
   .nav .foot{display:none}
-  .main{padding:14px 12px 22px;overflow:visible}
+  .main{grid-area:main;padding:14px 12px 22px;overflow:visible}
   .view{margin:0}
   .map-layout{grid-template-columns:1fr;gap:14px}
   .grid2{grid-template-columns:1fr}
