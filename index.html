@@ -1,0 +1,3798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#161310">
+<title>Biodescodificación · Consultorio</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="%23d29a62"/></svg>'>
+<style>
+/* ============================================================
+   TOKENS (interinos — se refinan con design_tokens.css)
+   ============================================================ */
+:root{
+  --bg:#161310;
+  --surface:#1e1a16;
+  --surface-2:#26211b;
+  --surface-3:#2e2820;
+  --ink:#ede7dc;
+  --ink-muted:#a89e8e;
+  --border:#383127;
+  --border-strong:#4a4136;
+  --accent:#d29a62;
+  --accent-soft:rgba(210,154,98,.14);
+  --accent-2:#8fb8a8;
+  --capa-a:#7fae9c;         /* A · teoría citada */
+  --capa-b:#d2a95e;         /* B · casuística */
+  --capa-c:#b493c9;         /* C · hipótesis personal */
+  --capa-nv:#8a8177;        /* sin verificar */
+  --success:#7fae9c;
+  --warn:#d2a95e;
+  --danger:#c96f5e;
+  --danger-soft:rgba(201,111,94,.15);
+  --r-sm:8px; --r-md:12px; --r-lg:16px;
+  --shadow-1:0 1px 2px rgba(0,0,0,.35);
+  --shadow-2:0 8px 28px rgba(0,0,0,.45);
+  /* Tipografía elegida: serif humanista para títulos (calidez clínica),
+     sans neutra tabular para datos/UI. Mono solo para notas/resúmenes. */
+  --font:-apple-system,"SF Pro Text","Helvetica Neue","Segoe UI",sans-serif;
+  --font-display:ui-serif,"New York",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  --sp:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:var(--font);font-size:14px;line-height:1.5;
+  display:grid;grid-template-columns:216px 1fr 360px;
+  grid-template-rows:56px 1fr;
+  grid-template-areas:"brand topbar topbar" "nav main insp";
+  height:100vh;overflow:hidden;
+}
+::selection{background:var(--accent-soft)}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{
+  font-family:inherit;font-size:13px;color:var(--ink);
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:8px 10px;outline:none;width:100%;
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--accent);outline-offset:1px;
+}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ===== Brand ===== */
+.brand{grid-area:brand;display:flex;align-items:center;gap:10px;padding:0 18px;border-right:1px solid var(--border)}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none}
+.brand b{font-size:13.5px;letter-spacing:.02em;font-weight:650}
+.brand span{display:block;font-size:10.5px;color:var(--ink-muted)}
+
+/* ===== Topbar ===== */
+.topbar{grid-area:topbar;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+.search-wrap{position:relative;flex:1;max-width:520px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.5}
+#q{padding-left:32px}
+.legend{display:flex;gap:6px;margin-left:auto}
+
+/* ===== Sidebar ===== */
+.nav{grid-area:nav;border-right:1px solid var(--border);padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav .group{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);padding:12px 10px 4px}
+.nav button{
+  display:flex;align-items:center;gap:10px;text-align:left;
+  padding:8px 10px;border-radius:var(--r-sm);font-size:13.5px;color:var(--ink-muted);
+}
+.nav button:hover{background:var(--surface-2);color:var(--ink)}
+.nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav button svg{flex:none;opacity:.85}
+.nav .spacer{flex:1}
+.nav .foot{font-size:10.5px;color:var(--ink-muted);padding:10px;line-height:1.45;border-top:1px solid var(--border);margin-top:8px}
+
+/* ===== Main ===== */
+.main{grid-area:main;overflow-y:auto;padding:22px 26px 60px}
+.view{display:none;max-width:1060px;margin:0 auto}
+.view.active{display:block}
+h1.vtitle{font-family:var(--font-display);font-size:23px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+.insp-title{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:-.01em}
+.brand b{font-family:var(--font-display);font-size:14px;letter-spacing:.02em;font-weight:650}
+.vsub{color:var(--ink-muted);font-size:12.5px;margin-bottom:18px}
+h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted);margin:22px 0 10px}
+
+/* ===== Components ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--surface-2);border:1px solid var(--border-strong);
+  border-radius:var(--r-sm);padding:7px 13px;font-size:13px;font-weight:550;
+  transition:background .12s,border-color .12s;
+}
+.btn:hover{background:var(--surface-3)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#211607;font-weight:650}
+.btn-primary:hover{background:#dfa874}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--ink-muted)}
+.btn-ghost:hover{color:var(--ink);background:var(--surface-2)}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-sm{padding:4px 9px;font-size:12px}
+.chip-evidencia{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;letter-spacing:.02em;
+  padding:2.5px 9px;border-radius:99px;border:1px solid;white-space:nowrap;
+}
+.ev-A{color:var(--capa-a);border-color:var(--capa-a);background:rgba(127,174,156,.09)}
+.ev-B{color:var(--capa-b);border-color:var(--capa-b);background:rgba(210,169,94,.09)}
+.ev-C{color:var(--capa-c);border-color:var(--capa-c);background:rgba(180,147,201,.09)}
+.ev-NV{color:var(--capa-nv);border-color:var(--capa-nv);background:rgba(138,129,119,.12)}
+.card-ficha{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px 18px}
+.kpi{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
+  padding:14px 16px;cursor:pointer;transition:border-color .12s, transform .12s;
+}
+.kpi:hover{border-color:var(--accent);transform:translateY(-1px)}
+.kpi .num{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .lbl{font-size:11.5px;color:var(--ink-muted);margin-top:1px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tabla{width:100%;border-collapse:collapse;font-size:13px}
+.tabla th{
+  text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--ink-muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border-strong);
+  cursor:pointer;user-select:none;white-space:nowrap;
+}
+.tabla th:hover{color:var(--ink)}
+.tabla td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.tabla tbody tr{cursor:pointer;transition:background .1s}
+.tabla tbody tr:hover{background:var(--surface-2)}
+.filtro-pill{
+  padding:4px 12px;border-radius:99px;border:1px solid var(--border-strong);
+  font-size:12px;color:var(--ink-muted);transition:all .12s;
+}
+.filtro-pill:hover{color:var(--ink);border-color:var(--ink-muted)}
+.filtro-pill.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.tooltip{
+  position:fixed;z-index:90;pointer-events:none;
+  background:var(--surface-3);border:1px solid var(--border-strong);
+  border-radius:8px;padding:5px 10px;font-size:12px;box-shadow:var(--shadow-2);
+  opacity:0;transition:opacity .1s;max-width:240px;
+}
+.tooltip.show{opacity:1}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);font-size:11.5px;color:var(--ink-muted);cursor:pointer}
+.pill:hover{color:var(--ink);border-color:var(--ink-muted)}
+.muted{color:var(--ink-muted)}
+.small{font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.empty{
+  border:1px dashed var(--border-strong);border-radius:var(--r-md);
+  padding:34px 20px;text-align:center;color:var(--ink-muted);
+}
+.empty b{color:var(--ink);display:block;margin-bottom:4px;font-size:14px}
+
+/* ===== Body map ===== */
+.map-layout{display:grid;grid-template-columns:minmax(280px,330px) 1fr;gap:24px;align-items:start}
+.svg-body{width:100%;height:auto;display:block}
+.svg-body [data-open]{cursor:pointer;transition:fill .15s,filter .15s}
+.svg-body [data-open]:hover{filter:brightness(1.45) saturate(1.15)}
+.svg-body .region-hl{stroke:var(--accent)!important;stroke-width:2!important}
+.organ-index{display:flex;flex-wrap:wrap;gap:7px}
+
+/* ===== Inspector ===== */
+.insp{
+  grid-area:insp;border-left:1px solid var(--border);background:var(--surface);
+  overflow-y:auto;padding:18px 20px 40px;display:none;
+}
+.insp.open{display:block}
+.insp-head{display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:6px}
+.insp-kicker{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700;margin-bottom:2px}
+.insp-title{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.insp-close{color:var(--ink-muted);font-size:18px;padding:2px 8px;border-radius:6px}
+.insp-close:hover{color:var(--ink);background:var(--surface-2)}
+.insp section{margin-top:16px}
+.insp h3{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted);margin-bottom:8px}
+.assoc-item{
+  border:1px solid var(--border);border-left-width:3px;border-radius:var(--r-sm);
+  padding:9px 11px;margin-bottom:8px;background:var(--surface-2);cursor:pointer;
+}
+.assoc-item:hover{border-color:var(--border-strong)}
+.assoc-item .desc{font-size:12.5px;margin-top:3px}
+.assoc-item .meta{font-size:11px;color:var(--ink-muted);margin-top:4px}
+
+/* ===== Modal ===== */
+.modal-back{position:fixed;inset:0;background:rgba(10,8,6,.65);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:6vh 20px;backdrop-filter:blur(2px)}
+.modal-back.open{display:flex}
+.modal{
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--r-lg);
+  width:100%;max-width:560px;max-height:84vh;overflow-y:auto;padding:22px 24px;box-shadow:var(--shadow-2);
+}
+.modal h2{font-size:16px;margin-bottom:14px}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:11.5px;color:var(--ink-muted);margin-bottom:5px;font-weight:600}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+
+/* ===== Guía de consulta ===== */
+.fase{border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:12px;background:var(--surface)}
+.fase-head{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
+.fase-head:hover{background:var(--surface-2)}
+.fase-num{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none}
+.fase-body{display:none;padding:2px 16px 16px 54px}
+.fase.open .fase-body{display:block}
+.fase textarea{min-height:64px;resize:vertical;margin-top:6px}
+.fase-q{font-size:12.5px;color:var(--ink);margin-top:9px}
+.timeline-note{font-family:var(--mono);font-size:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;white-space:pre-wrap}
+
+/* ===== Charts ===== */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:16px}
+.chart-card h3{font-size:12.5px;font-weight:650;margin-bottom:12px}
+.hbar-row{display:grid;grid-template-columns:110px 1fr 30px;gap:10px;align-items:center;margin-bottom:7px;font-size:12.5px}
+.hbar-track{height:16px;background:var(--surface-2);border-radius:5px;overflow:hidden;cursor:pointer}
+.hbar-fill{height:100%;border-radius:5px;transition:width .3s ease}
+.donut-wrap{display:flex;gap:18px;align-items:center}
+.donut-legend{font-size:12.5px;display:grid;gap:6px}
+.donut-legend .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--surface-3);border:1px solid var(--border-strong);
+  padding:10px 18px;border-radius:99px;font-size:13px;z-index:200;
+  transition:transform .25s ease;box-shadow:var(--shadow-2);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== Consultantes — embudo ===== */
+.cf-sugerencias{border:1px solid var(--border-strong);border-radius:var(--r-md);padding:12px 14px;background:var(--surface-2);margin-top:10px}
+.cf-sugerencias h3{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px}
+.cf-sugerencias .sug-q{font-size:12.5px;margin:6px 0;padding-left:10px;border-left:2px solid var(--accent);color:var(--ink)}
+.cf-sugerencias .sug-tag{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
+.consultante-card{border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;background:var(--surface);cursor:pointer;transition:border-color .12s;margin-bottom:8px}
+.consultante-card:hover{border-color:var(--border-strong)}
+.consultante-card b{font-size:13.5px}
+.consultante-meta{font-size:12px;color:var(--ink-muted);margin-top:4px}
+.sesion{border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:8px;background:var(--surface)}
+.sesion-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sesion-head b{font-size:12.5px}
+.sesion textarea{width:100%;min-height:56px;margin-top:6px}
+.repregunta{font-size:12.5px;margin:5px 0;padding:6px 10px;border-left:2px solid var(--capa-c);background:var(--surface-2);border-radius:4px;cursor:pointer}
+.repregunta:hover{background:var(--surface-3)}
+.repregunta small{color:var(--ink-muted);font-size:11px}
+.resono-btn{cursor:pointer;font-size:14px;line-height:1;padding:2px 6px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--ink-muted)}
+.resono-btn.on{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.resono-star{color:var(--accent);font-weight:700}
+
+/* ===== Responsive ===== */
+@media (max-width:1180px){
+  body{grid-template-columns:200px 1fr;grid-template-areas:"brand topbar" "nav main"}
+  .insp{position:fixed;right:0;top:56px;bottom:0;width:min(380px,92vw);z-index:50;box-shadow:var(--shadow-2)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .view.active{animation:fadein .18s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+}
+@media print{
+  body{display:block;height:auto;overflow:visible;background:#fff;color:#000}
+  .topbar,.nav,.insp,.modal-back,.toast,.no-print{display:none!important}
+  #print-area{display:block!important;padding:30px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ BRAND ============ -->
+<div class="brand">
+  <div class="brand-dot"></div>
+  <div><b>Bio·descodificación</b><span>consultorio · uso profesional</span></div>
+</div>
+
+<!-- ============ TOPBAR ============ -->
+<header class="topbar">
+  <div class="search-wrap">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Buscar órgano, síntoma, concepto…  ( / )" autocomplete="off">
+  </div>
+  <div class="legend" title="Capas de evidencia">
+    <span class="chip-evidencia ev-A">A · Teoría</span>
+    <span class="chip-evidencia ev-B">B · Casos</span>
+    <span class="chip-evidencia ev-C">C · Hipótesis</span>
+  </div>
+</header>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <button data-view="mapa" class="active">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.6"/><path d="M12 8v5m0 0-4 7m4-7 4 7M6 11l6-2 6 2"/></svg>
+    Mapa corporal</button>
+  <button data-view="diccionario">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/></svg>
+    Diccionario</button>
+  <button data-view="red">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2.4"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5" cy="18" r="1.8"/><circle cx="19" cy="18" r="1.8"/><path d="m6.5 7 3.7 3.5M17.5 7l-3.7 3.5m-8.8 6L8.7 13m6.6 3.5L13.5 13"/></svg>
+    Red conceptual</button>
+  <div class="group">Consultas</div>
+  <button data-view="consultantes">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Consultantes</button>
+  <button data-view="guia">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5v8l-7 5-7-5z"/></svg>
+    Guía de consulta</button>
+  <button data-view="casos">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M12 11v5m-2.5-2.5h5"/></svg>
+    Casuística</button>
+  <button data-view="asociaciones">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M7 8a4 4 0 1 0 0 8h2m8 0a4 4 0 0 0 0-8h-2"/></svg>
+    Asociaciones</button>
+  <div class="group">Fuentes</div>
+  <button data-view="bibliografia">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h7v16H6a2 2 0 0 1-2-2zM13 4h7v14a2 2 0 0 1-2 2h-5zM8 8h.01M17 8h.01"/></svg>
+    Bibliografía</button>
+  <button data-view="panel">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20V10m7 10V4m7 16v-7"/></svg>
+    Panel general</button>
+  <div class="spacer"></div>
+  <div class="foot">
+    Las asociaciones son <b>hipótesis interpretativas</b>, nunca diagnósticos médicos.
+  </div>
+</nav>
+
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+  <!-- MAPA -->
+  <section class="view active" id="view-mapa">
+    <h1 class="vtitle">Mapa corporal</h1>
+    <p class="vsub">Tocá una zona para abrir su ficha. El contorno del cuerpo es la piel.</p>
+    <div class="map-layout">
+      <div class="card-ficha" style="padding:14px">
+        <svg class="svg-body" id="bodymap" viewBox="0 0 300 640" aria-label="Mapa corporal interactivo"></svg>
+      </div>
+      <div>
+        <h2 class="sect">Índice de órganos y sistemas</h2>
+        <div class="organ-index" id="organ-index"></div>
+        <h2 class="sect">Conceptos nucleares</h2>
+        <div class="row" id="concept-index"></div>
+        <h2 class="sect">Cómo leer el mapa</h2>
+        <div class="card-ficha small muted">
+          Cada zona abre la <b>ficha</b> a la derecha: función biológica objetiva,
+          marcos interpretativos por capa de evidencia (A teoría citada · B casuística ·
+          C hipótesis personal) y casos vinculados. Desde cualquier ficha podés
+          <b>agregar una asociación</b> propia.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DICCIONARIO -->
+  <section class="view" id="view-diccionario">
+    <h1 class="vtitle">Diccionario</h1>
+    <p class="vsub">Búsqueda textual, sinónimos y aproximada sobre todo el corpus.</p>
+    <div class="row" style="margin-bottom:16px" id="dict-filters"></div>
+    <div id="dict-results"></div>
+  </section>
+
+  <!-- RED -->
+  <section class="view" id="view-red">
+    <h1 class="vtitle">Red conceptual</h1>
+    <p class="vsub">Conceptos ↔ órganos según las asociaciones registradas. Grosor = cantidad de vínculos.</p>
+    <div class="chart-card"><svg id="red-svg" viewBox="0 0 900 560" style="width:100%;height:auto"></svg></div>
+  </section>
+
+  <!-- CONSULTANTES -->
+  <section class="view" id="view-consultantes">
+    <div class="row" style="justify-content:space-between;margin-bottom:4px">
+      <div><h1 class="vtitle">Consultantes</h1><p class="vsub">Fichas anonimizadas. El embudo sugiere preguntas a medida que completás la anamnesis.</p></div>
+      <button class="btn btn-primary" id="btn-nuevo-consultante">+ Nuevo consultante</button>
+    </div>
+    <div class="row" style="margin:10px 0 16px">
+      <input id="consultantes-q" type="search" placeholder="Buscar por alias, síntoma u órgano…" style="max-width:380px">
+      <button class="btn btn-sm btn-ghost" id="btn-export-consultantes">Exportar</button>
+      <label class="btn btn-sm btn-ghost" style="cursor:pointer">Importar<input type="file" id="import-consultantes" accept=".json" style="display:none"></label>
+    </div>
+    <div id="consultantes-list"></div>
+    <div id="consultante-form-wrap" style="display:none;margin-top:18px">
+      <div class="card-ficha" style="padding:18px 20px">
+        <h2 class="sect" id="cf-title">Nuevo consultante</h2>
+        <div class="grid2" style="margin-top:10px">
+          <div class="form-row"><label>Alias / código (anonimizado)</label><input id="cf-alias" placeholder="Ej: C-014"></div>
+          <div class="form-row"><label>Edad</label><input id="cf-edad" type="number" placeholder="Ej: 34"></div>
+          <div class="form-row"><label>Síntoma / motivo (texto libre)</label><input id="cf-sintoma" placeholder="Ej: dolor lumbar, colon irritable…"></div>
+          <div class="form-row"><label>Órgano / sistema</label><select id="cf-organo"><option value="">— elegir —</option></select></div>
+          <div class="form-row"><label>Desde cuándo</label><input id="cf-desde" placeholder="Ej: 3 meses, desde los 14 años…"></div>
+          <div class="form-row"><label>Identidad / sexo (opcional)</label><input id="cf-identidad" placeholder="M / F / X"></div>
+        </div>
+        <div class="form-row"><label>Notas de contexto (qué cambió antes del inicio, con quién vive y rol)</label><textarea id="cf-contexto" rows="2" placeholder="Qué pasó 30–60 días antes… Con quién vive…"></textarea></div>
+        <!-- Sesiones -->
+        <div id="cf-sesiones-wrap" style="margin-top:14px">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted)">Sesiones</h3>
+            <button type="button" class="btn btn-sm" id="cf-add-sesion">+ Sesión</button>
+          </div>
+          <div id="cf-sesiones-list" style="margin-top:8px"></div>
+        </div>
+        <div id="cf-sugerencias" style="display:none;margin-top:14px"></div>
+        <div id="cf-repreguntas" style="display:none;margin-top:10px"></div>
+        <div id="cf-asocs" style="margin-top:14px"></div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="cf-cancelar">Cancelar</button>
+          <button class="btn btn-primary" id="cf-guardar">Guardar consultante</button>
+        </div>
+      </div>
+    </div>
+    <div id="consultante-detalle" style="display:none;margin-top:18px"></div>
+  </section>
+
+  <!-- GUÍA -->
+  <section class="view" id="view-guia">
+    <h1 class="vtitle">Guía de consulta</h1>
+    <p class="vsub">Exploración en 5 fases — sin cuestionario rígido, sin imponer interpretaciones.</p>
+    <div id="fases"></div>
+    <div class="row" style="margin-top:18px">
+      <button class="btn btn-primary" id="btn-gen-resumen">Generar resumen</button>
+      <button class="btn" id="btn-guardar-caso">Guardar como caso</button>
+      <button class="btn btn-ghost" id="btn-print">Imprimir</button>
+      <button class="btn btn-ghost" id="btn-limpiar-guia">Limpiar</button>
+    </div>
+    <div id="resumen-wrap" style="margin-top:18px;display:none">
+      <h2 class="sect">Resumen de la consulta</h2>
+      <div class="timeline-note" id="resumen"></div>
+    </div>
+    <div id="print-area" style="display:none"></div>
+  </section>
+
+  <!-- CASOS -->
+  <section class="view" id="view-casos">
+    <div class="row" style="justify-content:space-between;margin-bottom:4px">
+      <div><h1 class="vtitle">Casuística</h1><p class="vsub">Anonimizada siempre. Sin nombre, DNI, teléfono ni dirección.</p></div>
+      <button class="btn btn-primary" id="btn-nuevo-caso">+ Nuevo caso</button>
+    </div>
+    <div id="casos-content"></div>
+  </section>
+
+  <!-- ASOCIACIONES -->
+  <section class="view" id="view-asociaciones">
+    <div class="row" style="justify-content:space-between;margin-bottom:4px">
+      <div><h1 class="vtitle">Asociaciones</h1><p class="vsub">La tabla central: concepto ↔ órgano con su capa de evidencia.</p></div>
+      <button class="btn btn-primary" id="btn-nueva-assoc">+ Nueva asociación</button>
+    </div>
+    <div class="row" style="margin:10px 0 16px" id="assoc-filters"></div>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="chart-card"><h3>Distribución por capa de evidencia</h3><div id="chart-ev"></div></div>
+      <div class="chart-card"><h3>Órganos con más vínculos</h3><div id="chart-organs"></div></div>
+    </div>
+    <div id="assoc-table"></div>
+  </section>
+
+  <!-- BIBLIOGRAFÍA -->
+  <section class="view" id="view-bibliografia">
+    <h1 class="vtitle">Bibliografía</h1>
+    <p class="vsub">Modelo original, otras fuentes teóricas e investigación contemporánea.</p>
+    <div class="row" style="margin-bottom:16px" id="biblio-filters"></div>
+    <div id="biblio-list"></div>
+  </section>
+
+  <!-- PANEL -->
+  <section class="view" id="view-panel">
+    <h1 class="vtitle">Panel general</h1>
+    <p class="vsub">Estado del corpus. Todo clickeable: cada número filtra su vista.</p>
+    <div class="kpi-grid" id="kpis" style="margin-bottom:22px"></div>
+    <div class="grid2">
+      <div class="chart-card"><h3>Conceptos más conectados</h3><div id="chart-concepts"></div></div>
+      <div class="chart-card">
+        <h3>Cobertura por sistema</h3><div id="chart-systems"></div>
+        <h3 style="margin-top:18px">Datos</h3>
+        <div class="row">
+          <button class="btn btn-sm" id="btn-export">Exportar JSON</button>
+          <label class="btn btn-sm" style="cursor:pointer">Importar JSON<input type="file" id="import-file" accept=".json" style="display:none"></label>
+        </div>
+        <p class="small muted" style="margin-top:8px">Exportar incluye tus casos y asociaciones personales junto al corpus base.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ INSPECTOR ============ -->
+<aside class="insp" id="inspector"></aside>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-back" id="modal-back">
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   DATOS — fuente única embebida (se regenera desde data/*.json)
+   ===================================================================== */
+const DB = {
+ "meta": {
+  "version": 2,
+  "generado": "2026-08-25",
+  "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
+  "integrado": "2026-08-27T07:30:39"
+ },
+ "bibliografia": [
+  {
+   "reference_id": "B01",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Principios de psicosomática clínica: bases, activación y programación de las enfermedades, terapéutica y prevención",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "Obra base del modelo. ISBN 978-2-915227-24-6",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B02",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Las enfermedades de la piel: eccema, psoriasis, urticaria, vitiligo, cáncer",
+   "type": "libro",
+   "publisher": "Bérangel (Enciclopedia 4)",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "«La piel, ese pergamino donde se escribe nuestra historia desde nuestro nacimiento». ISBN 978-2-915227-27-7",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B03",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Enfermedades pulmonares: gripe, bronquitis, asma, cáncer, tuberculosis, pleuras, laringe",
+   "type": "libro",
+   "publisher": "Bérangel (Enciclopedia 6)",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "Claves psicosomáticas inspiradas en la fisiología respiratoria (intercambios gaseosos). ISBN 978-2-915227-47-5",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B04",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Sobrepeso y obesidad: colesterol, triglicéridos, lipoma y cáncer",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "ISBN 978-2-915227-26-0",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B05",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Enfermedades de los senos: mastosis, inflamación, quiste, nódulo y cáncer",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.todostuslibros.com/libros/enfermedades-de-los-senos_978-2-915227-25-3",
+   "notes": "ISBN 978-2-915227-25-3",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B06",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "El síndrome del yaciente: un sutil hijo de reemplazo",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "Transgeneracional: consecuencias de dramas familiares (muerte temprana de un hijo). ISBN 978-2-915227-43-7",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B07",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "El Yaciente II: ¡vida bloqueada! ¿duelo bloqueado?",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.todostuslibros.com/creador/salomon-sellam_2647483",
+   "notes": "Continuación. ISBN 978-2-915227-62-8",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B08",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Bulimia - Anorexia: un enorme quid pro quo psicoafectivo",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "ISBN 978-2-915227-44-4",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B09",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Los huesos. Generalidades: dolor, el deportista, osteoporosis, algodistrofia, fibromialgia",
+   "type": "libro",
+   "publisher": "Bérangel (Enciclopedia 7)",
+   "url": "https://www.todostuslibros.com/libros/huesos-generalidades-enc-berangel-7_978-2-915227-48-2",
+   "notes": "Significación simbólica de cada hueso, músculo, tendón, ligamento o cartílago. ISBN 978-2-915227-48-2",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B10",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Los huesos, la espalda, columna vertebral, pelvis, tórax y cráneo",
+   "type": "libro",
+   "publisher": "Bérangel (Enciclopedia 8)",
+   "url": "https://www.todostuslibros.com/libros/huesos-dolor-de-espalda-enc-berangel-8_978-2-915227-54-3",
+   "notes": "Cada vértebra tiene una significación particular. ISBN 978-2-915227-54-3",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B11",
+   "author": "Salomon Sellam / Alain Pioch",
+   "year": null,
+   "title": "Los huesos. Vol. 9: los miembros superiores (hombro, codo, brazo, mano, simbólica de los dedos)",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.todostuslibros.com/libros/vol-9-los-huesos-los-miembros-superiores_978-2-37066-005-3",
+   "notes": "Con el osteópata Alain Pioch. ISBN 978-2-37066-005-3",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B12",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "La actitud negativa o la alergia a la felicidad: la inversión psíquica",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.todostuslibros.com/libros/la-inversion-psiquica_978-2-915227-46-8",
+   "notes": "ISBN 978-2-915227-46-8",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B13",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Las alergias: ¿cuáles son las verdaderas razones de las alergias?",
+   "type": "libro",
+   "publisher": "Ediciones B",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "ISBN 978-84-666-4831-8",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B14",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "La escalera del amor: para acabar con los desórdenes amorosos",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": "https://www.casadellibro.com/libros-ebooks/salomon-sellam/157667",
+   "notes": "ISBN 978-2-37066-040-4",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B15",
+   "author": "Saúl Pérez (entrevista)",
+   "year": 2013,
+   "title": "Entrevista al Dr. Salomón Sellam sobre Psicosomática Clínica Humanista (La Vanguardia)",
+   "type": "articulo",
+   "publisher": "desarrolloconsciente.com",
+   "url": "https://desarrolloconsciente.com/entrevista-al-dr-salomon-sellam",
+   "notes": "Fuente directa de varias asociaciones del modelo: piel-contacto, alergias-choque psíquico, L5-desvalorización, cervicales-proyectos, sobrepeso-inseguridad renal.",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B16",
+   "author": "Entrevista a Salomón Sellam",
+   "year": 2013,
+   "title": "El inconsciente dirige nuestras acciones positivas y negativas",
+   "type": "articulo",
+   "publisher": "enpositivo.com (réplica de la entrevista La Vanguardia)",
+   "url": "https://www.enpositivo.com/2013/07/02/el-inconsciente-dirige/",
+   "notes": "Verificada 2026-08-25 vía Exa. Confirma textualmente: piel-contacto materno («cada ruptura de contacto la piel lo manifiesta»); retención de agua por inseguridad renal bloqueada; grasa = compartimiento de reserva («hijo bastón de vejez»); transgeneracional (caso David/esquizofrenia).",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B17",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Pancréas : diabète, hypoglycémie, pancréatite et cancer (Lorsque l'esprit influence le corps, Tome 13)",
+   "type": "libro",
+   "publisher": "Bérangel (Vol. N°13)",
+   "url": "https://www.berangel.com/produit/pancreas-diabete-hypoglycemie-pancreatite-et-cancer-volume-n13/",
+   "notes": "Verificado 2026-08-25 en catálogo oficial Bérangel y Librairie Didier. Pistas psicosomáticas de diabetes y cáncer de páncreas; conclusión: «la paz de las células se obtiene gracias a la paz del espíritu». Ancla bibliográfica del eje páncreas (diabetes/pancreatitis/cáncer).",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B18",
+   "author": "DSalud (reportaje)",
+   "year": 2014,
+   "title": "Salomón Sellam y la Psicosomática Clínica",
+   "type": "articulo",
+   "publisher": "Revista DSalud",
+   "url": "https://www.dsalud.com/reportaje/salomon-sellam-y-la-psicosomatica-clinica/",
+   "notes": "Verificada 2026-08-25 vía Exa. Presenta el modelo (obra 'Orígenes y prevención de la enfermedad') y el eje transgeneracional: somatizar conflictos biológicos de un antepasado.",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B19",
+   "author": "Estudios Core (blog docente)",
+   "year": 2020,
+   "title": "La rodilla. Significado emocional (línea Sellam)",
+   "type": "articulo",
+   "publisher": "estudioscore.com",
+   "url": "https://estudioscore.com/blog/rodilla-i",
+   "notes": "Verificada 2026-08-25 vía Exa. Autor formado con Sellam (lo cita como maestro). Rodilla = arrodillarse/sumisión; «la artrosis de rodilla habla de la vivencia en un clima de sumisión». Corrobora el eje rodillas-súplica de las clases.",
+   "verified": true,
+   "group": "ecosistema_sellam"
+  },
+  {
+   "reference_id": "B20",
+   "author": "Ryke Geerd Hamer",
+   "year": null,
+   "title": "Nueva Medicina Germánica (NMG): constelación cerebral y sentido biológico del síntoma",
+   "type": "modelo-afin",
+   "publisher": null,
+   "url": "https://www.salomon-sellam.com/",
+   "notes": "Citado en Caso 2 (p15, p21) como marco de constelación cerebral/cáncer de mama. NO es Sellam; se registra como referencia de clase, no de la teoría base del corpus.",
+   "verified": true,
+   "group": "modelo_afin_clase"
+  },
+  {
+   "reference_id": "B21",
+   "author": "Viktor Frankl",
+   "year": null,
+   "title": "El hombre en busca de sentido",
+   "type": "libro",
+   "publisher": null,
+   "url": null,
+   "notes": "Citado en Caso 2 (p10) en margen: 'V. Frankl', frustración del pasado vs expectativa de futuro.",
+   "verified": true,
+   "group": "referencia_clase"
+  },
+  {
+   "reference_id": "B22",
+   "author": "Laura Gutman",
+   "year": null,
+   "title": "Vínculos que nutren / El poder del discurso materno",
+   "type": "libro",
+   "publisher": null,
+   "url": null,
+   "notes": "Citado en Caso 2 (p10): 'El poder del discurso materno', Laura Gutman.",
+   "verified": true,
+   "group": "referencia_clase"
+  },
+  {
+   "reference_id": "B23",
+   "author": "Borgonovo",
+   "year": null,
+   "title": "Referencia de clase (decir o no decir / secretos)",
+   "type": "docente",
+   "publisher": null,
+   "url": null,
+   "notes": "Citado en Caso 2 (p2): 'Lorayne - Borgonovo', trabajo sobre secreto y comunicación. Confirmado por Julio (2026-08-25).",
+   "verified": true,
+   "group": "referencia_clase"
+  }
+ ],
+ "organs": [
+  {
+   "organ_id": "piel",
+   "name": "Piel",
+   "system": "tegumentario",
+   "biological_function": "Órgano más extenso del cuerpo: barrera protectora, tacto, termorregulación, contacto.",
+   "keywords": [
+    "eccema",
+    "psoriasis",
+    "urticaria",
+    "vitiligo",
+    "acné",
+    "erupción",
+    "sarpullido"
+   ]
+  },
+  {
+   "organ_id": "pulmones",
+   "name": "Pulmones y vías respiratorias",
+   "system": "respiratorio",
+   "biological_function": "Intercambio gaseoso: tomar aire (toma de la vida) y eliminar CO2 (soltar).",
+   "keywords": [
+    "asma",
+    "bronquitis",
+    "gripe",
+    "tos",
+    "neumonía",
+    "tuberculosis",
+    "pleura"
+   ]
+  },
+  {
+   "organ_id": "corazon",
+   "name": "Corazón",
+   "system": "cardiovascular",
+   "biological_function": "Bombeo sanguíneo: distribución de recursos vitales a cada célula.",
+   "keywords": [
+    "palpitaciones",
+    "hipertensión",
+    "arritmia",
+    "infarto"
+   ]
+  },
+  {
+   "organ_id": "higado",
+   "name": "Hígado",
+   "system": "digestivo",
+   "biological_function": "Desintoxicación, metabolismo, reserva energética, producción de bilis.",
+   "keywords": [
+    "hepatitis",
+    "colesterol",
+    "hígado graso"
+   ]
+  },
+  {
+   "organ_id": "vesicula",
+   "name": "Vesícula biliar",
+   "system": "digestivo",
+   "biological_function": "Almacena y concentra bilis para digerir grasas.",
+   "keywords": [
+    "cálculos biliares",
+    "cólico"
+   ]
+  },
+  {
+   "organ_id": "estomago",
+   "name": "Estómago",
+   "system": "digestivo",
+   "biological_function": "Recepción y primera digestión: descomponer lo incorporado.",
+   "keywords": [
+    "gastritis",
+    "úlcera",
+    "reflujo",
+    "dispepsia",
+    "náuseas"
+   ]
+  },
+  {
+   "organ_id": "pancreas",
+   "name": "Páncreas",
+   "system": "digestivo/endocrino",
+   "biological_function": "Enzimas digestivas e insulina: regularización del azúcar (dulzor de la vida).",
+   "keywords": [
+    "diabetes",
+    "pancreatitis",
+    "hipoglucemia"
+   ]
+  },
+  {
+   "organ_id": "bazo",
+   "name": "Bazo",
+   "system": "linfático/inmune",
+   "biological_function": "Filtrado sanguíneo, depósito de linfocitos, defensa.",
+   "keywords": [
+    "bazo inflamado",
+    "anemia"
+   ]
+  },
+  {
+   "organ_id": "rinones",
+   "name": "Riñones",
+   "system": "urinario",
+   "biological_function": "Filtrado y eliminación, balance hidrosalino, presión arterial.",
+   "keywords": [
+    "insuficiencia renal",
+    "retención de líquidos",
+    "cálculos renales"
+   ]
+  },
+  {
+   "organ_id": "vejiga",
+   "name": "Vejiga",
+   "system": "urinario",
+   "biological_function": "Reserva y liberación controlada de la orina.",
+   "keywords": [
+    "cistitis",
+    "incontinencia"
+   ]
+  },
+  {
+   "organ_id": "intestino-delgado",
+   "name": "Intestino delgado",
+   "system": "digestivo",
+   "biological_function": "Absorción de nutrientes: extraer lo útil de lo incorporado.",
+   "keywords": [
+    "malabsorción",
+    "celiaquía",
+    "crohn delgado"
+   ]
+  },
+  {
+   "organ_id": "colon",
+   "name": "Colon (intestino grueso)",
+   "system": "digestivo",
+   "biological_function": "Recuperar agua y eliminar residuos: soltar lo que ya no sirve.",
+   "keywords": [
+    "colitis",
+    "estreñimiento",
+    "diarrea",
+    "divertículos",
+    "colon irritable"
+   ]
+  },
+  {
+   "organ_id": "utero-prostata",
+   "name": "Útero / próstata",
+   "system": "reproductor",
+   "biological_function": "Reproducción, gestación, sexualidad.",
+   "keywords": [
+    "mioma",
+    "próstata inflamada",
+    "endometriosis"
+   ]
+  },
+  {
+   "organ_id": "senos",
+   "name": "Senos (mamas)",
+   "system": "reproductor/tegumentario",
+   "biological_function": "Lactancia: nutrición del bebé; zona erógena y de vínculo.",
+   "keywords": [
+    "mastosis",
+    "quiste",
+    "nódulo",
+    "mastitis"
+   ]
+  },
+  {
+   "organ_id": "tiroides",
+   "name": "Tiroides",
+   "system": "endocrino",
+   "biological_function": "Metabolismo basal: el ritmo general de la vida.",
+   "keywords": [
+    "hipotiroidismo",
+    "hipertiroidismo",
+    "bocio",
+    "nódulo tiroideo"
+   ]
+  },
+  {
+   "organ_id": "sistema-inmune",
+   "name": "Sistema inmune",
+   "system": "inmune",
+   "biological_function": "Defensa contra lo ajeno: distinguir propio/no propio.",
+   "keywords": [
+    "alergias",
+    "autoinmune",
+    "infecciones repetidas",
+    "leucemia"
+   ]
+  },
+  {
+   "organ_id": "huesos-articulaciones",
+   "name": "Huesos y articulaciones",
+   "system": "esquelético",
+   "biological_function": "Estructura, sostén, movimiento, reservorio de minerales.",
+   "keywords": [
+    "artrosis",
+    "osteoporosis",
+    "artritis",
+    "fibromialgia",
+    "fracturas"
+   ]
+  },
+  {
+   "organ_id": "columna",
+   "name": "Columna vertebral",
+   "system": "esquelético",
+   "biological_function": "Eje de sostén y protección de la médula; cada vértebra con significación propia en el modelo.",
+   "keywords": [
+    "lumbalgia",
+    "ciática",
+    "cervicalgia",
+    "escoliosis",
+    "hernia de disco"
+   ]
+  },
+  {
+   "organ_id": "musculos",
+   "name": "Músculos",
+   "system": "muscular",
+   "biological_function": "Movimiento voluntario, tensión y distensión.",
+   "keywords": [
+    "contracturas",
+    "distrofia",
+    "calambres"
+   ]
+  },
+  {
+   "organ_id": "garganta",
+   "name": "Garganta y laringe",
+   "system": "respiratorio/digestivo",
+   "biological_function": "Paso de aire y alimento; voz y expresión verbal.",
+   "keywords": [
+    "faringitis",
+    "laringitis",
+    "afonía",
+    "disfonia",
+    "nudo en la garganta"
+   ]
+  },
+  {
+   "organ_id": "boca-dientes",
+   "name": "Boca y dientes",
+   "system": "digestivo",
+   "biological_function": "Mordida, masticación, palabra, beso: primera vía de incorporación.",
+   "keywords": [
+    "caries",
+    "bruxismo",
+    "gingivitis",
+    "amigdalas"
+   ]
+  },
+  {
+   "organ_id": "ojos",
+   "name": "Ojos",
+   "system": "sensorial",
+   "biological_function": "Visión: percibir el mundo, enfocar, mirar y ser mirado.",
+   "keywords": [
+    "miopía",
+    "hipermetropía",
+    "conjuntivitis",
+    "cataratas"
+   ]
+  },
+  {
+   "organ_id": "oidos",
+   "name": "Oídos",
+   "system": "sensorial",
+   "biological_function": "Audición y equilibrio: escuchar.",
+   "keywords": [
+    "otitis",
+    "sordera",
+    "acúfenos",
+    "vértigo"
+   ]
+  },
+  {
+   "organ_id": "nariz",
+   "name": "Nariz y senos paranasales",
+   "system": "respiratorio",
+   "biological_function": "Olfato y filtrado del aire inspirado.",
+   "keywords": [
+    "sinusitis",
+    "rinitis",
+    "poliposis",
+    "epistaxis"
+   ]
+  },
+  {
+   "organ_id": "cabeza-mente",
+   "name": "Cabeza · sistema nervioso",
+   "system": "nervioso",
+   "biological_function": "Integración central: percepción, decisión, significado.",
+   "keywords": [
+    "cefalea",
+    "migraña",
+    "mareo",
+    "insomnio",
+    "ansiedad"
+   ]
+  },
+  {
+   "organ_id": "tejido-adiposo",
+   "name": "Tejido adiposo (grasa)",
+   "system": "metabólico/conectivo",
+   "biological_function": "Reserva energética, aislamiento térmico y protección mecánica real.",
+   "keywords": [
+    "sobrepeso",
+    "obesidad",
+    "adiposidad"
+   ]
+  },
+  {
+   "organ_id": "apendice",
+   "name": "Apéndice",
+   "system": "digestivo/linfático",
+   "biological_function": "Reserva de proteínas y microbiota; bolsa de suero del intestino.",
+   "keywords": [
+    "apendicitis",
+    "dolor fosa ilíaca"
+   ]
+  }
+ ],
+ "concepts": [
+  {
+   "concept_id": "contacto-materno",
+   "concept": "Contacto materno",
+   "category": "vínculo",
+   "synonyms": [
+    "vínculo materno",
+    "madre",
+    "mamá",
+    "figura materna",
+    "abrazo",
+    "caricia"
+   ],
+   "description": "Primer registro del bebé: el contacto como seguridad. Su ruptura se inscribe en la piel según el modelo."
+  },
+  {
+   "concept_id": "separacion",
+   "concept": "Separación",
+   "category": "vínculo",
+   "synonyms": [
+    "ruptura",
+    "abandono",
+    "distanciamiento",
+    "pérdida de contacto"
+   ],
+   "description": "Corte de un vínculo significativo. Núcleo clásico de piel y pulmones en biodescodificación."
+  },
+  {
+   "concept_id": "territorio",
+   "concept": "Territorio",
+   "category": "existencial",
+   "synonyms": [
+    "espacio vital",
+    "lugar",
+    "hogar",
+    "trabajo"
+   ],
+   "description": "Zona vital donde uno se siente en su lugar o desplazado."
+  },
+  {
+   "concept_id": "nutricion",
+   "concept": "Nutrición / provisión",
+   "category": "existencial",
+   "synonyms": [
+    "alimento",
+    "provisión",
+    "sustento",
+    "absorción"
+   ],
+   "description": "Lo que entra (comida, dinero, afecto) y cómo se procesa."
+  },
+  {
+   "concept_id": "proteccion",
+   "concept": "Protección",
+   "category": "defensa",
+   "synonyms": [
+    "blindaje",
+    "defensa",
+    "escudo",
+    "límite"
+   ],
+   "description": "Necesidad de resguardo frente a agresiones externas o internas."
+  },
+  {
+   "concept_id": "duelo",
+   "concept": "Duelo",
+   "category": "pérdida",
+   "synonyms": [
+    "pérdida",
+    "luto",
+    "despedida"
+   ],
+   "description": "Proceso de elaboración de una pérdida. Bloqueos de duelo: eje del Yaciente II."
+  },
+  {
+   "concept_id": "identidad",
+   "concept": "Identidad",
+   "category": "existencial",
+   "synonyms": [
+    "yo",
+    "rol",
+    "derecho a existir",
+    "lugar en el mundo"
+   ],
+   "description": "Sentirse legítimo, tener derecho a vivir la propia vida."
+  },
+  {
+   "concept_id": "vinculo-paterno",
+   "concept": "Vínculo paterno",
+   "category": "vínculo",
+   "synonyms": [
+    "padre",
+    "papá",
+    "figura paterna"
+   ],
+   "description": "Figura de referencia: ley, dirección, autorización."
+  },
+  {
+   "concept_id": "pareja",
+   "concept": "Pareja",
+   "category": "vínculo",
+   "synonyms": [
+    "pareja sentimental",
+    "novio",
+    "novia",
+    "cónyuge"
+   ],
+   "description": "Vínculo de pareja: expectativas inconscientes proyectadas (Sellam: búsqueda de la madre/padre en la pareja)."
+  },
+  {
+   "concept_id": "dinero",
+   "concept": "Dinero / escasez",
+   "category": "recursos",
+   "synonyms": [
+    "plata",
+    "recursos",
+    "abundancia",
+    "falta"
+   ],
+   "description": "Seguridad material; reserva, flujo y retención."
+  },
+  {
+   "concept_id": "miedo",
+   "concept": "Miedo",
+   "category": "emoción",
+   "synonyms": [
+    "angustia",
+    "temor",
+    "pánico",
+    "inseguridad"
+   ],
+   "description": "Emoción de amenaza; paraliza o moviliza."
+  },
+  {
+   "concept_id": "ira",
+   "concept": "Ira",
+   "category": "emoción",
+   "synonyms": [
+    "rabia",
+    "enojo",
+    "bronca",
+    "resentimiento"
+   ],
+   "description": "Fuerza de afirmación frente a la frustración; cuando se traga, busca tejidos."
+  },
+  {
+   "concept_id": "tristeza",
+   "concept": "Tristeza",
+   "category": "emoción",
+   "synonyms": [
+    "melancolía",
+    "abatimiento",
+    "llanto"
+   ],
+   "description": "Emoción de la pérdida y del desgano vital."
+  },
+  {
+   "concept_id": "culpa",
+   "concept": "Culpa",
+   "category": "emoción",
+   "synonyms": [
+    "remordimiento",
+    "deuda",
+    "autocastigo"
+   ],
+   "description": "Deuda moral internalizada; castigo buscado."
+  },
+  {
+   "concept_id": "deseo",
+   "concept": "Deseo / no-deseo",
+   "category": "existencial",
+   "synonyms": [
+    "querer",
+    "anhelo",
+    "rechazo",
+    "aversion"
+   ],
+   "description": "Polaridad querer/no querer: qué se deja entrar y qué no."
+  },
+  {
+   "concept_id": "desvalorizacion",
+   "concept": "Desvalorización",
+   "category": "autoestima",
+   "synonyms": [
+    "menosprecio propio",
+    "inferioridad",
+    "devaluación"
+   ],
+   "description": "Sentir que no se está a la altura; en el modelo se localiza por niveles vertebrales según con quién."
+  },
+  {
+   "concept_id": "expresion",
+   "concept": "Expresión bloqueada",
+   "category": "comunicación",
+   "synonyms": [
+    "lo que no se dijo",
+    "silencio",
+    "callarse"
+   ],
+   "description": "«Todo lo que no sale de nuestros labios… se convierte en un síntoma» (Sellam)."
+  },
+  {
+   "concept_id": "transgeneracional",
+   "concept": "Herencia transgeneracional",
+   "category": "familia",
+   "synonyms": [
+    "yaciente",
+    "hijo de reemplazo",
+    "lealtad familiar",
+    "secretos"
+   ],
+   "description": "Reparación inconsciente de dramas familiares previos (síndrome del yaciente)."
+  },
+  {
+   "concept_id": "orden-jerarquico",
+   "concept": "Orden jerárquico",
+   "category": "familia",
+   "synonyms": [
+    "jerarquía",
+    "superior",
+    "jefe",
+    "autoridad"
+   ],
+   "description": "Relación con superiores e inferiores: quién manda, quién obedece."
+  },
+  {
+   "concept_id": "injusticia",
+   "concept": "Injusticia",
+   "category": "emoción",
+   "synonyms": [
+    "«mira lo que me han hecho»",
+    "daño recibido",
+    "falta de reconocimiento"
+   ],
+   "description": "Sentir que me hicieron algo que no merezco; la cuenta queda abierta y el cuerpo la liquida (clase 09/08)."
+  },
+  {
+   "concept_id": "traicion",
+   "concept": "Traición",
+   "category": "emoción",
+   "synonyms": [
+    "engaño profundo",
+    "delación",
+    "abuso de confianza"
+   ],
+   "description": "Ser traicionado por alguien de confianza: en el modelo docente se asocia al páncreas."
+  },
+  {
+   "concept_id": "inexistencia",
+   "concept": "Conflicto de inexistencia",
+   "category": "existencial",
+   "synonyms": [
+    "no merezco existir",
+    "desprecio al nacer",
+    "llegar en mal momento"
+   ],
+   "description": "Nacer tras una muerte, embarazo riesgoso («uno de los dos no va a vivir»), ser despreciado o ignorado: «no tengo lugar, dinero, trabajo, pareja… no existo»."
+  },
+  {
+   "concept_id": "sustitucion-pareja",
+   "concept": "Sustitución en la pareja",
+   "category": "vínculo",
+   "synonyms": [
+    "marido simbólico",
+    "mujer simbólica",
+    "hijo que ocupa el lugar del cónyuge",
+    "«por vos voy a sufrir»"
+   ],
+   "description": "Tomar el lugar de otro (padre ausente, madre abandonante) o tener un hijo/hija/hermano/a cumpliendo rol de cónyuge: «ya está cubierto el puesto», no aparece pareja real. Pregunta clave: ¿con quién vivís?"
+  },
+  {
+   "concept_id": "celos",
+   "concept": "Celos",
+   "category": "emoción",
+   "synonyms": [
+    "posesividad",
+    "control del otro",
+    "revisión"
+   ],
+   "description": "El celoso empuja al otro: mientras más celos, menos disponible para la pareja. Si siempre encuentro celosos, yo tampoco estoy disponible."
+  },
+  {
+   "concept_id": "control",
+   "concept": "Control",
+   "category": "defensa",
+   "synonyms": [
+    "controlar",
+    "retener",
+    "dominar"
+   ],
+   "description": "Necesidad de retener personas/situaciones que se van: «no te vayas». En el modelo docente, el Parkinson como «el colmo del controlador»."
+  },
+  {
+   "concept_id": "ciclo-biologico",
+   "concept": "Ciclos biológicos y edades",
+   "category": "tiempo",
+   "synonyms": [
+    "edades clave",
+    "edad de la madre al nacer",
+    "13 · 26 · 29",
+    "repetición por ciclos"
+   ],
+   "description": "Los conflictos se repiten en ciclos de la edad del padre o la madre al nacer (ej.: 58 años → ciclo de 29). Preguntar siempre edades parentales."
+  },
+  {
+   "concept_id": "suplica-arrodillada",
+   "concept": "Vivir de rodillas (súplica)",
+   "category": "postura vital",
+   "synonyms": [
+    "rogar",
+    "mendigar afecto",
+    "pedir sin recibir"
+   ],
+   "description": "Quedarse «de rodillas» ante un pedido no respondido (un abrazo negado): la vida entera como súplica; en el modelo docente se inscribe en las rodillas/artrosis."
+  },
+  {
+   "concept_id": "abuso-simbolico",
+   "concept": "Abuso simbólico",
+   "category": "trauma",
+   "synonyms": [
+    "violación simbólica",
+    "vulnerabilidad ante el abuso"
+   ],
+   "description": "Sin intención de abusar, pero el niño/a queda expuesto en vulnerabilidad (modos duros, exposición íntima); años después aparecen marcas en la vida íntima/de pareja."
+  },
+  {
+   "concept_id": "memoria-selectiva",
+   "concept": "Memoria selectiva (negación)",
+   "category": "defensa",
+   "synonyms": [
+    "blanco de memoria",
+    "no me acuerdo",
+    "protección psíquica"
+   ],
+   "description": "Defensa psíquica: «tuve mi primera relación sexual» dicho ante una violación; espacios en blanco sobre todo con abusos infantiles. No confrontar: es protección."
+  },
+  {
+   "concept_id": "resignificacion",
+   "concept": "Resignificación",
+   "category": "terapéutica",
+   "synonyms": [
+    "dar otro sentido",
+    "nuevo significado",
+    "el truco del terapeuta"
+   ],
+   "description": "Objetivo terapéutico: entender qué pasó → cambiar el significado del hecho para el sistema. El enojo sostenido lo vive el propio cuerpo, no el otro."
+  },
+  {
+   "concept_id": "impotencia",
+   "concept": "Impotencia",
+   "category": "autoestima",
+   "synonyms": [
+    "no poder",
+    "ineficacia",
+    "impotente ante la situación"
+   ],
+   "description": "Sentir que no puedo actuar ni resolver; distinto de la desvalorización (no valer). En el cuaderno p.23 se inscribe en los músculos."
+  },
+  {
+   "concept_id": "sexualidad",
+   "concept": "Sexualidad",
+   "category": "vínculo",
+   "synonyms": [
+    "sexual",
+    "íntimo",
+    "cadera"
+   ],
+   "description": "Dimensión sexual y de intimidad corporal; en el cuaderno p.23 se inscribe en la cadera."
+  },
+  {
+   "concept_id": "abandono",
+   "concept": "Abandono",
+   "category": "vínculo",
+   "synonyms": [
+    "me dejaron solo",
+    "desamparo",
+    "soledad afectiva"
+   ],
+   "description": "Vivencia de haber sido dejado solo (muerte, separación al nacer, madre que se enferma). En los cuadernos se inscribe en colesterol, sobrepeso y cuerpo flácido."
+  },
+  {
+   "concept_id": "rechazo",
+   "concept": "Rechazo",
+   "category": "vínculo",
+   "synonyms": [
+    "no deseado",
+    "no merezco existir",
+    "miedo al rechazo previo al nacimiento"
+   ],
+   "description": "Herida emocional de rechazo (previa al nacimiento: niño no deseado, madre pensó en abortar). Enmascarada como complacencia, delgadez, huida, adicciones."
+  },
+  {
+   "concept_id": "humillacion",
+   "concept": "Humillación",
+   "category": "vínculo",
+   "synonyms": [
+    "vergüenza",
+    "negación",
+    "exposición"
+   ],
+   "description": "Herida que aparece con la autonomía (no se respetan tiempos del niño: comer, esfínteres). Vergüenza y negación; ponen su vida de lado para recuperar dignidad."
+  },
+  {
+   "concept_id": "lealtad-invisible",
+   "concept": "Lealtad invisible / reparación",
+   "category": "familia",
+   "synonyms": [
+    "fidelidad familiar",
+    "reparación",
+    "deuda del clan"
+   ],
+   "description": "Reparación inconsciente: repetición, fidelidad u oposición a dramas del clan. Somos menos libres de lo que creemos."
+  },
+  {
+   "concept_id": "proyecto-sentido",
+   "concept": "Proyecto Sentido",
+   "category": "familia",
+   "synonyms": [
+    "programa del hijo",
+    "mandato gestacional",
+    "para qué me quiso tener mamá"
+   ],
+   "description": "Programa inconsciente con el que la madre/pareja concibe al hijo: bastón, compañía, síntoma, gasto, accidente, sustitución/yaciente, payaso, pegamento, salvador, esclavo, etc."
+  },
+  {
+   "concept_id": "ciclo-reparador",
+   "concept": "Ciclo y reparación",
+   "category": "tiempo",
+   "synonyms": [
+    "ciclo biológico memorizado",
+    "síndrome aniversario",
+    "doble",
+    "heredero",
+    "yacente"
+   ],
+   "description": "Repetición temporal: síndrome aniversario y ciclo biológico memorizado (±7/10 días). Doble, maestro, heredero, yaciente."
+  },
+  {
+   "concept_id": "accion-terapeutica",
+   "concept": "Acción terapéutica (propuesta y diálogo)",
+   "category": "terapéutica",
+   "synonyms": [
+    "propuesta",
+    "diálogo consciente",
+    "hacer propuestas en lugar de reclamos",
+    "negociar arreglos"
+   ],
+   "description": "Paso de la comprensión a la acción: qué me propongo hacer para mejorar mi vida y la relación; diálogo Yo siento / Te propongo; principios de pareja (no puedo dar lo que no tengo). Cierre operativo de la clase (cap 15-17)."
+  },
+  {
+   "concept_id": "asco",
+   "concept": "Asco",
+   "category": "emoción",
+   "synonyms": [
+    "repulsión",
+    "asco a lo tóxico",
+    "rechazo visceral"
+   ],
+   "description": "Emoción que detecta lo potencialmente tóxico y activa el rechazo visceral. En el cuaderno p.5 se inscribe en el intestino delgado (intolerancias, celiaquismo)."
+  },
+  {
+   "concept_id": "vision-sucia",
+   "concept": "Haber visto / No querer ver",
+   "category": "sensorial",
+   "synonyms": [
+    "cosa sucia vista",
+    "no querer ver de lejos/cerca",
+    "traición por la espalda (Hamer, ojo-nucca)"
+   ],
+   "description": "Catarata = haber visto cosa sucia que enturbia la visión (caso sobrina abusada); miopía = infancia con violencia muy cerca → foco cerca, no lejos; ver de lejos = futuro (miedo/obstáculo). Lateralidad Hamer: ojo dcho. → relé izqdo. nuca = traición por la espalda."
+  },
+  {
+   "concept_id": "secreto-garganta",
+   "concept": "Secreto / No-dicho en garganta",
+   "category": "comunicación",
+   "synonyms": [
+    "callar",
+    "gritar en silencio",
+    "lo que espero que otro diga",
+    "tragar bronca"
+   ],
+   "description": "Lo callado, lo dicho con arrepentimiento, lo que espero que otro diga y el tragar que arde en garganta."
+  }
+ ],
+ "associations": [
+  {
+   "association_id": "A001",
+   "source_type": "concept",
+   "source_id": "contacto-materno",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Las enfermedades de la piel vienen del contacto de la madre con el bebé: el cerebro registra el contacto como seguridad, y cada ruptura de contacto se manifiesta en la piel. Eccema, psoriasis y cáncer de piel tienen orígenes diferentes y precisos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista La Vanguardia (B15); Sellam, Enfermedades de la piel (B02)"
+  },
+  {
+   "association_id": "A002",
+   "source_type": "concept",
+   "source_id": "separacion",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Ruptura de contacto/separación manifestada en la piel: el síntoma cutáneo como inscripción de una separación vivida.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Enfermedades de la piel (B02); entrevista (B15)"
+  },
+  {
+   "association_id": "A003",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "sistema-inmune",
+   "target_extra": null,
+   "relationship_type": "asociacion_clinica",
+   "description": "El alérgeno es testigo de un choque psíquico: el cerebro asocia el elemento (ej.: fresa) al momento del shock emocional. «Hay un componente psíquico hasta que no se demuestre lo contrario».",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista (B15); Sellam, Las alergias (B13)"
+  },
+  {
+   "association_id": "A004",
+   "source_type": "concept",
+   "source_id": "identidad",
+   "target_type": "organ",
+   "target_id": "sistema-inmune",
+   "relationship_type": "asociacion_clinica",
+   "description": "Función inmune = distinguir propio/no propio: conflictos de identidad y de legitimidad (derecho a existir) se expresan en defensas desreguladas.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar con B01/B06"
+  },
+  {
+   "association_id": "A005",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Síndrome del yaciente: dramas familiares (muerte temprana de un hijo) dejan grabados como «no tengo derecho a vivir mi vida»; consecuencias médicas, psicológicas o psiquiátricas en descendientes (caso Dalí, hijo de reemplazo).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El síndrome del yaciente (B06); entrevista (B15)"
+  },
+  {
+   "association_id": "A006",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "columna",
+   "relationship_type": "asociacion_clinica",
+   "description": "L5/lumbalgia-ciática responden a desvalorización con los pares de nivel: pareja (en un 90% de los casos), amigos, hermanos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista (B15); Sellam, Huesos-espalda (B10)"
+  },
+  {
+   "association_id": "A007",
+   "source_type": "concept",
+   "source_id": "expresion",
+   "target_type": "organ",
+   "target_id": "columna",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cervicales = paso de la mente al cuerpo: proyectos y sueños no realizados, o actuar con la mente en desacuerdo con lo que se hace.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista (B15)"
+  },
+  {
+   "association_id": "A008",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "rinones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Inseguridad inconsciente que bloquea la eliminación renal: acumulación de agua (edema, sobrepeso por retención) cuando ni dieta ni ejercicio funcionan. Texto verificado: «una inseguridad inconsciente que ha bloqueado el funcionamiento de la eliminación renal y acumulas agua».",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista La Vanguardia (B15); réplica verificada enpositivo.com (B16); Sellam, Sobrepeso y obesidad (B04)"
+  },
+  {
+   "association_id": "A009",
+   "source_type": "concept",
+   "source_id": "dinero",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "La grasa como compartimiento de reserva: «cuando me siento inseguro tengo que hacer reserva» — a nivel psicofisiopatológico «la grasa es el compartimiento de reserva del organismo». También el hijo programado como bastón para la vejez debe estar fuerte y resistente.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista La Vanguardia (B15); réplica verificada enpositivo.com (B16); Sellam, Sobrepeso y obesidad (B04)"
+  },
+  {
+   "association_id": "A010",
+   "source_type": "concept",
+   "source_id": "pareja",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "El hombre busca inconscientemente en su pareja particularidades de su madre, la mujer de su padre; tras los hijos, el incesto simbólico reduce el deseo. Trabajo: sacar a la luz los fundamentos de la pareja.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista (B15); Sellam, La escalera del amor (B14)"
+  },
+  {
+   "association_id": "A011",
+   "source_type": "concept",
+   "source_id": "expresion",
+   "target_type": "organ",
+   "target_id": "garganta",
+   "relationship_type": "asociacion_clinica",
+   "description": "«Todo lo que no sale de nuestros labios grita en lo más profundo de nuestra alma… y se convierte en un síntoma»: lo no dicho busca salida por la garganta/voz.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Entrevista (B15) — frase literal de Sellam"
+  },
+  {
+   "association_id": "A012",
+   "source_type": "concept",
+   "source_id": "separacion",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Respirar = intercambio con el exterior (tomar/soltar): conflictos de separación y territorio no resueltos se expresan en vías respiratorias (asma, bronquitis).",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente puntual — coherente con B03 (intercambios gaseosos como inspiración del modelo); verificar en B03"
+  },
+  {
+   "association_id": "A013",
+   "source_type": "concept",
+   "source_id": "duelo",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Duelo bloqueado y vida bloqueada: el pulmón como órgano del duelo no elaborado.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "título de B07 sugiere la conexión (¿duelo bloqueado?); verificar contenido"
+  },
+  {
+   "association_id": "A014",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "estomago",
+   "relationship_type": "asociacion_clinica",
+   "description": "Estómago = primera digestión de lo incorporado: conflictos de nutrición afectiva (qué me dan, qué quiero recibir) se expresan en gastritis/úlcera.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar con B01"
+  },
+  {
+   "association_id": "A015",
+   "source_type": "concept",
+   "source_id": "deseo",
+   "target_type": "organ",
+   "target_id": "intestino-delgado",
+   "relationship_type": "asociacion_clinica",
+   "description": "Intestino delgado = absorber lo útil y dejar pasar lo demás: conflicto entre querer/no querer incorporar (personas, alimentos, situaciones).",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar con B01"
+  },
+  {
+   "association_id": "A016",
+   "source_type": "concept",
+   "source_id": "territorio",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Colon = soltar lo que ya no sirve: retención (estreñimiento) vs. eliminación ansiosa (diarrea) ligadas a no poder soltar situaciones/territorios perdidos.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar con B01"
+  },
+  {
+   "association_id": "A017",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "senos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Senos = nutrición y vínculo (dar/recibir alimento afectivo): mastosis y nódulos ligados al rol de cuidadora y a conflictos de dar sin recibir.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente puntual — verificar en Sellam, Enfermedades de los senos (B05)"
+  },
+  {
+   "association_id": "A018",
+   "source_type": "concept",
+   "source_id": "orden-jerarquico",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Huesos = sostén/estructura: conflictos con la propia estructura de apoyo (familia, jerarquías, principios) y pérdida de sostén (osteoporosis).",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente puntual — verificar en B09/B10 (simbólica de cada hueso)"
+  },
+  {
+   "association_id": "A019",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "musculos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Músculos = potencia y rendimiento: desvalorización por no rendir, tensión mantenida como defensa.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar con B09"
+  },
+  {
+   "association_id": "A020",
+   "source_type": "concept",
+   "source_id": "expresion",
+   "target_type": "organ",
+   "target_id": "tiroides",
+   "relationship_type": "asociacion_clinica",
+   "description": "Tiroides = ritmo de la vida: sentirse sin permiso de avanzar (hipo) o forzado a acelerar (hiper); garganta cercana a la expresión bloqueada.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "sin fuente verificada — hipótesis a contrastar"
+  },
+  {
+   "association_id": "A021",
+   "source_type": "concept",
+   "source_id": "ira",
+   "target_type": "organ",
+   "target_id": "higado",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hígado y cólera/ira reprimida: lo amargo de la vida no digerido.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada; usar solo como pista"
+  },
+  {
+   "association_id": "A022",
+   "source_type": "concept",
+   "source_id": "ira",
+   "target_type": "organ",
+   "target_id": "vesicula",
+   "relationship_type": "asociacion_clinica",
+   "description": "Vesícula y bilis = amargura acumulada, cólera guardado.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A023",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "pancreas",
+   "relationship_type": "asociacion_clinica",
+   "description": "Páncreas/insulina = dulzor de la vida: conflicto por no poder absorber/regular lo dulce (afecto, placer).",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A024",
+   "source_type": "concept",
+   "source_id": "culpa",
+   "target_type": "organ",
+   "target_id": "vejiga",
+   "relationship_type": "asociacion_clinica",
+   "description": "Vejiga = soltar/retener líquidos: conflictos de culpa asociados a liberación y límites.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A025",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "oidos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Oídos = escuchar / equilibrio: lo que no se quiere oír (otitis en niños ante ruido familiar) y vértigo = conflicto de referencia espacial / pérdida de equilibrio vital — ¿qué referencia perdiste? ¿dónde ya no sabés dónde estás parado?",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A026",
+   "source_type": "concept",
+   "source_id": "deseo",
+   "target_type": "organ",
+   "target_id": "ojos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Ojos = mirar/ser mirado: miopía (no querer ver lejos) vs. hipermetropía (ver lejos pero no lo cercano) como metáfora de evitación.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A027",
+   "source_type": "concept",
+   "source_id": "expresion",
+   "target_type": "organ",
+   "target_id": "nariz",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nariz = lo que molesta del ambiente (físico y emocional): sinusitis/rinitis ante algo «que no se soporta respirar».",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A028",
+   "source_type": "concept",
+   "source_id": "duelo",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Corazón = distribución de la vida: conflictos de dar/recibir, duelos amorosos y sobreesfuerzo cardíaco.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A029",
+   "source_type": "concept",
+   "source_id": "identidad",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Útero/próstata = creación y masculinidad/feminidad: conflictos de identidad sexual o creativa.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "conocimiento difuso del ecosistema — SIN fuente en Sellam verificada"
+  },
+  {
+   "association_id": "A030",
+   "source_type": "concept",
+   "source_id": "proteccion",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Piel = frontera del yo: necesidad de protección/límite cuando la sensación de invasión o exposición persiste.",
+   "evidence_level": "NO VERIFICADO",
+   "source_reference": "coherente con B02 (piel como pergamino/barrera); verificar"
+  },
+  {
+   "association_id": "A031",
+   "source_type": "concept",
+   "source_id": "proteccion",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "La grasa como escudo, reserva y abrigo — sentido biológico real («la grasa realmente protege»). El sobrepeso puede ser paliativo previo a diabetes, artrosis o hipertensión más que su causa; culpar al sobrepeso es un error de análisis. Caso Arnold Schwarzenegger: masa ≠ sobrepeso.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clases 08/08 y 09/08/26 (transcripciones/clase_2026-08-08_b.md, clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A032",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "pancreas",
+   "relationship_type": "asociacion_clinica",
+   "description": "El páncreas actúa cuando hay desprecio — incluido el auto-desprecio («me desprecio porque tengo sobrepeso»); ligado a la autoestima como imagen que tengo de mí (≠ amor propio: cuánto me acepto).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 08/08/26 (transcripciones/clase_2026-08-08_a.md)"
+  },
+  {
+   "association_id": "A033",
+   "source_type": "concept",
+   "source_id": "ira",
+   "target_type": "organ",
+   "target_id": "estomago",
+   "relationship_type": "asociacion_clinica",
+   "description": "Enojo sostenido / bronca tragada con figuras cercanas: úlcera, colon irritable y en el peor caso cáncer de estómago. «Ese enojo que me queda en el cuerpo: la única consecuencia es mía. No es mi papá ni mi mamá ni el abusador: soy yo.»",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A034",
+   "source_type": "concept",
+   "source_id": "injusticia",
+   "target_type": "organ",
+   "target_id": "higado",
+   "relationship_type": "asociacion_clinica",
+   "description": "«La injusticia — y mira lo que me han hecho»: vesícula, colédoco e hígado (en el peor caso, cáncer). La cuenta abierta por el daño recibido se liquida en el propio cuerpo.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A035",
+   "source_type": "concept",
+   "source_id": "traicion",
+   "target_type": "organ",
+   "target_id": "pancreas",
+   "relationship_type": "asociacion_clinica",
+   "description": "Traición / «cochinadas» sufridas: pancreatitis y, en el peor caso, cáncer de páncreas. Matices distintos del conflicto digestivo según la emoción dominante (bronca→estómago, injusticia→hígado, traición→páncreas). El eje páncreas (diabetes/pancreatitis/cáncer) tiene volumen propio en la enciclopedia de Sellam (B17).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md); ancla bibliográfica: Sellam, Pancréas Tome 13 (B17)"
+  },
+  {
+   "association_id": "A036",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "rinones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Riñón NO es «el miedo» genérico: matices específicos — incertidumbre; inseguridad afectiva («me dejan solo») o financiera (liquidez); «no debo hacer enojar a los demás»; miedo existencial/al futuro; pérdida del sentido de la vida (pregunta existencial). Cálculos renales: duele soltar liquidez (tapan la salida del líquido).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A037",
+   "source_type": "concept",
+   "source_id": "separacion",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hipertensión muy ligada a los hombres de la familia/papá: alguien se fue y quiero que vuelva (pico ~meses tras muerte del padre), o alguien metido que no puedo echar sin perder más (yerno→hija→nieto), o necesidad de vía de escape siempre libre (caso Río III: mesa mirando a la puerta tras la explosión de la fábrica).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 + nota 'por vos voy a sufrir' (transcripciones/)"
+  },
+  {
+   "association_id": "A038",
+   "source_type": "concept",
+   "source_id": "vinculo-paterno",
+   "target_type": "organ",
+   "target_id": "tiroides",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hipotiroidismo ligado al padre/hombres: hija tratada como «serás mi nenita» que no puede crecer; aparece cuando se da cuenta de que crece. (Hipertensión → hombres; hipotiroidismo → papás.)",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A039",
+   "source_type": "concept",
+   "source_id": "suplica-arrodillada",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "«Te duelen las rodillas porque viviste de rodillas»: artrosis de rodilla por súplica mantenida (caso: a los 14 pidió de rodillas un abrazo a la madre y no se lo dio — siguió arrodillada toda la vida en su mente). No era el sobrepeso: era la súplica. Corroborado por la línea Sellam: rodilla = arrodillarse/sumisión; «la artrosis de rodilla habla de la vivencia en un clima de sumisión».",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 08/08/26 (transcripciones/clase_2026-08-08_b.md); corrobora B19 (Estudios Core, línea Sellam)"
+  },
+  {
+   "association_id": "A040",
+   "source_type": "concept",
+   "source_id": "sustitucion-pareja",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "«¿Con quién vivís?»: hijo/hija/hermano/a cumpliendo rol de cónyuge simbólico (protector) cubre el puesto → no aparece pareja aunque se busque; novio presentado como «amante/amigo» porque el marido simbólico ya está. También parejas lejanas (territorio de madre/padre dominante) y personas casadas (no-compromiso espejo: si siempre encuentro gente que no se compromete… yo me tengo que comprometer).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Nota 'por vos voy a sufrir' (transcripciones/clase_anterior_por_vos_voy_a_sufrir.md)"
+  },
+  {
+   "association_id": "A041",
+   "source_type": "concept",
+   "source_id": "celos",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "El celo acerca o aleja: aleja. El celoso no está disponible para una relación estable; si siempre me encuentro personas celosas, yo tampoco estoy disponible. La inseguridad existe, pero el punto clínico es la disponibilidad.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Nota 'por vos voy a sufrir' (transcripciones/clase_anterior_por_vos_voy_a_sufrir.md)"
+  },
+  {
+   "association_id": "A042",
+   "source_type": "concept",
+   "source_id": "inexistencia",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Conflicto de inexistencia (nacer en mal momento, embarazo riesgoso donde «uno de los dos no va a vivir», hijo culpado por muerte de la madre, desprecio): «¿cuánto amor tiene alguien que no existe? ¿cuánto dinero gana? ¿qué lugar ocupa?» → no hay lugar, dinero, trabajo ni pareja. Miedo a sufrir: huir antes de que duela.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Nota 'por vos voy a sufrir' (transcripciones/clase_anterior_por_vos_voy_a_sufrir.md)"
+  },
+  {
+   "association_id": "A043",
+   "source_type": "concept",
+   "source_id": "ciclo-biologico",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Los conflictos se repiten en ciclos de la edad del padre o de la madre al nacer (ej.: consultante de 58 cuya madre lo tuvo a los 29 → ciclo de 29; también edades simbólicas 13, 14-15, 16, 26). Preguntar siempre: ¿qué edad tenían tu mamá y tu papá cuando naciste?",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A044",
+   "source_type": "concept",
+   "source_id": "abuso-simbolico",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Marcas en la vida íntima/de pareja tras abuso real o simbólico: intimidad solo con luz apagada («no quiero que me veas»), zonas del cuerpo vedadas, ascos específicos. Caso Sellam: padre rígido bañando a la hija pequeña cuando la madre está internada. Explorar sin confrontar.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 + nota 'por vos voy a sufrir' (transcripciones/)"
+  },
+  {
+   "association_id": "A045",
+   "source_type": "concept",
+   "source_id": "memoria-selectiva",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "La negación como defensa psíquica: «tuve mi primera relación sexual» dicho ante una violación a los 16 (miedo 20 años después a que «se vean las prendas íntimas»); blancos de memoria en abusos infantiles; memoria transgeneracional de abusos. No confrontar: es protección.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A046",
+   "source_type": "concept",
+   "source_id": "control",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parkinson como «el colmo del controlador»: temblor que repite «se me va, se me va… no te vayas». Caso: la novia lo deja por otra persona, chico católico de reglas rígidas, no acepta la situación → enfermedad hace 25 años. Duelo no elaborado + control imposible.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Nota 'por vos voy a sufrir' (transcripciones/clase_anterior_por_vos_voy_a_sufrir.md)"
+  },
+  {
+   "association_id": "A047",
+   "source_type": "concept",
+   "source_id": "resignificacion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "principio_terapeutico",
+   "description": "Entender qué pasó y de dónde viene (a veces alcanza) → resignificar los hechos del pasado: «esa es la clave, ese es el truco del terapeuta». Recursos según asociación/disociación. Responsabilidad ≠ culpa: puedo distanciarme de quien me hizo mal, pero vivir enojado es mi responsabilidad y mi cuerpo paga.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Clase 09/08/26 (transcripciones/clase_2026-08-09.md)"
+  },
+  {
+   "association_id": "A048",
+   "source_type": "concept",
+   "source_id": "impotencia",
+   "target_type": "organ",
+   "target_id": "musculos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Músculos = impotencia (no poder actuar frente a la situación). Distinto de la desvalorización: aquí el cuerpo registra «no puedo». Cuaderno: MÚSCULOS: Impotencia.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Caso 2, p.23 (notas de clases/caso 2.md) — tabla REVISAR Anatomía y Fisiología"
+  },
+  {
+   "association_id": "A049",
+   "source_type": "concept",
+   "source_id": "sexualidad",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cadera = sexualidad. Cuaderno: CADERA: Sexualidad — eje corporal de la intimidad y del movimiento sexual.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Caso 2, p.23 (notas de clases/caso 2.md) — tabla REVISAR Anatomía y Fisiología"
+  },
+  {
+   "association_id": "A050",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Intestino grueso (colon) = acercar a la madre. Cuaderno: I. GRUESO: Acerca MADRE — función de retener/acercar el vínculo materno.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Caso 2, p.23 (notas de clases/caso 2.md) — tabla REVISAR Anatomía y Fisiología"
+  },
+  {
+   "association_id": "A051",
+   "source_type": "concept",
+   "source_id": "proteccion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Manos = trabajo (padre/trabajo). Lógica de simbolismos p.15: manos → tomar, sol, padre, trabajo — el gesto de tomar/hacer. Lesiones en manos: conflicto con el trabajo o la figura paterna.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Caso 2, p.15 y p.23 (notas de clases/caso 2.md)"
+  },
+  {
+   "association_id": "A052",
+   "source_type": "concept",
+   "source_id": "abandono",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Colesterol: «LA FLIA ME DEJÓ SOLO» — hago mucho colesterol para «dar paredes» a mis células (esteroles = ladrillo con el que fabrico). Si me siento solo/abandonado debo construir solo. Cuaderno p.16: ser un adulto es un niño abandonado.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Caso 2, p.16 + Cuaderno 'Clavo en el culo', p.18-19 (COLESTEROL LA FLIA ME DEJÓ SOLO)"
+  },
+  {
+   "association_id": "A053",
+   "source_type": "concept",
+   "source_id": "control",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Cáncer: perfil «CONTROLADORES / COMPLACIENTES» (personalidad que quiere controlar o complacer). Cuaderno: ¿Qué pesa más lo que tengo o lo que me falta? ¿Cuánto estoy comprometido conmigo? — Tipología junto a diabetes/tiroides/colesterol.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 'Clavo en el culo', p.19 (tipología HIPERT/HIPOT/DIABETES/CÁNCER/HASHIMOTO/COLESTEROL)"
+  },
+  {
+   "association_id": "A054",
+   "source_type": "concept",
+   "source_id": "abandono",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Sobrepeso por abandono: «me abandonaron y debo tener reservas» (reserva energética por si vuelve a faltar). Caso p.19: aumento de peso + amenorrea a los 14, resistencia a la insulina, abuelo muere a los 8 — se programó el 1º abandono. Ligado a anemia: «doy mi sangre» / «darle vida a alguien».",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 'Clavo en el culo', p.19 (Resistencia insulina / Sobrepeso abandono / Anemia incorporación emocional)"
+  },
+  {
+   "association_id": "A055",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Claustrofobia / miedo a manejar (habitáculo cerrado que se mueve) → Embarazo / madre. Cuaderno: «¿Cuándo estuve en un habitáculo cerrado que se mueve? ← Embarazo» — memoria de encierro intrauterino. También: claustrofobia como trauma del vientre materno («mamá tus miedos son tuyos»).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.02 + Cuaderno Caso 2, p.18 (Claustrofobia)"
+  },
+  {
+   "association_id": "A056",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "tiroides",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hashimoto: «SE AGREDEN A SÍ MISMAS» (autoinmune tiroideo). Tipología tiroidea docente junto a hipertensos apurados / hipotiroideas lentas / diabéticos enojones: el ataque es contra sí misma.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 'Clavo en el culo', p.19 (HASHIMOTO - SE AGREDEN A SÍ MISMAS)"
+  },
+  {
+   "association_id": "A057",
+   "source_type": "concept",
+   "source_id": "ira",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Intestino / intolerancia = rechazo (B12, gluten, etc.). Cuaderno p.18: Intolerancia ≅ rechazo — la intolerancia alimentaria como «no tolero / no puedo asimilar» lo del otro.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 'Clavo en el culo', p.04 + Cuaderno Brozo, p.18 (Intolerancia)"
+  },
+  {
+   "association_id": "A058",
+   "source_type": "concept",
+   "source_id": "rechazo",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Miedo al rechazo (previo al nacimiento: niño no deseado, madre pensó en abortar — «no merezco vivir») → delgadez, anorexia, tendencia a huir, adicciones para llenar el vacío; complacencia a mamá.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.08-09 (MIEDO AL RECHAZO / ABANDONO) + p.11 (5 Heridas: RECHAZO)"
+  },
+  {
+   "association_id": "A059",
+   "source_type": "concept",
+   "source_id": "humillacion",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Humillación: aparece con la autonomía (no se respetan tiempos del niño: comer, controlar esfínteres) → vergüenza/negación, ponen su vida de lado para «que me devuelva dignidad». Herida junto a rechazo, abandono, traición e injusticia.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.09-11 (5 Heridas: HUMILLACIÓN)"
+  },
+  {
+   "association_id": "A060",
+   "source_type": "concept",
+   "source_id": "lealtad-invisible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Lealtades invisibles: reparación por repetición/fidelidad u oposición al drama del clan. «Somos menos libres de lo que creemos». Por repetición o por oposición nos mantenemos atados al programa ancestral.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.23 (LEALTADES INVISIBLES) + Cuaderno Exola, p.23"
+  },
+  {
+   "association_id": "A061",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "apendice",
+   "relationship_type": "asociacion_clinica",
+   "description": "Apéndice = «reserva de proteínas» / «bolsa de suero» — reserva corporal. En la lógica de simbolismos (Exola p.7) cada órgano se lee por su función biológica: el apéndice guarda.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.21 (Apéndice) + Cuaderno Exola, p.07 (tabla piel/cuello/clavícula/pecho)"
+  },
+  {
+   "association_id": "A062",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Proyecto Sentido: programa con el que la madre/pareja concibe al hijo. Tipología completa: bastón, compañía, síntoma, gasto, accidente, sustitución/yaciente, payaso, pegamento, salvador, esclavo, sexo deseado, tributo, escudo, profesión. «No hay hijo no deseado».",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.05-07 y 21 (Proyecto Sentido — tipología 14 programas)"
+  },
+  {
+   "association_id": "A063",
+   "source_type": "concept",
+   "source_id": "ciclo-reparador",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Ciclo y reparación: síndrome aniversario y ciclo biológico memorizado — lo que no resolvimos a los 4 vuelve a los 8. ±10 días seguro (±7 días). Doble, maestro, heredero, yaciente. «Hacer línea de tiempo: si a los 2 pasó algo busco a los 7».",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Brozo, p.24 (CICLO) + Cuaderno Exola, p.1 (Ciclo trimestral, Yacente Concebido, doble)"
+  },
+  {
+   "association_id": "A064",
+   "source_type": "concept",
+   "source_id": "accion-terapeutica",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "principio_terapeutico",
+   "description": "PROPUESTA (cap 15): Soy responsable de mi propia vida → ¿Qué me propongo hacer para mejorar MI vida? ¿Y la pareja? ¿Qué le puedo proponer a mi pareja para que hagamos juntos? Le pregunto a mi pareja qué piensa y si cree que se puede hacer algo para mejorar la relación.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Slides cap 15 (transcripciones/slides_powerpoint_capturas.md) — SANAR UNA RELACIÓN: PROPUESTA"
+  },
+  {
+   "association_id": "A065",
+   "source_type": "concept",
+   "source_id": "accion-terapeutica",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "principio_terapeutico",
+   "description": "DIÁLOGO Y ACTITUD (cap 16): Cambiar «LO QUE PASA ES QUE VOS...» por «YO ME SIENTO... TE PROPONGO... A MÍ ME PASA...». Actitud: ¿qué aprendo de esta situación? ¿qué me muestra él/ella? Soy un ser humano completo, me hago responsable de mi felicidad, hago propuestas en lugar de reclamos, negocio arreglos (ej: «odio ir a la casa de tu mamá»), vivo en amor / te acepto.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Slides cap 16 (transcripciones/slides_powerpoint_capturas.md) — AHORA QUÉ HAGO"
+  },
+  {
+   "association_id": "A066",
+   "source_type": "concept",
+   "source_id": "accion-terapeutica",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "principio_terapeutico",
+   "description": "PRINCIPIOS DE PAREJA (cap 17): No puedo dar lo que no tengo · Si no me amo no puedo amar a otros · Las relaciones se construyen · Ser pareja es ser parejos.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Slides cap 17 (transcripciones/slides_powerpoint_capturas.md)"
+  },
+  {
+   "association_id": "A067",
+   "source_type": "concept",
+   "source_id": "identidad",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hemorroides = exclusión: «No sé cuál es mi lugar, mi identidad social — ¿me lo han quitado?» (p.6). Pensar haber sangrado — familia. Recto/colon como lugar social.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.06 (Hemorroides — Exclusión / Identidad social)"
+  },
+  {
+   "association_id": "A068",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Varices: sangre que vuelve cargada de desechos (venas sacan, arterias llevan O2). «Sangre sucia»: hígado/bazo/riñón no alcanzan a limpiar. Trasfondo: «Si no doy sexo, no recibo cariño» — la única conexión con afecto es la sexualidad (p.8).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.08 (Varices — Sangre Limpia)"
+  },
+  {
+   "association_id": "A069",
+   "source_type": "concept",
+   "source_id": "vinculo-paterno",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Vitíligo = falta de mirada del padre: «Imagen frente a mi padre» — falta la mirada que fija la identidad/pigmento (p.14). Piel que se despigmenta donde no fue vista.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.14 (Vitíligo — Falta de mirada del padre)"
+  },
+  {
+   "association_id": "A070",
+   "source_type": "concept",
+   "source_id": "territorio",
+   "target_type": "organ",
+   "target_id": "vejiga",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cistitis = invasión de territorio + límite sexual: lo 1° que se limita es el límite sexual (a la pareja). Típico con suegro que se mete en la casa: «¡ponele límite a tu mamá!» (p.23).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.23 (CISTITIS — límite sexual, suegro)"
+  },
+  {
+   "association_id": "A071",
+   "source_type": "concept",
+   "source_id": "inexistencia",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Cómo nace = cómo entra al mundo: cordón al cuello → hijo no deseado; nalgas → espero razón; cesárea → «siempre va a necesitar ayuda». Retraso = «siempre ser niño» — reparo a alguien a quien le faltó la niñez; posible abuso en la familia (p.22).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.22 (Cómo nace / RETRASO)"
+  },
+  {
+   "association_id": "A072",
+   "source_type": "concept",
+   "source_id": "territorio",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Ciático = dinero: división de dinero — preocupación por cómo repartir lo que tengo, no gastar de más (p.24). «No estoy seguro qué es lo q hacían mis padres» — ¿reparo algo?",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno 05-04-25, p.24 (CIÁTICO — DINERO, división)"
+  },
+  {
+   "association_id": "A073",
+   "source_type": "concept",
+   "source_id": "asco",
+   "target_type": "organ",
+   "target_id": "intestino-delgado",
+   "relationship_type": "asociacion_clinica",
+   "description": "Asco = detector de lo potencialmente tóxico → Intestino delgado (intolerancias, celiaquismo, rechazo visceral). P.5: Asco → ÓRGANO Intestino Delgado.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Continuación, p.05 (Asco → Intestino Delgado)"
+  },
+  {
+   "association_id": "A074",
+   "source_type": "concept",
+   "source_id": "rechazo",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Estornudo / tos = aleja o atrae (rechazo respiratorio). P.10: estornudo/tos como gesto de rechazo — el cuerpo expulsa o llama.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Cuaderno Continuación, p.10 (Estornudo/tos → rechazo)"
+  },
+  {
+   "association_id": "A075",
+   "source_type": "concept",
+   "source_id": "territorio",
+   "target_type": "organ",
+   "target_id": "estomago",
+   "relationship_type": "asociacion_clinica",
+   "description": "Estómago por curvaturas (diccionario Bouron, leído por Vero): curvatura MAYOR = contrariedad indigesta + conflicto de carencia/alimento en marco familiar; curvatura MENOR (bulbo/píloro/duodeno) = contrariedad en el territorio. Ambos con matiz «conflicto activo respecto a la madre». Divertículos son de colon/intestino, no de estómago (precisión diagnóstica).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "WhatsApp BioConexion — Vero 25/04/25 20:50-20:53 audios 00000165/00000166 (pregunta Yami, divertículos)"
+  },
+  {
+   "association_id": "A076",
+   "source_type": "concept",
+   "source_id": "vision-sucia",
+   "target_type": "organ",
+   "target_id": "ojos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Ojos: catarata = haber visto cosa sucia (caso sobrina abusada enturbia la visión); miopía = infancia con violencia muy cerca → no necesito ver de lejos; ver de lejos alterado = miedo al futuro/obstáculo futuro; enojo-ojo: todo ojo implica enojo; lateralidad Hamer: ojo dcho. (relé izqdo. nuca) = golpe/traición por la espalda.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "WhatsApp BioConexion — Adrián 20/08/25 11:16 audio 00000868 (respuesta Yami, ojos)"
+  },
+  {
+   "association_id": "A077",
+   "source_type": "concept",
+   "source_id": "ira",
+   "target_type": "organ",
+   "target_id": "vesicula",
+   "relationship_type": "asociacion_clinica",
+   "description": "Vesícula/cálculos = bronca/rabia cristalizada; tamaño codifica antigüedad: 1 cm ≈ 1 año (0,1 = 1,2 meses; 0,84 ≈ 7 meses). Caso Adrián: pancreatitis + litiasis biliar = reparación transgeneracional de broncas de tía soltera sin hijos (muere 10-marzo → síntoma 20 días después, depositaria de rabias del clan).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "WhatsApp BioConexion — Adrián 03/11/25 12:04 audio 00001365 (piedra 0,85) + 17/04/26 audio 00001605 (pancreatitis tía)"
+  },
+  {
+   "association_id": "A078",
+   "source_type": "concept",
+   "source_id": "contacto-materno",
+   "target_type": "organ",
+   "target_id": "boca-dientes",
+   "relationship_type": "asociacion_clinica",
+   "description": "Boca/labios/lengua/chupar (fumar, labios, lengua): fijación etapa oral — conflicto de separación/ausencia de madre (enfermedad materna, adopción sin lactancia, separación temprana). Queda el instinto de buscar materno.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "WhatsApp BioConexion — Adrián 12/03/26 18:41 audio 00001461 + Vero pulgar-nutrición afectiva"
+  },
+  {
+   "association_id": "A079",
+   "source_type": "concept",
+   "source_id": "miedo",
+   "target_type": "organ",
+   "target_id": "nariz",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nariz/moco: 'algo me huele mal', no puedo respirar, quiero sacarme de encima a alguien/situación. Lagrimeo asociado = lo que no pude haber llorado, llanto reprimido.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Vero 17/9/25 audio 00001134 (whatsapp_audios_transcritos.md:717) - moco/lagrimeo"
+  },
+  {
+   "association_id": "A080",
+   "source_type": "concept",
+   "source_id": "territorio",
+   "target_type": "organ",
+   "target_id": "rinones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Agua = madre, pies = madre, cabeza = padre, fuego/sol = padre. Simbología elemental de los polos corporales: agua/madre vs fuego/padre.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Vero 10/05/26 audio 00001743 (whatsapp_audios_transcritos.md:1242) - simbología agua/pies/cabeza"
+  },
+  {
+   "association_id": "A081",
+   "source_type": "sintoma",
+   "source_id": "colesterol",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Colesterol alto (/hipercolesterolemia) asociado en clase a soledad: la frase circulada «Me siento solo» opera como núcleo del síntoma. Casuística del consultante.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A082",
+   "source_type": "sintoma",
+   "source_id": "fibromialgia",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Fibromialgia vinculada al rol de cuidador y a la negación (negarse a sí mismo para sostener al otro). Observado en caso de clase.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A083",
+   "source_type": "sintoma",
+   "source_id": "linfoma",
+   "target_type": "organ",
+   "target_id": "sistema-inmune",
+   "relationship_type": "asociacion_clinica",
+   "description": "Linfoma / cuadro autoinmune como deuda simbólica: dinámica Debo→Acuerdo→Benefactor (árbol familiar). Caso clínico de clase.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A084",
+   "source_type": "sintoma",
+   "source_id": "sindrome-corazon-roto",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "asociacion_clinica",
+   "description": "«Síndrome del corazón roto»: decepción amorosa como detonante. Etiqueta usada en el material de clase.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A085",
+   "source_type": "sintoma",
+   "source_id": "cancer-mama",
+   "target_type": "organ",
+   "target_id": "senos",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cáncer de mama asociado a desprotección y abordado desde la constelación cerebral (Hamer/NMG) en la clase.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A086",
+   "source_type": "sintoma",
+   "source_id": "manos",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Manos como símbolo de padre/trabajo en la lectura del consultante (diagrama alcohol/problemas→figura paterna).",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A087",
+   "source_type": "sintoma",
+   "source_id": "insomnio",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Insomnio bajo etiqueta «SOMATIZANDO»: ligado a muerte/pérdida y al bloque de duelos del consultante.",
+   "evidence_level": "observacion_clinica",
+   "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  }
+ ],
+ "guia_fases": [
+  {
+   "fase": 1,
+   "nombre": "Descripción",
+   "preguntas": [
+    "¿Qué ocurre? ¿Cómo lo describirías con tus palabras?",
+    "¿Desde cuándo — fecha exacta? El inicio es simbólico. El cuerpo hizo el síntoma ~1 año antes (2p, 3p… un poco antes de la década): ¿qué pasó a los 5?",
+    "Ficha: nombre completo, edad, ocupación, lugar, fecha nac., fecha consulta, síntoma (Exola p.1 / Clavo p.17).",
+    "¿Qué edad tenés hoy? ¿Qué buscás: felicidad, libertad, riqueza, pareja? ¿Dónde estás buscando?"
+   ]
+  },
+  {
+   "fase": 2,
+   "nombre": "Contexto",
+   "preguntas": [
+    "¿Qué cambió en los 30–60 días ANTES del inicio? Mirar siempre hacia atrás, nunca hacia adelante.",
+    "¿Hubo pérdida, cambio, ruptura o conflicto? ¿Qué pensaste en ese momento? («debo sostener a mamá / hermanos / la casa» — Brozo p.18)",
+    "¿Con quién vivís y quién cumple qué rol? ¿Hay cónyuge simbólico (hijo/a que ocupa el lugar)? ¿Pareja como comodín = padre/madre/hijo? (Brozo p.14, Exola p.18)",
+    "Árbol — relevar ahora: nombre completo, Nº de hijo, abortos/pérdidas, concepción/nacimiento/primer año, fechas nac.+muerte + causas (Exola p.4). ¿Algo similar pasó en la familia? ¿Quién salvó/causó dolor? ¿Tristeza más profunda? ¿Drama del clan?"
+   ]
+  },
+  {
+   "fase": 3,
+   "nombre": "Experiencia subjetiva",
+   "preguntas": [
+    "¿Cómo viviste esa situación? ¿Qué fue lo más difícil? ¿Qué no pudiste decir?",
+    "Primer amor → 1° dolor, 1° experiencia sexual (consentida o no), relación con mamá/papá — historia personal y árbol (Exola p.16). ¿Cómo fue tu nacimiento?",
+    "Marcas de intimidad (luz apagada, zonas vedadas, ascos): pista de abuso real o simbólico — no confrontar; la negación/blanco de memoria es protección psíquica (Caso 2 p.19-20).",
+    "Herida-emoción asociada ahora: ¿qué defiende? Confianza≠control, enojo≃ofensa (mecanismo: límite→ofensa→enojo→aceptar/huir). Tristeza quieta→Depresión (pasado) vs Ansiedad (futuro). Eje miedo–carencia–deseo (Caso 2 p.4).",
+    "De los 5 heridas (rechazo, abandono, humillación, traición, injusticia): ¿cuál resuena? Cuerpo: rechazo→delgadez, abandono→flácido/bulimia, traición→cuerpo fuerte, injusticia→atlético (Brozo p.9-11)."
+   ]
+  },
+  {
+   "fase": 4,
+   "nombre": "Línea temporal",
+   "preguntas": [
+    "Ordenemos: síntoma ← evento ← cambio de vida ← contexto anterior. ¿Cuándo el síntoma fue leve vs. autoinmune (empeoró)? (Brozo p.18)",
+    "Ciclos biológicos — cálculo fino (Exola p.1): trimestral 05/01-05/04-01/07-01/10 (o fechas del caso: 26/08-26/11-26/02-26/05); ±10 días seguro (±7 días). Yacente concebido y dobles por nombre+fecha+profesión+parecido. Edad madre/padre al nacer (13·14-15·16·26·29).",
+    "Revisá las 5 historias más fuertes de tu vida. ¿Qué pesa más lo que tengo o lo que me falta? ¿Cuánto estoy comprometido conmigo?",
+    "¿Quién en tu árbol vivió algo parecido? Duelos bloqueados, mujeres/hombres despreciados, muertes tempranas. Doble / maestro / heredero / yaciente. Lealtad por repetición (fidelidad) u oposición — reparación (Exola p.1, Brozo p.23-24).",
+    "Proyecto Sentido: ¿para qué te quiso tener mamá? Tipología (Brozo p.21): bastón, compañía, síntoma, gasto, accidente, sustitución/yaciente, payaso, pegamento, salvador, esclavo, sexo deseado, tributo, escudo, profesión."
+   ]
+  },
+  {
+   "fase": 5,
+   "nombre": "Construcción de hipótesis",
+   "preguntas": [
+    "Asociaciones que emergen (sin imponer). Multifactorial — torta del desorden amoroso (cap_13/cap06): Transgeneracional · Creencias familiares · Duelo bloqueado · Proyecto Sentido · Otros. Preguntar: sentido, duelo, creencias, transgeneracional y P/S. Fantasía de volver a encontrar un amor como aquel — ¿a quién busco en otra persona?",
+    "Entender → resignificar: «el truco del terapeuta» es cambiar el significado del hecho. ¿Qué reparación estoy haciendo? Por repetición o por oposición (Exola p.23).",
+    "Sanar una relación (si aplica): ¿se puede? ¿para qué quiero sanarla? Entender → definir conflicto → ¿qué le pido al otro? → ¿es alma gemela? → propongo y hago mi trabajo (Caso 2 p.9).",
+    "Gestión: el enojo sostenido lo paga mi cuerpo (Brozo p.19). Felicidad = silencio interior + ausencia de emociones (tribunal vacío, cap_14). Amor = aceptación sin juicio (Exola p.11/15). Responsabilidad ≠ culpa — «el poder está en mí» (Caso 2 p.15).",
+    "Duelo completo: negación → negociación → ira → tristeza → aceptación → reconstrucción — curva del duelo con dos estrategias (cap_11). Cortarlo = «siempre me pasa lo mismo». ¿No merezco / no existo / miedo a sufrir / reivindicación como macho? (cap_07) ¿Qué pregunta dejamos abierta?",
+    "Acción — ¿qué me propongo hacer? Propuesta (cap 15): mi vida / la pareja / juntos. Diálogo: «Yo me siento... Te propongo...» en lugar de «Vos...». Principio: no puedo dar lo que no tengo (cap 16-17) — propongo en lugar de reclamo y negocio arreglos."
+   ]
+  }
+ ],
+ "niveles_evidencia": [
+  {
+   "nivel": 1,
+   "nombre": "Referencia teórica",
+   "capa": "A"
+  },
+  {
+   "nivel": 2,
+   "nombre": "Bibliografía primaria (del modelo)",
+   "capa": "A"
+  },
+  {
+   "nivel": 3,
+   "nombre": "Bibliografía secundaria",
+   "capa": "A"
+  },
+  {
+   "nivel": 4,
+   "nombre": "Caso clínico publicado",
+   "capa": "A"
+  },
+  {
+   "nivel": 5,
+   "nombre": "Observación clínica personal",
+   "capa": "B"
+  },
+  {
+   "nivel": 6,
+   "nombre": "Hipótesis personal",
+   "capa": "C"
+  },
+  {
+   "nivel": 7,
+   "nombre": "Asociación exploratoria",
+   "capa": "C"
+  }
+ ],
+ "sugerencias_embudo": [
+  {
+   "trigger": {
+    "concepto": "miedo",
+    "organo": "rinones"
+   },
+   "preguntas": [
+    "¿Tenés miedo hoy? ¿Cuál era tu miedo cuando surgió el síntoma/deseo? (Continuación p.18)",
+    "¿Cuánto líquido/salidas marcás? ¿Haces cálculos renales?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "abandono"
+   },
+   "preguntas": [
+    "¿Recordás situaciones similares de abandono en el pasado? (p.18)",
+    "¿Qué le pasó a tu madre/padre cuando tenían tu edad?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "inexistencia"
+   },
+   "preguntas": [
+    "¿Cómo naciste? (cordón, cesárea, nalgas, retraso) — ¿Cuál es tu lugar de hijo? (05-04 p.21-22)"
+   ]
+  },
+  {
+   "trigger": {
+    "organo": "tiroides"
+   },
+   "preguntas": [
+    "¿Necesitás más tiempo para ser niña/o? ¿Para hablar? (Hipo/Hiperti: tiempo)"
+   ]
+  },
+  {
+   "trigger": {
+    "organo": "vejiga"
+   },
+   "preguntas": [
+    "¿Quién invade tu territorio? ¿Hay límite sexual con suegro/pareja? (Cistitis p.23)"
+   ]
+  },
+  {
+   "trigger": {
+    "organo": "colon"
+   },
+   "preguntas": [
+    "¿Qué no tolerás / no podés asimilar? (Intolerancia, p.18 Continuación)"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "transgeneracional"
+   },
+   "preguntas": [
+    "¿Le estás siendo leal a alguien de tu familia? (p.18)",
+    "¿Fecha de concepción/nacimiento/muerte que coincide ±7/10 días?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "proyecto-sentido"
+   },
+   "preguntas": [
+    "¿Para qué te quiso tener mamá? (bastón, compañía, síntoma, etc.) — Brozo p.21"
+   ]
+  }
+ ]
+};;;;;;;;;;;;;;;;;;;
+
+/* Datos del usuario (persisten en localStorage) */
+const store = {
+  _mem:{},
+  get(k,d){ try{ const v = localStorage.getItem(k); return v!=null ? JSON.parse(v) : d }catch(e){ return this._mem[k] ?? d } },
+  set(k,v){ this._mem[k]=v; try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} }
+};
+let userAssoc = store.get("bio_assoc_v1",[]);
+let userCases = store.get("bio_cases_v1",[]);
+let consultantes = store.get("bio_consultantes_v1",[]);
+
+function allAssoc(){ return DB.associations.concat(userAssoc); }
+function allCases(){ return userCases.concat(DB.cases||[]); }
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const $  = s=>document.querySelector(s);
+const $$ = s=>Array.from(document.querySelectorAll(s));
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s=>String(s??"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const uid = p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+function lev(a,b){
+  if(Math.abs(a.length-b.length)>2) return 3;
+  const m=[];for(let i=0;i<=a.length;i++){m[i]=[i];for(let j=1;j<=b.length;j++)m[i][j]=i?Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]!==b[j-1]?1:0)):j;}
+  return m[a.length][b.length];
+}
+function toast(msg){
+  const t=$("#toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),2600);
+}
+function capaOf(ev){ return String(ev||"").toUpperCase().startsWith("NO") ? "NV"
+  : ({teoria_sellam:"A",otra_fuente:"A",caso_publicado:"A",referencia_teorica:"A",
+      observacion_clinica:"B",hipotesis:"C",exploratoria:"C"}[ev]) || (["A","B","C"].includes(ev)?ev:"NV"); }
+function capaLabel(capa){ return {A:"A · Teoría citada",B:"B · Casuística",C:"C · Hipótesis personal",NV:"Sin verificar"}[capa]; }
+const capaColor={A:"var(--capa-a)",B:"var(--capa-b)",C:"var(--capa-c)",NV:"var(--capa-nv)"};
+function evChip(ev){ const c=capaOf(ev); const label = c==="NV" ? "NO VERIFICADO" : capaLabel(c).split("· ")[1];
+  return `<span class="chip-evidencia ev-${c}">${esc(label)}</span>`; }
+function getOrgan(id){ return DB.organs.find(o=>o.organ_id===id); }
+function getConcept(id){ return DB.concepts.find(c=>c.concept_id===id); }
+function organName(id){ return getOrgan(id)?.name ?? id; }
+function conceptName(id){ return getConcept(id)?.concept ?? id; }
+function assocTitle(a){
+  const s=a.source_type==="organ"?organName(a.source_id):(getConcept(a.source_id)?.concept??a.source_id);
+  const t=a.target_type==="organ"?organName(a.target_id):(getConcept(a.target_id)?.concept??a.target_id);
+  return `${s} → ${t}`;
+}
+
+/* =====================================================================
+   NAVEGACIÓN
+   ===================================================================== */
+const RENDERERS={};
+function show(view){
+  $$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));
+  $$(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  if(RENDERERS[view]) RENDERERS[view]();
+  $(".main").scrollTop=0;
+}
+RENDERERS.mapa   = renderMapa;
+RENDERERS.diccionario = ()=>renderDict($("#q").value.trim());
+RENDERERS.red    = renderRed;
+RENDERERS.guia   = renderGuia;
+RENDERERS.consultantes = renderConsultantes;
+RENDERERS.casos  = renderCasos;
+RENDERERS.asociaciones = renderAsocs;
+RENDERERS.bibliografia = renderBiblio;
+RENDERERS.panel  = renderPanel;
+
+document.addEventListener("click",e=>{
+  const nav=e.target.closest(".nav [data-view]");
+  if(nav){show(nav.dataset.view);return;}
+  const op=e.target.closest("[data-open]");
+  if(op){ const [type,id]=op.dataset.open.split(":"); openFicha(type,id); return; }
+  const ft=e.target.closest("[data-filter]");
+  if(ft){ handleFilter(ft); return; }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ closeModal(); }
+  if(e.key==="/" && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){ e.preventDefault(); $("#q").focus(); }
+});
+
+/* Tooltip genérico */
+const tipEl=$("#tooltip");
+document.addEventListener("mousemove",e=>{
+  const t=e.target.closest("[data-tip]");
+  if(t){ tipEl.textContent=t.dataset.tip; tipEl.classList.add("show");
+    tipEl.style.left=Math.min(e.clientX+14,innerWidth-tipEl.offsetWidth-10)+"px";
+    tipEl.style.top=(e.clientY+16)+"px";
+  } else tipEl.classList.remove("show");
+});
+
+/* =====================================================================
+   INSPECTOR — fichas
+   ===================================================================== */
+function inspOpen(html){
+  const el=$("#inspector");el.innerHTML=`<div class="insp-head"><div>${""}</div><button class="insp-close" data-insp-close aria-label="Cerrar">×</button></div>${html}`;
+  el.classList.add("open");
+  el.querySelector("[data-insp-close]").onclick=()=>{el.classList.remove("open");el.innerHTML="";};
+  el.scrollTop=0;
+}
+$("#inspector").addEventListener("click",e=>{
+  if(e.target.closest("[data-insp-close]")){$("#inspector").classList.remove("open");}
+});
+
+function assocItemsFor(pred,limit=8){
+  return allAssoc().filter(pred).slice(0,limit).map(a=>`
+    <div class="assoc-item" data-open="association:${a.association_id}" style="border-left-color:${capaColor[capaOf(a.evidence_level)]}">
+      <div class="row" style="gap:8px">${evChip(a.evidence_level)}<span class="small muted">${esc(assocTitle(a))}</span></div>
+      <div class="desc">${esc(a.description)}</div>
+      <div class="meta">${esc(a.source_reference||"")}${a._user?" · propia":""}</div>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="openArbolDesdeFicha('${esc(a.source_id)}','${esc(a.target_id)}','${esc(assocTitle(a))}')">↗ Abrir en árbol de indagación</button>
+    </div>`).join("") || `<p class="small muted">Sin asociaciones registradas todavía.</p>`;
+}
+
+function openFicha(type,id){
+  if(type==="organ") return fichaOrgan(id);
+  if(type==="concept") return fichaConcept(id);
+  if(type==="association") return fichaAssoc(id);
+  if(type==="case") return fichaCase(id);
+  if(type==="ref") return fichaRef(id);
+}
+function fichaOrgan(id){
+  const o=getOrgan(id); if(!o) return toast("Órgano no encontrado");
+  const assocs=allAssoc().filter(a=>a.target_id===id||a.source_id===id);
+  const concepts=[...new Set(assocs.flatMap(a=>[a.source_type==="concept"?a.source_id:null,a.target_type==="concept"?a.target_id:null].filter(Boolean)))];
+  const cases=allCases().filter(c=>c.organ_id===id);
+  inspOpen(`
+    <div class="insp-kicker">${esc(o.system||"sistema")} · ficha de órgano</div>
+    <div class="insp-title">${esc(o.name)}</div>
+    <section><h3>Función biológica</h3><p class="small">${esc(o.biological_function||"—")}</p></section>
+    ${o.description?`<section><h3>Notas</h3><p class="small">${esc(o.description)}</p></section>`:""}
+    ${concepts.length?`<section><h3>Conceptos vinculados</h3><div class="row">${concepts.map(cid=>`<span class="pill" data-open="concept:${cid}">${esc(conceptName(cid))}</span>`).join("")}</div></section>`:""}
+    <section><h3>Marcos interpretativos (${assocs.length})</h3>${assocItemsFor(a=>a.target_id===id||a.source_id===id,12)}</section>
+    <section><h3>Casos (${cases.length})</h3>${cases.length?cases.slice(0,5).map(c=>`
+      <div class="assoc-item" data-open="case:${c.case_id}"><b class="small">${esc(c.code||c.case_id)}</b><div class="desc">${esc(c.symptom||"")}</div></div>`).join(""):`<p class="small muted">Ninguno.</p>`}</section>
+    <section><button class="btn btn-sm" data-assoc-new-organ="${esc(id)}">+ Agregar asociación</button></section>
+  `);
+}
+function fichaConcept(id){
+  const c=getConcept(id); if(!c) return toast("Concepto no encontrado");
+  const assocs=allAssoc().filter(a=>(a.source_type==="concept"&&a.source_id===id)||(a.target_type==="concept"&&a.target_id===id));
+  const organs=[...new Set(assocs.flatMap(a=>[a.target_type==="organ"?a.target_id:null,a.source_type==="organ"?a.source_id:null].filter(Boolean)))];
+  inspOpen(`
+    <div class="insp-kicker">${esc(c.category||"concepto")}</div>
+    <div class="insp-title">${esc(c.concept)}</div>
+    <section><p class="small">${esc(c.description||"—")}</p></section>
+    ${(c.synonyms||[]).length?`<section><h3>Sinónimos</h3><div class="row">${c.synonyms.map(s=>`<span class="pill" data-search="${esc(s)}">${esc(s)}</span>`).join("")}</div></section>`:""}
+    <section><h3>Órganos vinculados (${organs.length})</h3>
+      ${organs.length?organs.map(oid=>{const rel=assocs.filter(a=>a.target_id===oid||a.source_id===oid);
+        return `<div class="assoc-item" data-open="organ:${oid}">
+          <div class="row" style="justify-content:space-between"><b class="small">${esc(organName(oid))}</b><span class="small muted">${rel.length} vínc.</span></div>
+          <div class="meta">${rel.slice(0,2).map(a=>evChip(a.evidence_level)).join(" ")}</div></div>`;}).join(""):`<p class="small muted">Ninguno todavía.</p>`}</section>
+    <section><h3>Todas las asociaciones</h3>${assocItemsFor(a=>(a.source_type==="concept"&&a.source_id===id)||(a.target_type==="concept"&&a.target_id===id),12)}</section>
+    <section><button class="btn btn-sm" data-assoc-new-concept="${esc(id)}">+ Agregar asociación</button></section>
+  `);
+}
+function fichaAssoc(id){
+  const a=allAssoc().find(x=>x.association_id===id); if(!a) return toast("No encontrada");
+  const capa=capaOf(a.evidence_level);
+  inspOpen(`
+    <div class="insp-kicker">asociación ${a._user?"propia ·":""} ${esc(a.relationship_type||"clínica")}</div>
+    <div class="insp-title">${esc(assocTitle(a))}</div>
+    <section><div class="row">${evChip(a.evidence_level)}${a._user?'<span class="chip-evidencia ev-C">creada por vos</span>':""}</div></section>
+    <section><h3>Descripción</h3><p class="small">${esc(a.description||"—")}</p></section>
+    <section><h3>Fuente</h3><p class="small muted">${esc(a.source_reference||"sin referencia")}</p>
+      ${a.reference_id?`<p class="small"><span class="pill" data-open="ref:${esc(a.reference_id)}">Ver referencia ${esc(a.reference_id)}</span></p>`:""}</section>
+    ${a._user?`<section><button class="btn btn-sm btn-danger" data-del-assoc="${esc(id)}">Eliminar</button></section>`:""}
+  `);
+}
+function fichaCase(id){
+  const c=allCases().find(x=>x.case_id===id); if(!c) return toast("Caso no encontrado");
+  inspOpen(`
+    <div class="insp-kicker">caso ${esc(c.code||"")}</div>
+    <div class="insp-title">${esc(c.symptom||"Caso")}</div>
+    ${c.organ_id?`<section><span class="pill" data-open="organ:${esc(c.organ_id)}">${esc(organName(c.organ_id))}</span></section>`:""}
+    ${c.date?`<section><h3>Fecha</h3><p class="small">${esc(c.date)}</p></section>`:""}
+    ${c.context?`<section><h3>Contexto vital</h3><p class="small">${esc(c.context)}</p></section>`:""}
+    ${c.life_event?`<section><h3>Evento disparador</h3><p class="small">${esc(c.life_event)}</p></section>`:""}
+    ${c.patient_interpretation?`<section><h3>Vivencia del consultante</h3><p class="small">${esc(c.patient_interpretation)}</p></section>`:""}
+    ${c.therapist_notes?`<section><h3>Notas del profesional</h3><p class="small">${esc(c.therapist_notes)}</p></section>`:""}
+    ${c.outcome?`<section><h3>Evolución</h3><p class="small">${esc(c.outcome)}</p></section>`:""}
+    ${(c.concepts||[]).length?`<section><h3>Conceptos</h3><div class="row">${c.concepts.map(x=>`<span class="pill" data-open="concept:${esc(x)}">${esc(conceptName(x))}</span>`).join("")}</div></section>`:""}
+    ${c._user?`<section><button class="btn btn-sm btn-danger" data-del-case="${esc(id)}">Eliminar</button></section>`:""}
+  `);
+}
+function fichaRef(id){
+  const r=DB.bibliografia.find(b=>b.reference_id===id); if(!r) return toast("Referencia no encontrada");
+  const n=allAssoc().filter(a=>a.reference_id===id||a.source_reference?.includes(r.title?.slice(0,20))).length;
+  inspOpen(`
+    <div class="insp-kicker">${r.verified!==false?"referencia verificada":"referencia NO verificada"}</div>
+    <div class="insp-title">${esc(r.title)}</div>
+    <section><p class="small">${esc(r.author||"—")}${r.year?" · "+esc(r.year):""}${r.publisher?" · "+esc(r.publisher):""}</p>
+      ${r.url?`<p class="small" style="margin-top:6px"><a href="${esc(r.url)}" target="_blank" rel="noopener" style="color:var(--accent)">${esc(r.url)}</a></p>`:""}</section>
+    ${r.notes?`<section><h3>Notas</h3><p class="small">${esc(r.notes)}</p></section>`:""}
+    <section><h3>Usada en ${n} asociación(es)</h3></section>
+  `);
+}
+/* delegación extra dentro del inspector y main */
+document.addEventListener("click",e=>{
+  const s=e.target.closest("[data-search]");
+  if(s){ $("#q").value=s.dataset.search; show("diccionario"); renderDict(s.dataset.search); return; }
+  const na=e.target.closest("[data-assoc-new-organ]");
+  if(na){ openAssocModal({target_type:"organ",target_id:na.dataset.assocNewOrgan}); return; }
+  const nc=e.target.closest("[data-assoc-new-concept]");
+  if(nc){ openAssocModal({source_type:"concept",source_id:nc.dataset.assocNewConcept}); return; }
+  const da=e.target.closest("[data-del-assoc]");
+  if(da){ userAssoc=userAssoc.filter(a=>a.association_id!==da.dataset.delAssoc); store.set("bio_assoc_v1",userAssoc); $("#inspector").classList.remove("open"); toast("Asociación eliminada"); renderAsocs(); return; }
+  const dc=e.target.closest("[data-del-case]");
+  if(dc){ userCases=userCases.filter(c=>c.case_id!==dc.dataset.delCase); store.set("bio_cases_v1",userCases); $("#inspector").classList.remove("open"); toast("Caso eliminado"); renderCasos(); return; }
+});
+
+/* =====================================================================
+   MAPA CORPORAL
+   ===================================================================== */
+const BODY_REGIONS=[
+  ["cabeza-mente", "M60,28 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0", 150,70],
+  ["garganta",     null, 150,132], ["tiroides", null,150,140],
+  ["pulmon-izq",   null, 128,190], ["pulmon-der",null,172,190],
+  ["corazon",      null, 168,205], ["higado",null,176,245],
+  ["vesicula",     null, 186,262], ["estomago",null,128,250],
+  ["pancreas",     null, 152,272], ["bazo",null,116,255],
+  ["rinon-izq",    null, 126,290], ["rinon-der",null,174,290],
+  ["intestino-delgado",null,150,320], ["colon",null,150,330],
+  ["vejiga",       null, 150,392], ["uterino-prostatica",null,150,405],
+];
+function buildBody(){
+  const svg=$("#bodymap");
+  const P=(d,extra)=>`<path d="${d}" ${extra}/>`;
+  const R=(id,cx,cy,rx,ry,tip)=>`<ellipse data-open="organ:${id}" data-tip="${tip}" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="var(--accent)" fill-opacity=".28" stroke="var(--accent)" stroke-opacity=".55" stroke-width="1"/>`;
+  let g="";
+  /* silueta = piel */
+  g+=`<path data-open="organ:piel" data-tip="Piel — contacto, límite, separación"
+    d="M150,18 C120,18 104,40 104,66 C104,88 112,102 118,110 C100,118 78,124 68,140 C56,160 52,220 54,270 C55,310 58,350 62,380 C64,400 70,420 76,436 L84,500 L88,560 C89,575 96,584 108,584 C118,584 122,574 122,560 L126,500 L134,450 L136,560 C137,575 142,584 152,584 C162,584 167,575 168,560 L170,450 L178,500 L182,560 C182,574 186,584 196,584 C208,584 215,575 216,560 L220,500 L228,436 C234,420 240,400 242,380 C246,350 249,310 250,270 C252,220 248,160 236,140 C226,124 204,118 186,110 C192,102 200,88 200,66 C200,40 184,18 150,18 Z"
+    fill="none" stroke="var(--border-strong)" stroke-width="2"/>`;
+  /* cabeza/mente */
+  g+=`<ellipse data-open="organ:cabeza-mente" data-tip="Cabeza · mente" cx="150" cy="66" rx="44" ry="48" fill="var(--accent)" fill-opacity=".18" stroke="var(--accent)" stroke-opacity=".5"/>`;
+  /* ojos, oídos, nariz, boca */
+  g+=`<circle data-open="organ:ojos" data-tip="Ojos" cx="133" cy="62" r="5" fill="var(--accent)" fill-opacity=".45"/>
+      <circle data-open="organ:ojos" cx="167" cy="62" r="5" fill="var(--accent)" fill-opacity=".45"/>
+      <ellipse data-open="organ:oidos" data-tip="Oídos" cx="105" cy="70" rx="6" ry="10" fill="var(--accent)" fill-opacity=".45"/>
+      <ellipse data-open="organ:oidos" cx="195" cy="70" rx="6" ry="10" fill="var(--accent)" fill-opacity=".45"/>
+      <path data-open="organ:nariz" data-tip="Nariz · senos paranasales" d="M150,66 l-5,16 h10 z" fill="var(--accent)" fill-opacity=".45"/>
+      <path data-open="organ:boca-dientes" data-tip="Boca · dientes · garganta" d="M139,92 q11,8 22,0" fill="none" stroke="var(--accent)" stroke-opacity=".7" stroke-width="3"/>`;
+  /* cuello: garganta + tiroides */
+  g+=`<rect data-open="organ:garganta" data-tip="Garganta · laringe" x="136" y="112" width="28" height="26" rx="8" fill="var(--accent)" fill-opacity=".3"/>
+      <path data-open="organ:tiroides" data-tip="Tiroides" d="M143,124 q7,-6 7,2 q0,-8 7,-2 q-2,10 -7,10 q-5,0 -7,-10z" fill="var(--accent-2)" fill-opacity=".75"/>`;
+  /* pulmones */
+  g+=R("pulmones",127,196,20,30,"Pulmones")+R("pulmones",173,196,20,30,"Pulmones");
+  /* corazón */
+  g+=`<path data-open="organ:corazon" data-tip="Corazón" d="M166,196 c-8,-10 -24,-6 -24,6 c0,12 14,20 24,28 c10,-8 24,-16 24,-28 c0,-12 -16,-16 -24,-6z" fill="#c96f5e" fill-opacity=".55" stroke="#c96f5e" stroke-opacity=".7"/>`;
+  /* hígado + vesícula */
+  g+=`<path data-open="organ:higado" data-tip="Hígado" d="M148,238 q30,-10 52,4 q4,12 -8,18 q-24,8 -44,-4 q-6,-10 0,-18z" fill="var(--accent)" fill-opacity=".4"/>
+      <circle data-open="organ:vesicula" data-tip="Vesícula" cx="188" cy="264" r="6" fill="var(--accent-2)" fill-opacity=".8"/>`;
+  /* estómago + bazo + páncreas */
+  g+=`<path data-open="organ:estomago" data-tip="Estómago" d="M136,240 q-18,4 -16,22 q2,14 16,12 q12,-2 10,-16 q-2,-14 -10,-18z" fill="var(--accent)" fill-opacity=".4"/>
+      <ellipse data-open="organ:bazo" data-tip="Bazo · sistema inmune" cx="114" cy="256" rx="9" ry="13" fill="var(--accent-2)" fill-opacity=".6"/>
+      <path data-open="organ:pancreas" data-tip="Páncreas" d="M118,278 q30,-8 62,2 q4,6 -2,8 q-30,-8 -58,0 q-6,-4 -2,-10z" fill="var(--accent)" fill-opacity=".45"/>`;
+  /* riñones */
+  g+=`<ellipse data-open="organ:rinhones" data-tip="Riñones" cx="124" cy="296" rx="8" ry="13" fill="var(--accent)" fill-opacity=".5"/>
+      <ellipse data-open="organ:rinhones" cx="176" cy="296" rx="8" ry="13" fill="var(--accent)" fill-opacity=".5"/>`;
+  /* intestino delgado (rizada) */
+  g+=`<path data-open="organ:intestino-delgado" data-tip="Intestino delgado — absorción" d="M132,306 q36,-6 38,12 q2,14 -30,14 q-26,0 -24,14 q2,12 34,10 q30,-2 28,12 q-2,14 -34,12 q-24,-2 -22,10" fill="none" stroke="var(--accent)" stroke-opacity=".65" stroke-width="7" stroke-linecap="round"/>`;
+  /* colon (marco) */
+  g+=`<path data-open="organ:colon" data-tip="Colon — eliminación, territorio" d="M118,304 l0,52 q0,14 14,14 l36,0 q14,0 14,-14 l0,-52" fill="none" stroke="var(--accent-2)" stroke-opacity=".55" stroke-width="9" stroke-linecap="round"/>`;
+  /* vejiga + útero/próstata */
+  g+=`<circle data-open="organ:vejiga" data-tip="Vejiga" cx="150" cy="396" r="11" fill="var(--accent)" fill-opacity=".45"/>
+      <path data-open="organ:utero-prostata" data-tip="Útero / próstata" d="M138,416 q12,14 24,0 q-4,14 -12,14 q-8,0 -12,-14z" fill="var(--accent-2)" fill-opacity=".7"/>`;
+  /* columna */
+  g+=`<line data-open="organ:columna" data-tip="Columna — sostén, estructura" x1="150" y1="130" x2="150" y2="380" stroke="var(--capa-c)" stroke-opacity=".5" stroke-width="4" stroke-dasharray="2 7"/>`;
+  /* articulaciones = huesos */
+  [["huesos-articulaciones",86,146],["huesos-articulaciones",214,146],
+   ["huesos-articulaciones",82,232],["huesos-articulaciones",218,232],
+   ["huesos-articulaciones",100,468],["huesos-articulaciones",200,468]].forEach(([id,x,y])=>{
+    g+=`<circle data-open="organ:${id}" data-tip="Huesos y articulaciones" cx="${x}" cy="${y}" r="7" fill="none" stroke="var(--capa-c)" stroke-opacity=".7" stroke-width="2"/>`;
+  });
+  /* músculos (muslos/brazos) */
+  [["musculos",97,180,-14],["musculos",203,180,14],["musculos",112,430,-8],["musculos",188,430,8]].forEach(([id,x,y,r])=>{
+    g+=`<rect data-open="organ:${id}" data-tip="Músculos" x="${x-7}" y="${y}" width="14" height="52" rx="7" transform="rotate(${r} ${x} ${y})" fill="var(--danger)" fill-opacity=".3"/>`;
+  });
+  /* ganglios inmunes */
+  [[108,150],[192,150],[92,236],[208,236],[118,398],[182,398]].forEach(([x,y])=>{
+    g+=`<circle data-open="organ:sistema-inmune" data-tip="Sistema inmune — defensa" cx="${x}" cy="${y}" r="4.5" fill="var(--success)" fill-opacity=".8"/>`;
+  });
+  svg.innerHTML=g;
+}
+function renderMapa(){ buildBody();
+  $("#organ-index").innerHTML=DB.organs.map(o=>`<span class="pill" data-open="organ:${o.organ_id}">${esc(o.name)}</span>`).join("")||`<span class="small muted">Cargando corpus…</span>`;
+  $("#concept-index").innerHTML=DB.concepts.slice(0,18).map(c=>`<span class="pill" data-open="concept:${c.concept_id}">${esc(c.concept)}</span>`).join("");
+}
+
+/* =====================================================================
+   DICCIONARIO
+   ===================================================================== */
+let dictTipo="todos";
+function searchAll(qraw){
+  const q=norm(qraw.trim()); if(!q) return [];
+  const words=q.split(/\s+/).filter(Boolean);
+  const hits=[];
+  const match=(text)=>{const t=norm(text);return words.some(w=>t.includes(w)||lev(w,t.slice(0,w.length+2))<=1);};
+  DB.organs.forEach(o=>{ if(match([o.name,o.system,o.biological_function,(o.keywords||[]).join(" ")].join(" "))) hits.push({tipo:"organ",id:o.organ_id,label:o.name,sub:o.system}); });
+  DB.concepts.forEach(c=>{ if(match([c.concept,(c.synonyms||[]).join(" "),c.description,c.category].join(" "))) hits.push({tipo:"concept",id:c.concept_id,label:c.concept,sub:c.category}); });
+  allAssoc().forEach(a=>{ if(match(a.description+" "+assocTitle(a)+" "+(a.source_reference||""))) hits.push({tipo:"association",id:a.association_id,label:assocTitle(a),sub:a.evidence_level}); });
+  allCases().forEach(c=>{ if(match([c.symptom,c.context,c.life_event,c.therapist_notes].join(" "))) hits.push({tipo:"case",id:c.case_id,label:c.symptom||c.code,sub:"caso "+(c.code||"")}); });
+  DB.bibliografia.forEach(b=>{ if(match([b.author,b.title,b.notes].join(" "))) hits.push({tipo:"ref",id:b.reference_id,label:b.title,sub:b.author}); });
+  return hits;
+}
+function renderDict(qraw){
+  const wrap=$("#dict-results");
+  const tipos=["todos","organ","concept","association","case","ref"];
+  const tlbl={todos:"Todo",organ:"Órganos",concept:"Conceptos",association:"Asociaciones",case:"Casos",ref:"Bibliografía"};
+  $("#dict-filters").innerHTML=tipos.map(t=>`<button class="filtro-pill ${dictTipo===t?"on":""}" data-dict-type="${t}">${tlbl[t]}</button>`).join("");
+  const res=searchAll(qraw).filter(h=>dictTipo==="todos"||h.tipo===dictTipo);
+  const icon={organ:"🫀",concept:"◈",association:"⇄",case:"▤",ref:"▣"};
+  wrap.innerHTML=!qraw.trim()
+    ? `<div class="empty"><b>Escribí para buscar</b>Órganos, conceptos, sinónimos, descripciones, casos y bibliografía. Tolerante a errores (madras → madre).</div>`
+    : res.length===0
+    ? `<div class="empty"><b>Sin resultados para “${esc(qraw)}”</b>Probá con otro término o revisá sinónimos.</div>`
+    : `<div class="grid2">${res.slice(0,60).map(h=>`
+        <div class="card-ficha" style="cursor:pointer;padding:13px 15px" data-open="${h.tipo}:${h.id}">
+          <div class="row" style="justify-content:space-between"><b>${icon[h.tipo]} ${esc(h.label)}</b><span class="small muted">${tlbl[h.tipo]||h.tipo}</span></div>
+          <div class="small muted">${esc(h.sub||"")}</div>
+        </div>`).join("")}</div>`;
+}
+$("#dict-filters").addEventListener("click",e=>{
+  const b=e.target.closest("[data-dict-type]"); if(!b)return;
+  dictTipo=b.dataset.dictType; renderDict($("#q").value);
+});
+let qTimer;
+$("#q").addEventListener("input",e=>{
+  clearTimeout(qTimer);
+  qTimer=setTimeout(()=>{ show("diccionario"); renderDict(e.target.value); },220);
+});
+
+/* =====================================================================
+   RED CONCEPTUAL
+   ===================================================================== */
+function renderRed(){
+  const svg=$("#red-svg");
+  const deg=new Map();
+  allAssoc().forEach(a=>{
+    [[a.source_type,a.source_id],[a.target_type,a.target_id]].forEach(([t,i])=>{
+      const key=t+":"+i; deg.set(key,(deg.get(key)||0)+1);
+    });
+  });
+  const concepts=DB.concepts.filter(c=>deg.get("concept:"+c.concept_id));
+  const organs=DB.organs.filter(o=>deg.get("organ:"+o.organ_id));
+  if(!concepts.length||!organs.length){ svg.innerHTML="";
+    const card=svg.closest(".chart-card");
+    card.querySelector("#red-empty")?.remove();
+    card.insertAdjacentHTML("beforeend",`<div class="empty" id="red-empty"><b>Red vacía</b>Aparecerá cuando haya asociaciones registradas.</div>`); return; }
+  svg.closest(".chart-card").querySelector("#red-empty")?.remove();
+  const W=900,H=560,cx=W/2,cy=H/2,R1=200,R2=95;
+  const pos=new Map();
+  concepts.forEach((c,i)=>{const a=-Math.PI/2+i*2*Math.PI/concepts.length;pos.set("concept:"+c.concept_id,[cx+Math.cos(a)*R1,cy+Math.sin(a)*R1*0.92]);});
+  organs.forEach((o,i)=>{const a=-Math.PI/2+i*2*Math.PI/organs.length;pos.set("organ:"+o.organ_id,[cx+Math.cos(a)*R2,cy+Math.sin(a)*R2*0.92]);});
+  let edges="";
+  allAssoc().forEach(a=>{
+    const p1=pos.get(a.source_type+":"+a.source_id),p2=pos.get(a.target_type+":"+a.target_id);
+    if(p1&&p2){const c=capaOf(a.evidence_level);
+      edges+=`<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${capaColor[c]}" stroke-opacity=".3" stroke-width="${Math.min(1+deg.get((a.source_type+":"+a.source_id))/4,4)}"/>`;}
+  });
+  let nodes="";
+  pos.forEach(([x,y],key)=>{
+    const [t,id]=key.split(":");
+    const label=t==="concept"?conceptName(id):organName(id);
+    const isC=t==="concept";
+    nodes+=`<g data-open="${t}:${id}" style="cursor:pointer">
+      <circle cx="${x}" cy="${y}" r="${isC?7:5}" fill="${isC?"var(--accent)":"var(--accent-2)"}"/>
+      <text x="${x}" y="${y+(isC?-11:16)}" text-anchor="middle" font-size="${isC?11.5:10.5}" fill="${isC?"var(--ink)":"var(--ink-muted)"}">${esc(label)}</text></g>`;
+  });
+  svg.innerHTML=edges+nodes;
+}
+
+/* =====================================================================
+   GUÍA DE CONSULTA
+   ===================================================================== */
+const FASES_DEFAULT=[
+  {fase:1,nombre:"Descripción",preguntas:["¿Qué ocurre?","¿Cuándo comenzó?","¿Cómo lo describe?","¿Qué cambió desde entonces?"]},
+  {fase:2,nombre:"Contexto",preguntas:["¿Qué estaba ocurriendo en tu vida?","¿Hubo una pérdida, un cambio, una ruptura, un conflicto?"]},
+  {fase:3,nombre:"Experiencia subjetiva",preguntas:["¿Cómo viviste esa situación?","¿Qué fue lo más difícil?","¿Qué no pudiste expresar?"]},
+  {fase:4,nombre:"Línea temporal",preguntas:["Síntoma ← evento ← cambio de vida ← contexto anterior"]},
+  {fase:5,nombre:"Construcción de hipótesis",preguntas:["Asociaciones que emergen (sin imponer interpretaciones)","Hipótesis a explorar en próximos encuentros"]}
+];
+function faseData(){ return DB.guia_fases?.length?DB.guia_fases:FASES_DEFAULT; }
+function renderGuia(){
+  const fs=faseData(); const saved=store.get("bio_guia_v1",{});
+  $("#fases").innerHTML=fs.map(f=>`
+    <div class="fase" data-fase="${f.fase}">
+      <div class="fase-head" data-toggle-fase="${f.fase}">
+        <div class="fase-num">${f.fase}</div><b>${esc(f.nombre)}</b>
+      </div>
+      <div class="fase-body">
+        ${(f.preguntas||[]).map(p=>`<p class="fase-q">— ${esc(p)}</p>`).join("")}
+        <textarea data-nota="${f.fase}" placeholder="Notas…">${esc(saved[f.fase]?.nota||"")}</textarea>
+      </div>
+    </div>`).join("");
+}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-toggle-fase]");
+  if(t){ t.closest(".fase").classList.toggle("open"); }
+});
+document.addEventListener("input",e=>{
+  if(e.target.matches("[data-nota]")){
+    const saved=store.get("bio_guia_v1",{});
+    saved[e.target.dataset.nota]={nota:e.target.value};
+    store.set("bio_guia_v1",saved);
+  }
+});
+$("#btn-gen-resumen").addEventListener("click",()=>{
+  const fs=faseData(),saved=store.get("bio_guia_v1",{});
+  let out=`RESUMEN DE CONSULTA — ${new Date().toLocaleDateString("es-AR")}\n${"=".repeat(44)}\n`;
+  fs.forEach(f=>{ const nota=saved[f.fase]?.nota;
+    out+=`\nFASE ${f.fase} · ${f.nombre.toUpperCase()}\n${nota?nota:"(sin notas)"}\n`; });
+  out+=`\n${"=".repeat(44)}\nMarco: psicosomática clínica y humanista. Las asociaciones son hipótesis interpretativas, no diagnósticos.`;
+  $("#resumen").textContent=out;
+  $("#resumen-wrap").style.display="block";
+  $("#print-area").innerHTML=`<pre style="font-family:var(--mono);font-size:12px;white-space:pre-wrap">${esc(out)}</pre>`;
+});
+$("#btn-guardar-caso").addEventListener("click",()=>{
+  const saved=store.get("bio_guia_v1",{});
+  if(!Object.values(saved).some(v=>v.nota?.trim())) return toast("La guía está vacía");
+  const c={
+    case_id:uid("C"),code:"Caso "+String(allCases().length+1).padStart(3,"0"),
+    date:new Date().toISOString().slice(0,10),
+    symptom:(saved[1]?.nota||"").split("\n")[0].slice(0,80),
+    context:saved[2]?.nota||"",patient_interpretation:saved[3]?.nota||"",
+    life_event:saved[4]?.nota||"",therapist_notes:saved[5]?.nota||"",
+    _user:true
+  };
+  userCases.unshift(c);store.set("bio_cases_v1",userCases);
+  toast(c.code+" guardado");show("casos");
+});
+$("#btn-print").addEventListener("click",()=>window.print());
+$("#btn-limpiar-guia").addEventListener("click",()=>{
+  store.set("bio_guia_v1",{});renderGuia();$("#resumen-wrap").style.display="none";toast("Guía limpiada");
+});
+
+/* =====================================================================
+    CONSULTANTES — ficha con embudo en tiempo real
+    ===================================================================== */
+let sesionesDraft = []; // [{id, fecha, notas, qa: [{q,a}]}]
+function allConsultantes(){ return consultantes; }
+function ensureSesiones(c){
+  if(!Array.isArray(c.sesiones) || !c.sesiones.length){
+    c.sesiones = [{id: uid("S"), fecha: c.fecha || new Date().toISOString().slice(0,10), notas: c.contexto||"", qa: []}];
+  }
+  return c.sesiones;
+}
+const REPREGUNTAS_TREE = {
+  "leal": ["¿Qué le pasó a esa persona?", "¿Cómo fue su muerte / pérdida?", "¿Qué no pudo hacer o ser?", "¿Qué programa estás reparando por fidelidad u oposición?"],
+  "miedo": ["¿Cuál es tu miedo hoy? ¿Cuál era cuando surgió el síntoma? (p.18)", "¿Qué relación hay entre esa emoción y su función biológica? (p.18)"],
+  "ciclo": ["¿Qué edad tenían tu mamá y tu papá cuando naciste? (ver ciclo ±7/10 días)", "¿Hay fechas que se repiten ±7/10 días? (doble, yacente, heredero)"],
+  "abandono": ["¿Recordás situaciones similares en el pasado? (p.18)", "¿Qué le pasó a tu madre/padre cuando tenían tu edad?"],
+  "rechazo": ["¿Quién te rechazó? ¿Qué no tolerás? (Intolerancia)", "¿Qué estornudo/tos rechaza? (Pulmones)"],
+  "pareja": ["¿Qué esperás de una pareja? ¿Sos importante para vos? (Clavo p.22)", "¿Con quién vivís y quién cumple qué rol?"],
+  "desde": ["¿Qué cambió 30–60 días ANTES del inicio? (nunca hacia adelante)", "¿Qué pensaste/sentiste en ese momento? (A→B conflicto)"],
+  "error": ["¿Qué te decís cuando cometés un error? ¿Hay memoria genética? (p.18)"],
+};
+function repreguntasPara(texto){
+  const n = norm(texto||"");
+  let out=[];
+  Object.entries(REPREGUNTAS_TREE).forEach(([k, qs])=>{
+    if(n.includes(k) || k==="error" && n.includes("culpa") || k==="desde" && (n.includes("desde")||n.includes("cuando"))) {
+      qs.forEach(q=>{ if(!out.includes(q)) out.push(q); });
+    }
+  });
+  return out.slice(0,6);
+}
+function cfOptions(){
+  const opts = DB.organs.map(o=>`<option value="${esc(o.organ_id)}">${esc(o.name)}</option>`).join("");
+  const wrap = document.getElementById("cf-organo");
+  if(wrap && wrap.options.length===1) wrap.insertAdjacentHTML("beforeend", opts);
+}
+function scoreConsultante(c, q){
+  if(!q.trim()) return true;
+  const nq = norm(q);
+  return norm([c.alias,c.sintoma,organName(c.organo),c.desde,c.contexto].join(" ")).includes(nq);
+}
+let editingCid = null;
+function renderConsultantes(){
+  cfOptions();
+  const q = $("#consultantes-q")?.value || "";
+  const list = allConsultantes().filter(c=>scoreConsultante(c,q));
+  const wrap = $("#consultantes-list");
+  if(!wrap) return;
+  if(!list.length){
+    wrap.innerHTML = `<div class="empty"><b>${q.trim()?"Sin resultados":"Todavía no hay consultantes"}</b>${q.trim()?"Probá otro término.":"Creá el primero con “+ Nuevo consultante”. Cada ficha es anónima: alias, síntoma, edad y órgano."}</div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(c=>`
+    <div class="consultante-card" data-open-consultante="${esc(c.id)}">
+      <div class="row" style="justify-content:space-between">
+        <b>${esc(c.alias||"Sin alias")} · ${esc(organName(c.organo)||"sin zona")}</b>
+        <span class="small muted">${esc(c.fecha||"")}</span>
+      </div>
+      <div class="consultante-meta">${esc((c.sintoma||"—").slice(0,90))} · ${c.edad?esc(String(c.edad))+" años":"—"}${c.desde?" · desde "+esc(c.desde):""}</div>
+    </div>`).join("");
+}
+function resetCF(){
+  editingCid=null;
+  sesionesDraft=[];
+  ["cf-alias","cf-edad","cf-sintoma","cf-desde","cf-identidad","cf-contexto"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  const sel=document.getElementById("cf-organo"); if(sel) sel.value="";
+  document.getElementById("cf-sugerencias").style.display="none";
+  document.getElementById("cf-sugerencias").innerHTML="";
+  document.getElementById("cf-repreguntas").style.display="none";
+  document.getElementById("cf-repreguntas").innerHTML="";
+  document.getElementById("cf-asocs").innerHTML="";
+  renderSesionesDraft();
+}
+function renderSesionesDraft(){
+  const wrap=document.getElementById("cf-sesiones-list");
+  if(!wrap) return;
+  if(!sesionesDraft.length){
+    wrap.innerHTML='<p class="small muted">Sin sesiones aún — agregá la primera (hoy o la fecha real si la trabajás después).</p>';
+    return;
+  }
+  wrap.innerHTML=sesionesDraft.map((s,i)=>`
+    <div class="sesion" data-sid="${s.id}">
+      <div class="sesion-head">
+        <b>Sesión ${i+1}</b>
+        <div class="row">
+          <input type="date" value="${esc(s.fecha)}" data-sid="${s.id}" data-field="fecha" style="width:auto;padding:4px 8px;font-size:12px">
+          <button class="btn btn-sm btn-ghost" data-del-sesion="${s.id}">Eliminar</button>
+        </div>
+      </div>
+      <textarea data-sid="${s.id}" data-field="notas" rows="2" placeholder="Notas de la sesión (qué se preguntó, qué surgió, decisiones…)">${esc(s.notas||"")}</textarea>
+      ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"— sin respuesta —")}</div></div>`).join("")}</div>`:""}
+    </div>`).join("");
+}
+function openCF(pref={}){
+  resetCF();
+  editingCid=null;
+  if(pref.id){
+    editingCid=pref.id;
+    $("#cf-alias").value=pref.alias||"";
+    $("#cf-edad").value=pref.edad||"";
+    $("#cf-sintoma").value=pref.sintoma||"";
+    $("#cf-organo").value=pref.organo||"";
+    $("#cf-desde").value=pref.desde||"";
+    $("#cf-identidad").value=pref.identidad||"";
+    $("#cf-contexto").value=pref.contexto||"";
+    sesionesDraft = JSON.parse(JSON.stringify(ensureSesiones(pref)));
+    $("#cf-title").textContent="Editar consultante";
+  } else {
+    $("#cf-alias").value=pref.alias||"C-"+String(consultantes.length+1).padStart(3,"0");
+    if(pref.sintoma) $("#cf-sintoma").value=pref.sintoma;
+    if(pref.organo) $("#cf-organo").value=pref.organo;
+    sesionesDraft=[{id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]}];
+    $("#cf-title").textContent="Nuevo consultante";
+  }
+  renderSesionesDraft();
+  $("#consultante-form-wrap").style.display="block";
+  $("#consultante-detalle").style.display="none";
+  $("#cf-alias").focus();
+  triggerFunnel();
+}
+function closeCF(){
+  $("#consultante-form-wrap").style.display="none";
+  resetCF();
+}
+function triggerFunnel(){
+  const sint = ($("#cf-sintoma")?.value||"").trim();
+  const org = $("#cf-organo")?.value||"";
+  const edad = ($("#cf-edad")?.value||"").trim();
+  const desde = ($("#cf-desde")?.value||"").trim();
+  const ctx = ($("#cf-contexto")?.value||"").trim();
+  const hasAny = sint || org || edad || desde || ctx;
+  const sugWrap = $("#cf-sugerencias");
+  const ascWrap = $("#cf-asocs");
+  if(!hasAny){
+    sugWrap.style.display="none";
+    ascWrap.innerHTML="";
+    return;
+  }
+  // 1) asociaciones relacionadas por órgano
+  let relAsocs=[];
+  if(org) relAsocs = allAssoc().filter(a=>a.target_id===org || a.source_id===org).slice(0,4);
+  else if(sint){
+    const ns = norm(sint);
+    relAsocs = allAssoc().filter(a=> norm(a.description+" "+assocTitle(a)).includes(ns) || norm(a.target_id+" "+a.source_id).includes(ns) ).slice(0,6);
+    // fallback: búsqueda por palabra clave del síntoma en conceptos
+    if(!relAsocs.length){
+      const kws = ns.split(/\s+/).filter(w=>w.length>2);
+      relAsocs = allAssoc().filter(a=> kws.some(k=> norm(a.description).includes(k)) ).slice(0,4);
+    }
+  }
+  // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
+  let sugPregs=[];
+  const addSug=(txt,tag)=>{
+    if(!sugPregs.includes(txt)) sugPregs.push({txt,tag});
+  };
+  // reglas del embudo
+  (DB.sugerencias_embudo||[]).forEach(rule=>{
+    const trig = rule.trigger||{};
+    let hit=false;
+    if(trig.organo && trig.organo===org) hit=true;
+    if(trig.concepto && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
+    if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
+  });
+  // además: si hay edad+desde, sugerir ciclos
+  if(edad && desde){
+    addSug("¿Qué edad tenían tu mamá y tu papá cuando naciste? → buscar correspondencia con tu edad actual ("+esc(edad)+" años) y el ciclo (±7/10 días).", "ciclo");
+  }
+  // repreguntas en base a lo respondido
+  const ctxAll = [sint, org, edad, desde, ctx, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
+  const reps = repreguntasPara(ctxAll);
+  const repWrap = document.getElementById("cf-repreguntas");
+  if(reps.length){
+    repWrap.style.display="block";
+    repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${reps.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
+    // resaltar repreguntas donde el disparador ya resonó: priorizar rama con ★
+    const resonadas = sesionesDraft.flatMap(s=>(s.qa||[]).filter(x=>x.resono).map(x=>norm(x.q)));
+    if(resonadas.length){
+      repWrap.querySelectorAll('.repregunta').forEach(el=>{
+        if(resonadas.some(r=> norm(el.textContent).includes(r.slice(0,12)))) el.style.borderLeftColor='var(--accent)';
+      });
+    }
+  } else {
+    repWrap.style.display="none";
+    repWrap.innerHTML="";
+  }
+  // siempre sugerir preguntas de la última página (p.18) como pool
+  const poolCierre = [
+    "¿Qué te decís cuando cometés un error? (p.18 Continuación)",
+    "¿Hay memoria genética / similar en tu familia? (p.18)",
+    "¿Recordás emociones o situaciones que acompañaron el inicio? (p.18)",
+    "¿Le estás siendo leal a alguien de tu familia? (p.18)",
+    "¿Te está pasando ahora o es memoria? (p.18)",
+    "¿Qué relación hay entre esa emoción y su función biológica? (p.18)",
+  ];
+  // si ya hay pocas sugerencias, completar del pool
+  if(sugPregs.length<3){
+    poolCierre.slice(0, 3 - sugPregs.length).forEach(q=>addSug(q,"cierre"));
+  }
+  // render
+  if(sugPregs.length){
+    sugWrap.style.display="block";
+    sugWrap.innerHTML = `
+      <div class="cf-sugerencias">
+        <h3>Embudo — preguntas sugeridas (tiempo real)</h3>
+        <div class="sug-tag">${esc(String(sugPregs.length))} sugerencias según lo que escribiste — tocá para copiar al contexto</div>
+        ${sugPregs.map(s=>`<div class="sug-q" data-add-sug="${esc(s.txt)}"><span class="sug-tag">${esc(s.tag)}</span> — ${esc(s.txt)}</div>`).join("")}
+      </div>`;
+  } else {
+    sugWrap.style.display="none";
+  }
+  // asociaciones relacionadas
+  if(relAsocs.length){
+    ascWrap.innerHTML = `<h2 class="sect" style="margin-top:0">Asociaciones relacionadas</h2>
+      ${relAsocs.map(a=>`
+        <div class="assoc-item" data-open="association:${a.association_id}" style="border-left-color:${capaColor[capaOf(a.evidence_level)]}">
+          <div class="row" style="gap:8px">${evChip(a.evidence_level)}<span class="small muted">${esc(assocTitle(a))}</span></div>
+          <div class="desc">${esc(a.description.slice(0,180))}${a.description.length>180?"…":""}</div>
+        </div>`).join("")}`;
+  } else {
+    ascWrap.innerHTML = org||sint?`<p class="small muted">Sin asociaciones directas para este filtro — probá otro órgano o agregá palabras al síntoma.</p>`:"";
+  }
+}
+
+/* =====================================================================
+    CASOS
+    ===================================================================== */
+function renderCasos(){
+  const cs=allCases();
+  $("#casos-content").innerHTML=cs.length===0
+    ? `<div class="empty"><b>Todavía no hay casos</b>Registrá uno con “+ Nuevo caso” o desde la guía de consulta.<br>Anónimo siempre: código, fecha, síntoma, contexto.</div>`
+    : `<div class="card-ficha" style="padding:0;overflow-x:auto"><table class="tabla">
+        <thead><tr><th data-sort="code">Código</th><th data-sort="date">Fecha</th><th data-sort="symptom">Síntoma</th><th data-sort="context">Contexto</th><th data-sort="organ">Zona</th></tr></thead>
+        <tbody>${cs.map(c=>`<tr data-open="case:${c.case_id}">
+          <td><b>${esc(c.code||c.case_id.slice(0,6))}</b></td><td class="muted">${esc(c.date||"—")}</td>
+          <td>${esc((c.symptom||"—").slice(0,60))}</td><td class="muted">${esc((c.context||"—").slice(0,60))}</td>
+          <td>${c.organ_id?`<span class="pill">${esc(organName(c.organ_id))}</span>`:"—"}</td></tr>`).join("")}</tbody>
+      </table></div>
+      <p class="small muted" style="margin-top:10px">Click en una fila para ver la ficha completa.</p>`;
+}
+$("#casos-content").addEventListener("click",e=>{
+  const th=e.target.closest("th[data-sort]");if(!th)return;
+  const k=th.dataset.sort;
+  userCases.sort((a,b)=>String(a[k]||"").localeCompare(String(b[k]||"")));store.set("bio_cases_v1",userCases);renderCasos();
+});
+$("#btn-nuevo-caso").addEventListener("click",()=>openCaseModal());
+
+/* =====================================================================
+   MODALES (caso + asociación)
+   ===================================================================== */
+function openModal(html){
+  $("#modal").innerHTML=html;$("#modal-back").classList.add("open");
+  $("#modal-back").onclick=e=>{if(e.target.id==="modal-back")closeModal();};
+}
+function closeModal(){ $("#modal-back").classList.remove("open"); }
+function selOptions(list,val){ return list.map(x=>`<option value="${esc(x.id)}" ${x.id===val?"selected":""}>${esc(x.label)}</option>`).join(""); }
+
+function openCaseModal(pref={}){
+  openModal(`<h2>Nuevo caso (anónimo)</h2>
+    <div class="form-row"><label>Síntoma / motivo</label><input id="mc-symptom" value="${esc(pref.symptom||"")}" placeholder="Ej: eczema en manos"></div>
+    <div class="form-row"><label>Zona / órgano</label><select id="mc-organ"><option value="">—</option>${selOptions(DB.organs.map(o=>({id:o.organ_id,label:o.name})),"")}</select></div>
+    <div class="form-row"><label>Fecha</label><input id="mc-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    <div class="form-row"><label>Contexto vital</label><textarea id="mc-context"></textarea></div>
+    <div class="form-row"><label>Evento vital previo</label><textarea id="mc-event"></textarea></div>
+    <div class="form-row"><label>Interpretación del consultante</label><textarea id="mc-patient"></textarea></div>
+    <div class="form-row"><label>Notas profesionales / hipótesis</label><textarea id="mc-notes"></textarea></div>
+    <p class="small muted">Nunca guardar nombre, DNI, teléfono ni dirección.</p>
+    <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-primary" id="mc-save">Guardar caso</button></div>`);
+  $("#mc-save").onclick=()=>{
+    const symptom=$("#mc-symptom").value.trim();if(!symptom)return toast("Falta el síntoma");
+    const c={case_id:uid("C"),code:"Caso "+String(allCases().length+1).padStart(3,"0"),
+      date:$("#mc-date").value,symptom,organ_id:$("#mc-organ").value||null,
+      context:$("#mc-context").value,life_event:$("#mc-event").value,
+      patient_interpretation:$("#mc-patient").value,therapist_notes:$("#mc-notes").value,_user:true};
+    userCases.unshift(c);store.set("bio_cases_v1",userCases);closeModal();toast(c.code+" guardado");renderCasos();
+  };
+}
+function openAssocModal(pref={}){
+  const conceptOpts=DB.concepts.map(c=>({id:c.concept_id,label:c.concept}));
+  const organOpts=DB.organs.map(o=>({id:o.organ_id,label:o.name}));
+  const nivelOpts=DB.niveles_evidencia.map(n=>({id:String(n.nivel),label:`N${n.nivel} · ${n.nombre}`}));
+  openModal(`<h2>Nueva asociación</h2>
+    <div class="form-row"><label>Tipo origen</label><select id="ma-st"><option value="concept">Concepto</option><option value="organ">Órgano</option></select></div>
+    <div class="form-row"><label>Origen</label><select id="ma-sid">${selOptions(conceptOpts,pref.source_id)}</select></div>
+    <div class="form-row"><label>Destino (órgano)</label><select id="ma-tid">${selOptions(organOpts,pref.target_id)}</select></div>
+    <div class="form-row"><label>Descripción de la relación</label><textarea id="ma-desc" placeholder="¿Qué vínculo clínico observás o registrás?"></textarea></div>
+    <div class="grid2">
+      <div class="form-row"><label>Nivel de evidencia</label><select id="ma-nivel">${selOptions(nivelOpts,"5")}</select></div>
+      <div class="form-row"><label>Referencia</label><input id="ma-ref" placeholder="Libro, página, clase, caso…"></div>
+    </div>
+    <div class="form-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+    <button class="btn btn-primary" id="ma-save">Guardar</button></div>`);
+  const syncS=()=>{ const st=$("#ma-st").value;
+    $("#ma-sid").innerHTML=selOptions(st==="concept"?conceptOpts:organOpts,st==="concept"?pref.source_id:pref.source_id); };
+  $("#ma-st").onchange=syncS;syncS();
+  $("#ma-save").onclick=()=>{
+    const desc=$("#ma-desc").value.trim();if(!desc)return toast("Falta la descripción");
+    const nivel=parseInt($("#ma-nivel").value,10);
+    const capa=DB.niveles_evidencia.find(n=>n.nivel===nivel)?.capa||"C";
+    const st=$("#ma-st").value;
+    const a={association_id:uid("U"),source_type:st,source_id:$("#ma-sid").value,
+      target_type:"organ",target_id:$("#ma-tid").value,relationship_type:"asociacion_clinica",
+      description:desc,evidence_level:capa==="A"?"teoria_sellam":capa==="B"?"observacion_clinica":"hipotesis",
+      source_reference:$("#ma-ref").value.trim()||(capa==="A"?"FALTA REFERENCIA":""),
+      created_at:new Date().toISOString(),_user:true};
+    userAssoc.unshift(a);store.set("bio_assoc_v1",userAssoc);closeModal();toast("Asociación guardada (capa "+capa+")");renderAsocs();
+  };
+}
+$("#btn-nueva-assoc").addEventListener("click",()=>openAssocModal());
+
+/* =====================================================================
+   ASOCIACIONES
+   ===================================================================== */
+let filtroEv=null,filtroTextoAsoc="";
+function renderAsocs(){
+  const caps=["A","B","C","NV"];
+  $("#assoc-filters").innerHTML=caps.map(c=>`<button class="filtro-pill ${filtroEv===c?"on":""}" data-filter="ev:${c}">${capaLabel(c)}</button>`).join("")
+    +`<input id="fq-assoc" placeholder="Filtrar texto…" value="${esc(filtroTextoAsoc)}" style="width:180px;margin-left:8px">`;
+  const rows=allAssoc().filter(a=>!filtroEv||capaOf(a.evidence_level)===filtroEv)
+    .filter(a=>!filtroTextoAsoc||norm(assocTitle(a)+" "+a.description+" "+(a.source_reference||"")).includes(norm(filtroTextoAsoc)));
+  $("#assoc-table").innerHTML=rows.length===0
+    ? `<div class="empty"><b>Sin asociaciones que coincidan</b>${allAssoc().length===0?"El corpus inicial todavía se está cargando — probá recargar, o creá la primera con “+ Nueva asociación”.":"Probá quitar filtros."}</div>`
+    : `<div class="card-ficha" style="padding:0;overflow-x:auto"><table class="tabla">
+        <thead><tr><th>Relación</th><th>Descripción</th><th>Evidencia</th><th>Fuente</th></tr></thead>
+        <tbody>${rows.map(a=>{const c=capaOf(a.evidence_level);
+          return `<tr data-open="association:${a.association_id}" style="border-left:3px solid ${capaColor[c]}">
+            <td style="white-space:nowrap"><b>${esc(assocTitle(a))}</b></td>
+            <td>${esc((a.description||"").slice(0,90))}${a.description?.length>90?"…":""}</td>
+            <td>${evChip(a.evidence_level)}</td>
+            <td class="muted small">${esc((a.source_reference||"—").slice(0,40))}</td></tr>`;}).join("")}</tbody></table></div>
+        <p class="small muted" style="margin-top:8px">${rows.length} de ${allAssoc().length} asociaciones</p>`;
+  /* charts */
+  const byCapa=caps.map(c=>({c,n:allAssoc().filter(a=>capaOf(a.evidence_level)===c).length}));
+  $("#chart-ev").innerHTML=`<div class="donut-wrap">${donut(byCapa)}<div class="donut-legend">${byCapa.map(x=>
+    `<span data-filter="ev:${x.c}" style="cursor:pointer"><span class="sw" style="background:${capaColor[x.c]}"></span>${capaLabel(x.c)} — <b>${x.n}</b></span>`).join("")}</div></div>`;
+  const organDeg=DB.organs.map(o=>({o,n:allAssoc().filter(a=>a.target_id===o.organ_id||a.source_id===o.organ_id).length}))
+    .sort((a,b)=>b.n-a.n).slice(0,8);
+  $("#chart-organs").innerHTML=hbars(organDeg.map(x=>({label:x.o.name,n:x.n,color:"var(--accent)",open:"organ:"+x.o.organ_id})));
+}
+$("#assoc-filters").addEventListener("input",e=>{
+  if(e.target.id==="fq-assoc"){filtroTextoAsoc=e.target.value;clearTimeout(e.target._t);e.target._t=setTimeout(renderAsocs,200);}
+});
+
+/* ---- helpers de gráficos (SVG propio, clickeables) ---- */
+function donut(data){
+  const total=data.reduce((s,x)=>s+x.n,0)||1;const R=52,r=34,cx=60,cy=60;
+  let a0=-Math.PI/2,paths="";
+  data.forEach(x=>{ if(!x.n)return; const a1=a0+x.n/total*2*Math.PI;
+    const large=(a1-a0)>Math.PI?1:0;
+    const p=(a)=>`${cx+Math.cos(a)*R},${cy+Math.sin(a)*R}`;
+    const q=(a)=>`${cx+Math.cos(a)*r},${cy+Math.sin(a)*r}`;
+    paths+=`<path data-filter="ev:${x.c}" data-tip="${capaLabel(x.c)}: ${x.n}" style="cursor:pointer"
+      d="M${p(a0)} A${R},${R} 0 ${large} 1 ${p(a1)} L${q(a1)} A${r},${r} 0 ${large} 0 ${q(a0)} Z"
+      fill="${capaColor[x.c]}" fill-opacity=".85"/>`; a0=a1; });
+  return `<svg viewBox="0 0 120 120" width="120" height="120">${paths}
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="17" font-weight="700" fill="var(--ink)">${total}</text></svg>`;
+}
+function hbars(items){
+  const max=Math.max(...items.map(i=>i.n),1);
+  return items.map(i=>`<div class="hbar-row">
+    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(i.label)}">${esc(i.label)}</span>
+    <div class="hbar-track" ${i.open?`data-open="${i.open}"`:''}><div class="hbar-fill" style="width:${Math.round(i.n/max*100)}%;background:${i.color}"></div></div>
+    <b style="font-variant-numeric:tabular-nums">${i.n}</b></div>`).join("");
+}
+
+/* =====================================================================
+   BIBLIOGRAFÍA
+   ===================================================================== */
+let biblioFiltro="todas";
+function renderBiblio(){
+  const opts=["todas","modelo_sellam","otras","cientifica","no_verificadas"];
+  const lbl={todas:"Todas",modelo_sellam:"Modelo Sellam",otras:"Otras fuentes",cientifica:"Investigación",no_verificadas:"NO verificadas"};
+  $("#biblio-filters").innerHTML=opts.map(o=>`<button class="filtro-pill ${biblioFiltro===o?"on":""}" data-filter="biblio:${o}">${lbl[o]}</button>`).join("");
+  let refs=DB.bibliografia.filter(r=>{
+    if(biblioFiltro==="todas")return true;
+    if(biblioFiltro==="no_verificadas")return r.verified===false;
+    return r.group===biblioFiltro&&r.verified!==false;
+  });
+  $("#biblio-list").innerHTML=refs.length===0
+    ? `<div class="empty"><b>Sin referencias cargadas</b>Se llenará con la investigación bibliográfica y con lo que vayas aportando.</div>`
+    : `<div class="grid2">${refs.map(r=>`
+      <div class="card-ficha" style="cursor:pointer" data-open="ref:${r.reference_id}">
+        <div class="row" style="justify-content:space-between">
+          <b style="font-size:13.5px">${esc(r.title)}</b>
+          ${r.verified===false?`<span class="chip-evidencia ev-NV">NO VERIFICADO</span>`:`<span class="chip-evidencia ev-A">${esc(lbl[r.group]||"fuente")}</span>`}
+        </div>
+        <div class="small muted">${esc([r.author,r.year,r.publisher].filter(Boolean).join(" · "))}</div>
+        ${r.notes?`<p class="small" style="margin-top:6px">${esc(r.notes.slice(0,120))}</p>`:""}
+      </div>`).join("")}</div>`;
+}
+
+/* =====================================================================
+   PANEL GENERAL
+   ===================================================================== */
+function renderPanel(){
+  const assocs=allAssoc(),cases=allCases();
+  const verificados=assocs.filter(a=>capaOf(a.evidence_level)!=="NV").length;
+  const pct=assocs.length?Math.round(verificados/assocs.length*100):0;
+  const kpis=[
+    {num:assocs.length,lbl:"asociaciones",go:"asociaciones"},
+    {num:DB.organs.length,lbl:"órganos / sistemas",go:"mapa"},
+    {num:DB.concepts.length,lbl:"conceptos",go:"red"},
+    {num:pct+"%",lbl:"con fuente atribuida",go:"asociaciones"},
+    {num:cases.length,lbl:"casos registrados",go:"casos"},
+    {num:DB.bibliografia.filter(b=>b.verified!==false).length,lbl:"refs. bibliográficas",go:"bibliografia"},
+  ];
+  $("#kpis").innerHTML=kpis.map(k=>`<div class="kpi" data-go="${k.go}"><div class="num">${k.num}</div><div class="lbl">${k.lbl}</div></div>`).join("");
+  const conceptDeg=DB.concepts.map(c=>({c,n:assocs.filter(a=>(a.source_type==="concept"&&a.source_id===c.concept_id)||(a.target_type==="concept"&&a.target_id===c.concept_id)).length}))
+    .sort((a,b)=>b.n-a.n).slice(0,8).filter(x=>x.n>0);
+  $("#chart-concepts").innerHTML=conceptDeg.length?hbars(conceptDeg.map(x=>({label:x.c.concept,n:x.n,color:"var(--accent-2)",open:"concept:"+x.c.concept_id}))):`<p class="small muted">Sin datos aún.</p>`;
+  const systems={};DB.organs.forEach(o=>systems[o.system||"—"]=systems[o.system||"—"]||[]);
+  Object.values(systems).forEach(arr=>arr);
+  const sysRows=Object.entries(systems).map(([s,arr])=>({label:s,n:arr.length,color:"var(--capa-a)",open:null}));
+  $("#chart-systems").innerHTML=sysRows.length?hbars(sysRows.sort((a,b)=>b.n-a.n).slice(0,8)):`<p class="small muted">Sin datos aún.</p>`;
+}
+document.addEventListener("click",e=>{
+  const k=e.target.closest("[data-go]");if(k)show(k.dataset.go);
+});
+
+/* =====================================================================
+   FILTROS GLOBALES
+   ===================================================================== */
+function handleFilter(ft){
+  const [k,v]=ft.dataset.filter.split(":");
+  if(k==="ev"){ filtroEv=filtroEv===v?null:v; show("asociaciones"); renderAsocs(); }
+  if(k==="biblio"){ biblioFiltro=v; renderBiblio(); }
+}
+
+/* =====================================================================
+   EXPORT / IMPORT
+   ===================================================================== */
+$("#btn-export").addEventListener("click",()=>{
+  const payload={...DB,associations:userAssoc,cases:userCases,
+    meta:{...DB.meta,exportado:new Date().toISOString()}};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="biodescodificacion-export.json";a.click();URL.revokeObjectURL(a.href);
+  toast("Exportado");
+});
+$("#import-file").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result);
+      if(Array.isArray(j.associations)){userAssoc=j.associations.filter(a=>a._user);store.set("bio_assoc_v1",userAssoc);}
+      if(Array.isArray(j.cases)){userCases=j.cases;store.set("bio_cases_v1",userCases);}
+      toast("Importado — recargá para ver el corpus base");
+      renderPanel();
+    }catch(err){toast("JSON inválido");}
+  };rd.readAsText(f);
+});
+
+/* =====================================================================
+    CONSULTANTES — eventos del módulo
+    ===================================================================== */
+(function(){
+  const q = document.getElementById("consultantes-q");
+  if(q) q.addEventListener("input", renderConsultantes);
+  const nbtn = document.getElementById("btn-nuevo-consultante");
+  if(nbtn) nbtn.addEventListener("click", ()=> openCF({}));
+  ["cf-sintoma","cf-organo","cf-edad","cf-desde","cf-contexto"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener(el.tagName==="SELECT"?"change":"input", triggerFunnel);
+  });
+  document.getElementById("cf-add-sesion")?.addEventListener("click", ()=>{
+    sesionesDraft.push({id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
+    renderSesionesDraft(); toast("Sesión agregada");
+  });
+  document.getElementById("cf-sesiones-list")?.addEventListener("input", e=>{
+    const sid=e.target.dataset.sid, field=e.target.dataset.field;
+    if(!sid||!field) return;
+    const s=sesionesDraft.find(x=>x.id===sid); if(!s) return;
+    s[field]=e.target.value;
+  });
+  document.getElementById("cf-sesiones-list")?.addEventListener("change", e=>{
+    const sid=e.target.dataset.sid, field=e.target.dataset.field;
+    if(!sid||!field) return;
+    const s=sesionesDraft.find(x=>x.id===sid); if(!s) return;
+    s[field]=e.target.value;
+  });
+  document.getElementById("cf-sesiones-list")?.addEventListener("click", e=>{
+    const star=e.target.closest("[data-resono]");
+    if(star){
+      const [sid, idx]=star.dataset.resono.split(":");
+      const s=sesionesDraft.find(x=>x.id===sid); if(!s||!s.qa[idx]) return;
+      s.qa[idx].resono=!s.qa[idx].resono;
+      renderSesionesDraft(); triggerFunnel(); toast(s.qa[idx].resono?"★ Le resonó":"☆");
+      return;
+    }
+    const btn=e.target.closest("[data-del-sesion]");
+    if(!btn) return;
+    sesionesDraft = sesionesDraft.filter(s=>s.id!==btn.dataset.delSesion);
+    renderSesionesDraft();
+  });
+  document.getElementById("cf-cancelar")?.addEventListener("click", closeCF);
+  document.getElementById("cf-guardar")?.addEventListener("click", ()=>{
+    const alias = document.getElementById("cf-alias").value.trim();
+    const sintoma = document.getElementById("cf-sintoma").value.trim();
+    if(!sintoma) return toast("Falta el síntoma / motivo");
+    const rec = {
+      id: editingCid || uid("CO"),
+      alias: alias || ("C-"+String(consultantes.length+1).padStart(3,"0")),
+      edad: document.getElementById("cf-edad").value.trim(),
+      sintoma,
+      organo: document.getElementById("cf-organo").value||"",
+      desde: document.getElementById("cf-desde").value.trim(),
+      identidad: document.getElementById("cf-identidad").value.trim(),
+      contexto: document.getElementById("cf-contexto").value.trim(),
+      sesiones: JSON.parse(JSON.stringify(sesionesDraft)),
+      fecha: sesionesDraft[0]?.fecha || new Date().toISOString().slice(0,10),
+    };
+    if(editingCid){
+      const idx = consultantes.findIndex(c=>c.id===editingCid);
+      if(idx>=0) consultantes[idx]=Object.assign(consultantes[idx], rec);
+    } else {
+      consultantes.unshift(rec);
+    }
+    store.set("bio_consultantes_v1", consultantes);
+    toast((editingCid?"Actualizado ":"Guardado ")+rec.alias);
+    closeCF(); renderConsultantes();
+    // mostrar detalle del guardado
+    const el = document.getElementById("consultante-detalle");
+    el.style.display="block";
+    el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)"><b>${esc(rec.alias)}</b> — ${esc(rec.sintoma)}
+      <p class="small muted" style="margin-top:8px">${esc(rec.contexto||"—")}</p>
+      <p class="small muted">Órgano: ${esc(organName(rec.organo)||"—")} · ${esc(rec.edad?rec.edad+" años":"")} · desde ${esc(rec.desde||"—")}</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-sm" onclick="document.getElementById('consultante-detalle').style.display='none'">Cerrar</button>
+        <button class="btn btn-sm" id="cd-editar">Editar</button>
+        <button class="btn btn-sm btn-danger" id="cd-borrar">Eliminar</button>
+      </div></div>`;
+    document.getElementById("cd-editar").onclick=()=> openCF(rec);
+    document.getElementById("cd-borrar").onclick=()=>{
+      if(!confirm("Eliminar "+rec.alias+" ?")) return;
+      consultantes = consultantes.filter(c=>c.id!==rec.id);
+      store.set("bio_consultantes_v1", consultantes);
+      el.style.display="none"; renderConsultantes(); toast("Eliminado");
+    };
+  });
+  // click en card → detalle
+  document.getElementById("consultantes-list")?.addEventListener("click", e=>{
+    const card=e.target.closest("[data-open-consultante]");
+    if(!card) return;
+    const id=card.dataset.openConsultante;
+    const c=consultantes.find(x=>x.id===id);
+    if(!c) return;
+    const el=document.getElementById("consultante-detalle");
+    el.style.display="block";
+    const sesHtml = ensureSesiones(c).map((s,i)=>`<div class="sesion" style="margin-top:8px"><div class="sesion-head"><b>Sesión ${i+1} — ${esc(s.fecha)}</b></div><div class="small" style="white-space:pre-wrap">${esc(s.notas||"—")}</div>${(s.qa&&s.qa.length? s.qa.map(q=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${q.resono?'border-left:2px solid var(--accent)':''}"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"—")}</div>`).join("") : "")}</div>`).join("");
+    el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)">
+      <div class="row" style="justify-content:space-between"><b>${esc(c.alias)} · ${esc(c.sintoma)}</b><span class="small muted">${esc(c.fecha)}</span></div>
+      <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")}</p>
+      <p class="small" style="margin-top:8px;white-space:pre-wrap">${esc(c.contexto||"—")}</p>
+      <div style="margin-top:10px">${sesHtml}</div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn btn-sm" id="cd2-editar">Editar</button>
+        <button class="btn btn-sm btn-danger" id="cd2-borrar">Eliminar</button>
+        <button class="btn btn-sm btn-ghost" onclick="document.getElementById('consultante-detalle').style.display='none'">Cerrar</button>
+      </div></div>`;
+    document.getElementById("cd2-editar").onclick=()=> openCF(c);
+    document.getElementById("cd2-borrar").onclick=()=>{
+      if(!confirm("Eliminar "+c.alias+" ?")) return;
+      consultantes = consultantes.filter(x=>x.id!==c.id);
+      store.set("bio_consultantes_v1", consultantes);
+      el.style.display="none"; renderConsultantes(); toast("Eliminado");
+    };
+    document.getElementById("consultante-form-wrap").style.display="none";
+    el.scrollIntoView({behavior:"smooth", block:"nearest"});
+  });
+  document.getElementById("cf-repreguntas")?.addEventListener("click", e=>{
+    const q=e.target.closest("[data-add-repreg]");
+    if(!q) return;
+    const txt=q.getAttribute("data-add-repreg");
+    const ans = prompt(txt + "\n\nRespuesta del consultante (vacío = solo agregar la pregunta):", "");
+    if(ans===null) return;
+    if(!sesionesDraft.length) sesionesDraft.push({id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
+    sesionesDraft[sesionesDraft.length-1].qa.push({q: txt, a: (ans||"").trim()});
+    renderSesionesDraft();
+    triggerFunnel();
+    toast("Repregunta registrada");
+  });
+  // añadir sugerencia al contexto
+  document.getElementById("cf-sugerencias")?.addEventListener("click", e=>{
+    const q=e.target.closest("[data-add-sug]");
+    if(!q) return;
+    const txt=q.dataset.addSug;
+    const ta=document.getElementById("cf-contexto");
+    ta.value = ta.value ? ta.value + "\n• " + txt : "• " + txt;
+    ta.focus();
+    toast("Pregunta añadida al contexto");
+  });
+  // export / import
+  document.getElementById("btn-export-consultantes")?.addEventListener("click", ()=>{
+    const payload={consultantes, exportado:new Date().toISOString()};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="consultantes-export.json"; a.click(); URL.revokeObjectURL(a.href);
+    toast("Consultantes exportados");
+  });
+  document.getElementById("import-consultantes")?.addEventListener("change", e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload=()=>{
+      try{
+        const j=JSON.parse(rd.result);
+        const arr = Array.isArray(j.consultantes)?j.consultantes:(Array.isArray(j)?j:[]);
+        if(!arr.length) return toast("Sin consultantes en el archivo");
+        let added=0;
+        arr.forEach(c=>{ if(c.id && !consultantes.find(x=>x.id===c.id)){ consultantes.push(c); added++; } });
+        store.set("bio_consultantes_v1", consultantes);
+        renderConsultantes(); toast("Importados "+added);
+      }catch(err){ toast("JSON inválido"); }
+    }; rd.readAsText(f);
+  });
+})();
+
+
+function openArbolDesdeFicha(sourceId, targetId, titulo){
+  // Abre view consultantes y dispara el embudo con esos datos
+  show('consultantes');
+  // precarga el form con ese síntoma/órgano para que el embudo se active
+  const asoc = allAssoc().find(a=> a.source_id===sourceId && a.target_id===targetId) || {source_id: sourceId, target_id: targetId};
+  openCF({sintoma: titulo || sourceId, organo: targetId});
+  toast('Árbol de indagación abierto para: '+ (titulo||sourceId+' → '+targetId));
+}
+
+/* =====================================================================
+    ARRANQUE
+    ===================================================================== */
+/* Migración: fichas viejas sin sesiones → crear sesión 1 con su fecha */
+consultantes.forEach(c=>{ if(!c.sesiones||!c.sesiones.length) c.sesiones=[{id: uid("S"), fecha: c.fecha||new Date().toISOString().slice(0,10), notas: c.contexto||"", qa:[]}]; });
+store.set("bio_consultantes_v1", consultantes);
+
+renderMapa();show("mapa");
+console.info("Bio·descodificación lista —",DB.organs.length,"órganos,",DB.concepts.length,"conceptos,",allAssoc().length,"asociaciones");
+</script>
+</body>
+</html>
