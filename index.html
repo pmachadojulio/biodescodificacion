@@ -254,6 +254,10 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
 .repregunta{font-size:12.5px;margin:5px 0;padding:6px 10px;border-left:2px solid var(--capa-c);background:var(--surface-2);border-radius:4px;cursor:pointer}
 .repregunta:hover{background:var(--surface-3)}
 .repregunta small{color:var(--ink-muted);font-size:11px}
+.sueno-bubble{padding:10px 12px;border-radius:12px;margin:6px 0;max-width:88%;line-height:1.45}
+.sueno-bubble.user{background:var(--surface-3);border:1px solid var(--border);margin-left:auto}
+.sueno-bubble.bot{background:var(--accent-soft);border:1px solid var(--border-strong)}
+.sueno-nivel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:700;margin-bottom:4px}
 .resono-btn{cursor:pointer;font-size:14px;line-height:1;padding:2px 6px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--ink-muted)}
 .resono-btn.on{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
 .resono-star{color:var(--accent);font-weight:700}
@@ -310,6 +314,9 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
   <button data-view="consultantes">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     Consultantes</button>
+  <button data-view="suenos">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/><path d="M12 3v1"/><path d="M12 20v1"/><path d="M4.22 4.22l.7.7"/><path d="M19.07 19.07l.7.7"/><path d="M1 12h1"/><path d="M21 12h1"/><path d="M4.22 19.78l.7-.7"/><path d="M19.07 4.93l.7-.7"/></svg>
+    Sueños</button>
   <button data-view="guia">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M5 8l7-5 7 5v8l-7 5-7-5z"/></svg>
     Guía de consulta</button>
@@ -418,6 +425,39 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
     <div id="consultante-detalle" style="display:none;margin-top:18px"></div>
   </section>
 
+  <!-- SUEÑOS -->
+  <section class="view" id="view-suenos">
+    <div class="row" style="justify-content:space-between;margin-bottom:4px">
+      <div><h1 class="vtitle">Sueños</h1><p class="vsub">Diálogo vivo — contá el sueño y el embudo te lleva con repreguntas hasta que resuene.</p></div>
+      <button class="btn btn-primary" id="btn-nuevo-sueno">+ Nuevo sueño</button>
+    </div>
+    <div class="row" style="margin:10px 0 16px">
+      <input id="suenos-q" type="search" placeholder="Buscar por relato, símbolo o emoción…" style="max-width:380px">
+      <button class="btn btn-sm btn-ghost" id="btn-export-suenos">Exportar</button>
+      <label class="btn btn-sm btn-ghost" style="cursor:pointer">Importar<input type="file" id="import-suenos" accept=".json" style="display:none"></label>
+    </div>
+    <div id="suenos-list"></div>
+    <div id="sueno-form-wrap" style="display:none;margin-top:18px">
+      <div class="card-ficha" style="padding:18px 20px">
+        <h2 class="sect" id="sf-title">Nuevo sueño</h2>
+        <div class="grid2" style="margin-top:10px">
+          <div class="form-row"><label>Consultante (opcional, alias)</label><input id="sf-consultante" placeholder="Ej: C-014"></div>
+          <div class="form-row"><label>Fecha del sueño</label><input id="sf-fecha" type="date"></div>
+        </div>
+        <div class="form-row"><label>Relato del sueño (en presente, 1ª persona si podés)</label><textarea id="sf-relato" rows="3" placeholder="Soñé que estaba en una casa inundada..."></textarea></div>
+        <div class="form-row"><label>Emoción al despertar (y dónde en el cuerpo)</label><input id="sf-emocion" placeholder="Ej: angustia en el pecho, sorpresa"></div>
+        <div id="sf-dialogo" style="margin-top:14px;max-height:340px;overflow-y:auto;padding:8px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);display:none"></div>
+        <div id="sf-sugerencias" style="display:none;margin-top:12px"></div>
+        <div id="sf-simbolos" style="margin-top:10px" class="small muted"></div>
+        <div class="form-actions">
+          <button class="btn btn-ghost" id="sf-cancelar">Cancelar</button>
+          <button class="btn btn-primary" id="sf-guardar">Guardar sueño</button>
+        </div>
+      </div>
+    </div>
+    <div id="sueno-detalle" style="display:none;margin-top:18px"></div>
+  </section>
+
   <!-- GUÍA -->
   <section class="view" id="view-guia">
     <h1 class="vtitle">Guía de consulta</h1>
@@ -508,7 +548,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-27T07:30:39"
+  "integrado": "2026-08-27T08:05:58"
  },
  "bibliografia": [
   {
@@ -1593,6 +1633,80 @@ const DB = {
     "tragar bronca"
    ],
    "description": "Lo callado, lo dicho con arrepentimiento, lo que espero que otro diga y el tragar que arde en garganta."
+  },
+  {
+   "concept_id": "sueno-manifiesto",
+   "concept": "Sueño — contenido manifiesto/latente",
+   "category": "onírico",
+   "synonyms": [
+    "trabajo del sueño",
+    "condensación",
+    "desplazamiento",
+    "figurabilidad"
+   ],
+   "description": "Freud: fachada recordable que enmascara deseo/conflicto latente vía condensación-desplazamiento-censura."
+  },
+  {
+   "concept_id": "sueno-gestalt",
+   "concept": "Sueño gestáltico — proyección",
+   "category": "onírico",
+   "synonyms": [
+    "hazte el sueño",
+    "parte alienada",
+    "dramatización",
+    "silla vacía"
+   ],
+   "description": "Perls: todo elemento del sueño es parte del soñador; integrarlo es dramatizarlo en presente y hacer dialogar las partes."
+  },
+  {
+   "concept_id": "sueno-jung",
+   "concept": "Sueño junguiano — compensación y arquetipo",
+   "category": "onírico",
+   "synonyms": [
+    "sombra",
+    "ánima/animus",
+    "self",
+    "numinoso",
+    "amplificación",
+    "prospectivo"
+   ],
+   "description": "Jung: función compensadora + amplificación mitológica; grande sueño = transición (numinoso). Prospectivo = ensayo de futuro."
+  },
+  {
+   "concept_id": "sueno-biodesco",
+   "concept": "Sueño biodescodificante",
+   "category": "onírico",
+   "synonyms": [
+    "vagotonía nocturna",
+    "fantasma transgeneracional",
+    "yacente nocturno",
+    "proyecto sentido onírico"
+   ],
+   "description": "Biodesco: en vagotonía nocturna el cerebro repara; pesadilla repetitiva cerca de aniversario = programa del clan activo (Hall: continuidad vigilia-sueño)."
+  },
+  {
+   "concept_id": "simbolo-agua",
+   "concept": "Símbolo onírico — Agua",
+   "category": "símbolo",
+   "synonyms": [
+    "mar",
+    "río",
+    "inundación",
+    "agua turbia/limpia"
+   ],
+   "description": "Emoción/inconsciente. Limpia=claridad, turbia=confusión enquistada. Fórmula: agua calma vs desborde."
+  },
+  {
+   "concept_id": "simbolo-casa",
+   "concept": "Símbolo onírico — Casa",
+   "category": "símbolo",
+   "synonyms": [
+    "habitación",
+    "sótano",
+    "ático",
+    "casa inundada"
+   ],
+   "description": "Topografía del Self: sótano=inconsciente/transgeneracional, ático=proyectos, cocina=nutrición afectiva."
   }
  ],
  "associations": [
@@ -2717,8 +2831,170 @@ const DB = {
     "¿Para qué te quiso tener mamá? (bastón, compañía, síntoma, etc.) — Brozo p.21"
    ]
   }
+ ],
+ "simbolos_oniricos": [
+  {
+   "simbolo": "agua",
+   "lectura": "Emoción/inconsciente según cualidad",
+   "pregunta": "¿Qué sentiste ante esa agua? ¿limpia/turbia, calma/torrencial?"
+  },
+  {
+   "simbolo": "casa",
+   "lectura": "Psique/self por habitaciones",
+   "pregunta": "¿Qué habitación estaba afectada y qué parte de tu vida representa?"
+  },
+  {
+   "simbolo": "dientes",
+   "lectura": "Ansiedad / no poder morder-defenderse",
+   "pregunta": "¿Dónde sentís que perdés fuerza para defenderte?"
+  },
+  {
+   "simbolo": "persecucion",
+   "lectura": "Evitación de sombra/conflicto",
+   "pregunta": "Si te detuvieras, ¿qué parte de vos es el perseguidor?"
+  },
+  {
+   "simbolo": "muerte",
+   "lectura": "Cierre/duelo, no presagio",
+   "pregunta": "¿Qué etapa sientes que debe ser despedida?"
+  },
+  {
+   "simbolo": "caida",
+   "lectura": "Pérdida de sostén / miedo al fracaso",
+   "pregunta": "¿Dónde sentís que no tenés suelo?"
+  },
+  {
+   "simbolo": "volar",
+   "lectura": "Autonomía vs escapismo",
+   "pregunta": "¿Libertad o huida? ¿De qué necesitas distancia?"
+  },
+  {
+   "simbolo": "embarazo",
+   "lectura": "Gestación de proyecto/identidad",
+   "pregunta": "¿Qué se está gestando en vos?"
+  },
+  {
+   "simbolo": "examen",
+   "lectura": "Vergüenza / juicio social",
+   "pregunta": "¿Ante quién te sentís evaluado?"
+  },
+  {
+   "simbolo": "serpiente",
+   "lectura": "Instinto ambivalente, renovación",
+   "pregunta": "¿Qué instinto evitás mirar?"
+  },
+  {
+   "simbolo": "bosque",
+   "lectura": "Liminal, búsqueda de sentido",
+   "pregunta": "¿En qué encrucijada estás sin mapa?"
+  },
+  {
+   "simbolo": "vehiculo",
+   "lectura": "Locus de control vital",
+   "pregunta": "¿Quién lleva el volante hoy?"
+  },
+  {
+   "simbolo": "sombra",
+   "lectura": "Energía psíquica no-integrada (Jung)",
+   "pregunta": "¿Qué cualidad rechazada del perseguidor reconocés en vos?"
+  },
+  {
+   "simbolo": "anima_animus",
+   "lectura": "Compensación contrasexual",
+   "pregunta": "¿Qué actitud complementaria te pide integrar?"
+  },
+  {
+   "simbolo": "self_mandala",
+   "lectura": "Totalidad numinosa en transición",
+   "pregunta": "¿Qué parte sintió el sobrecogimiento?"
+  },
+  {
+   "simbolo": "yacente",
+   "lectura": "Fantasma transgeneracional nocturno",
+   "pregunta": "¿A qué ancestro/a fecha por nombre te lleva el sueño?"
+  },
+  {
+   "simbolo": "madre_padre",
+   "lectura": "Arquetipos origen/norma",
+   "pregunta": "¿Qué polaridad parental aparece y cómo la viviste?"
+  },
+  {
+   "simbolo": "nino_anciano",
+   "lectura": "Potencial vulnerable vs sabiduría orientadora",
+   "pregunta": "¿Qué niño herido o anciano sabio te habla?"
+  }
+ ],
+ "arbol_suenos": [
+  {
+   "nivel": 0,
+   "titulo": "Relato",
+   "preguntas": [
+    "Cuéntame el sueño como si estuviera pasando ahora, en presente y en primera persona.",
+    "¿Qué imagen te quedó más nítida y cuál se te escapa?"
+   ],
+   "lente": "Gestalt: narrar en presente"
+  },
+  {
+   "nivel": 1,
+   "titulo": "Emoción",
+   "preguntas": [
+    "¿Qué sentiste en el sueño y dónde lo sentiste en el cuerpo al despertar?",
+    "¿Esa emoción te resulta familiar de tu vigilia esta semana?"
+   ],
+   "lente": "Biosentido: anclaje PNL"
+  },
+  {
+   "nivel": 2,
+   "titulo": "Símbolo personal",
+   "preguntas": [
+    "Si ese [elemento/persona] fuera una parte tuya, ¿qué parte sería? (Hazte el sueño: 'Yo soy...')",
+    "Si esa figura pudiera hablar, ¿qué te diría? Haz que dialoguen.",
+    "¿Qué habrías hecho distinto si no hubieras tenido miedo en el sueño?"
+   ],
+   "lente": "Gestalt: dramatización / silla vacía"
+  },
+  {
+   "nivel": 3,
+   "titulo": "Símbolo arquetipal",
+   "preguntas": [
+    "Sin buscar tu historia, ¿dónde has visto ese símbolo en un mito, cuento o película? ¿Qué te conmueve de ambas versiones?",
+    "¿Qué sombra/ánima/self se asoma aquí? (perseguidor, amante, luz/mandala)",
+    "¿Este sueño compensa algo que en tu vigilia vives 100% al extremo?"
+   ],
+   "lente": "Jung: amplificación"
+  },
+  {
+   "nivel": 4,
+   "titulo": "Biografía",
+   "preguntas": [
+    "¿Cuándo sentiste por primera vez en tu vida exactamente esa emoción? ¿Qué edad tenías?",
+    "¿Qué pasaba 6-12 meses antes de esa primera vez? (Programante/Desencadenante)",
+    "¿Qué no pudiste hacer/decir entonces?"
+   ],
+   "lente": "Biodesco: datación precisa"
+  },
+  {
+   "nivel": 5,
+   "titulo": "Transgeneracional",
+   "preguntas": [
+    "¿Quién en tu clan vivió algo muy parecido y no pudo expresarlo? ¿Qué fecha/nombre se repite?",
+    "¿A qué muerto no velado estás velando sin dormir? (fantasma/yacente, bruxismo)",
+    "¿Qué frase no dicha llevas por tu madre/padre en este sueño?"
+   ],
+   "lente": "Sellam/Schützenberger: genosociograma"
+  },
+  {
+   "nivel": 6,
+   "titulo": "Biología e integración",
+   "preguntas": [
+    "¿Para qué te sirve biológicamente hacer/huir/caer/no poder morder en el sueño? ¿De qué te protege?",
+    "Si este sueño fuera un ensayo de un futuro que se gesta, ¿qué decisión prepara?",
+    "¿Qué acto simbólico, cambio de percepción o conversación pendiente te pide hoy?"
+   ],
+   "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
+  }
  ]
-};;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -2782,6 +3058,7 @@ RENDERERS.mapa   = renderMapa;
 RENDERERS.diccionario = ()=>renderDict($("#q").value.trim());
 RENDERERS.red    = renderRed;
 RENDERERS.guia   = renderGuia;
+RENDERERS.suenos = renderSuenos;
 RENDERERS.consultantes = renderConsultantes;
 RENDERERS.casos  = renderCasos;
 RENDERERS.asociaciones = renderAsocs;
@@ -3156,6 +3433,152 @@ $("#btn-print").addEventListener("click",()=>window.print());
 $("#btn-limpiar-guia").addEventListener("click",()=>{
   store.set("bio_guia_v1",{});renderGuia();$("#resumen-wrap").style.display="none";toast("Guía limpiada");
 });
+
+
+/* =====================================================================
+    SUEÑOS — diálogo vivo con árbol de 7 niveles
+    ===================================================================== */
+let suenos = store.get("bio_suenos_v1",[]);
+function allSuenos(){ return suenos; }
+let editingSuenoId = null;
+let suenoQA = []; // [{q,a,resono,nivel}]
+let suenoNivel = 0;
+
+function renderSuenos(){
+  const q = document.getElementById("suenos-q")?.value || "";
+  const nq = norm(q);
+  const list = allSuenos().filter(s=> !q.trim() || norm([s.relato,s.emocion,s.consultante].join(" ")).includes(nq));
+  const wrap = document.getElementById("suenos-list");
+  if(!wrap) return;
+  if(!list.length){
+    wrap.innerHTML = `<div class="empty"><b>${q.trim()?"Sin resultados":"Todavía no hay sueños"}</b>${q.trim()?"Probá otro término.":"Registrá el primero con “+ Nuevo sueño”. Cada sueño queda vinculado a un consultante opcional."}</div>`;
+    return;
+  }
+  wrap.innerHTML = list.map(s=>`
+    <div class="consultante-card" data-open-sueno="${esc(s.id)}">
+      <div class="row" style="justify-content:space-between">
+        <b>${esc((s.relato||"Sin relato").slice(0,70))}${(s.relato||"").length>70?"…":""}</b>
+        <span class="small muted">${esc(s.fecha||"")}${s.consultante?" · "+esc(s.consultante):""}</span>
+      </div>
+      <div class="consultante-meta">${esc((s.emocion||"—").slice(0,80))} · ${s.qa? s.qa.length+" intercambios":"—"}${s.qa&&s.qa.some(x=>x.resono)?" · ★ resonó":""}</div>
+    </div>`).join("");
+}
+
+function simbolosDetectados(texto){
+  const t = norm(texto||"");
+  const sims = (DB.simbolos_oniricos||[]).filter(s=>{
+    const key = norm(s.simbolo);
+    return t.includes(key) || t.includes(key.replace("_"," ")) || s.simbolo.split("_").some(w=> t.includes(norm(w)));
+  });
+  return sims.slice(0,4);
+}
+
+function preguntasNivel(nivel, ctx){
+  const nodo = (DB.arbol_suenos||[]).find(n=> n.nivel===nivel);
+  if(!nodo) return [];
+  // Filtrar por contexto: si ya hay resonancia, priorizar transgeneracional/bio
+  return nodo.preguntas.slice(0,2).map(q=>{
+    // Inyectar símbolo detectado en la pregunta si hay placeholder
+    let qq = q;
+    const sims = simbolosDetectados(ctx);
+    if(sims.length && qq.includes("[elemento")) qq = qq.replace("[elemento", "\"" + sims[0].simbolo + "\"");
+    if(sims.length && qq.toLowerCase().includes("elemento")) qq += " ("+sims[0].pregunta+")";
+    return {q: qq, tag: nodo.titulo+" · "+nodo.lente};
+  });
+}
+
+function triggerSuenoFunnel(){
+  const relato = (document.getElementById("sf-relato")?.value||"").trim();
+  const emocion = (document.getElementById("sf-emocion")?.value||"").trim();
+  const ctx = [relato, emocion, ...suenoQA.map(x=>x.q+" "+x.a)].join(" ");
+  const sugWrap = document.getElementById("sf-sugerencias");
+  const simWrap = document.getElementById("sf-simbolos");
+  const dialWrap = document.getElementById("sf-dialogo");
+
+  // Símbolos
+  const sims = simbolosDetectados(relato+" "+emocion);
+  if(sims.length){
+    simWrap.innerHTML = `Símbolos detectados: ${sims.map(s=>`<span class="pill" data-add-sim="${esc(s.simbolo)}">${esc(s.simbolo)} → ${esc(s.lectura.slice(0,45))}…</span>`).join(" ")}`;
+  } else {
+    simWrap.innerHTML = relato ? `<span class="small muted">Sin símbolos del glosario aún — el árbol igual avanza por emoción.</span>` : "";
+  }
+
+  // Preguntas por nivel: avanzar hasta que resuene
+  const ultimoResono = [...suenoQA].reverse().find(x=> x.resono);
+  const nivelActual = ultimoResono ? Math.min(suenoNivel+1, 6) : suenoNivel;
+  suenoNivel = nivelActual;
+  let sug = preguntasNivel(nivelActual, ctx);
+  // Si hay resonancia previa, también ofrecer rama superpuesta (transgeneracional siempre disponible desde nivel 2)
+  if(suenoQA.length>=2){
+    const alt = preguntasNivel(5, ctx);
+    alt.forEach(a=>{ if(!sug.find(x=>x.q===a.q)) sug.push(a); });
+  }
+  if(!sug.length && !relato){
+    sugWrap.style.display="none"; sugWrap.innerHTML="";
+  } else {
+    sugWrap.style.display="block";
+    const nivelInfo = (DB.arbol_suenos||[]).find(n=>n.nivel===nivelActual);
+    sugWrap.innerHTML = `<div class="cf-sugerencias">
+      <h3>Nivel ${nivelActual}: ${esc(nivelInfo?.titulo||"") } <span class="sug-tag">${esc(nivelInfo?.lente||"")}</span></h3>
+      ${sug.map(s=>`<div class="repregunta" data-add-sueno-q="${esc(s.q)}"><b>${esc(s.q)}</b><br><small>${esc(s.tag)}</small></div>`).join("")}
+    </div>`;
+  }
+
+  // Diálogo
+  if(suenoQA.length){
+    dialWrap.style.display="block";
+    dialWrap.innerHTML = suenoQA.map((x,i)=>`
+      <div class="sueno-bubble bot"><div class="sueno-nivel">${esc(((DB.arbol_suenos||[]).find(n=>n.nivel===x.nivel)?.titulo)||"Pregunta")} ${x.resono?'★':''}</div>${esc(x.q)}</div>
+      <div class="sueno-bubble user">${esc(x.a||"—")}<div style="margin-top:6px"><button class="resono-btn ${x.resono?"on":""}" data-resono-sueno="${i}">${x.resono?"★ Le resonó":"☆ Marcar que resonó"}</button></div></div>
+    `).join("") + `<div style="margin-top:8px"><span class="small muted">→ Tocá una pregunta arriba para responder. Cuando resuena, el árbol avanza de nivel.</span></div>`;
+    dialWrap.scrollTop = dialWrap.scrollHeight;
+  } else {
+    if(!relato) dialWrap.style.display="none";
+    else {
+      dialWrap.style.display="block";
+      dialWrap.innerHTML = `<div class="sueno-bubble bot">Contame el sueño y elegí una pregunta para empezar el diálogo.</div>`;
+    }
+  }
+}
+
+function resetSuenoForm(){
+  editingSuenoId=null; suenoQA=[]; suenoNivel=0;
+  ["sf-consultante","sf-relato","sf-emocion"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  const f=document.getElementById("sf-fecha"); if(f) f.value=new Date().toISOString().slice(0,10);
+  document.getElementById("sf-sugerencias").style.display="none";
+  document.getElementById("sf-sugerencias").innerHTML="";
+  document.getElementById("sf-simbolos").innerHTML="";
+  document.getElementById("sf-dialogo").style.display="none";
+  document.getElementById("sf-dialogo").innerHTML="";
+}
+
+function openSuenoForm(pref={}){
+  resetSuenoForm();
+  if(pref.id){
+    editingSuenoId=pref.id;
+    document.getElementById("sf-consultante").value=pref.consultante||"";
+    document.getElementById("sf-fecha").value=pref.fecha||new Date().toISOString().slice(0,10);
+    document.getElementById("sf-relato").value=pref.relato||"";
+    document.getElementById("sf-emocion").value=pref.emocion||"";
+    suenoQA = JSON.parse(JSON.stringify(pref.qa||[]));
+    // inferir nivel por cantidad de QAs
+    suenoNivel = Math.min(suenoQA.length, 6);
+    document.getElementById("sf-title").textContent="Editar sueño";
+  } else {
+    document.getElementById("sf-fecha").value=new Date().toISOString().slice(0,10);
+    if(pref.relato) document.getElementById("sf-relato").value=pref.relato;
+    if(pref.consultante) document.getElementById("sf-consultante").value=pref.consultante;
+    document.getElementById("sf-title").textContent="Nuevo sueño";
+  }
+  document.getElementById("sueno-form-wrap").style.display="block";
+  document.getElementById("sueno-detalle").style.display="none";
+  triggerSuenoFunnel();
+}
+
+function closeSuenoForm(){
+  document.getElementById("sueno-form-wrap").style.display="none";
+  resetSuenoForm();
+}
 
 /* =====================================================================
     CONSULTANTES — ficha con embudo en tiempo real
@@ -3610,6 +4033,7 @@ $("#import-file").addEventListener("change",e=>{
   };rd.readAsText(f);
 });
 
+
 /* =====================================================================
     CONSULTANTES — eventos del módulo
     ===================================================================== */
@@ -3783,6 +4207,81 @@ function openArbolDesdeFicha(sourceId, targetId, titulo){
   openCF({sintoma: titulo || sourceId, organo: targetId});
   toast('Árbol de indagación abierto para: '+ (titulo||sourceId+' → '+targetId));
 }
+
+/* Eventos Sueños */
+(function(){
+  const q=document.getElementById("suenos-q");
+  if(q) q.addEventListener("input", renderSuenos);
+  document.getElementById("btn-nuevo-sueno")?.addEventListener("click", ()=> openSuenoForm({}));
+  ["sf-relato","sf-emocion"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener("input", triggerSuenoFunnel);
+  });
+  document.getElementById("sf-cancelar")?.addEventListener("click", closeSuenoForm);
+  document.getElementById("sf-sugerencias")?.addEventListener("click", e=>{
+    const b=e.target.closest("[data-add-sueno-q]");
+    if(!b) return;
+    const qtxt=b.getAttribute("data-add-sueno-q");
+    const ans=prompt(qtxt+"\n\nRespuesta del consultante:", "");
+    if(ans===null) return;
+    const resono = confirm("¿Le resonó esta pregunta? (OK = ★ Sí)");
+    suenoQA.push({q: qtxt, a: (ans||"").trim(), resono, nivel: suenoNivel});
+    renderSuenos(); triggerSuenoFunnel();
+  });
+  document.getElementById("sf-simbolos")?.addEventListener("click", e=>{
+    const pill=e.target.closest("[data-add-sim]");
+    if(!pill) return;
+    const sim=pill.getAttribute("data-add-sim");
+    const entry=(DB.simbolos_oniricos||[]).find(s=>s.simbolo===sim);
+    if(entry) alert(entry.simbolo + " — " + entry.lectura + "\n\nPregunta: " + entry.pregunta);
+  });
+  document.getElementById("sf-dialogo")?.addEventListener("click", e=>{
+    const btn=e.target.closest("[data-resono-sueno]");
+    if(!btn) return;
+    const idx=parseInt(btn.getAttribute("data-resono-sueno"),10);
+    if(suenoQA[idx]){ suenoQA[idx].resono=!suenoQA[idx].resono; triggerSuenoFunnel(); }
+  });
+  document.getElementById("sf-guardar")?.addEventListener("click", ()=>{
+    const relato=document.getElementById("sf-relato").value.trim();
+    if(!relato) return toast("Falta el relato del sueño");
+    const rec={id: editingSuenoId||uid("SU"), consultante: document.getElementById("sf-consultante").value.trim(), fecha: document.getElementById("sf-fecha").value||new Date().toISOString().slice(0,10), relato, emocion: document.getElementById("sf-emocion").value.trim(), qa: JSON.parse(JSON.stringify(suenoQA))};
+    if(editingSuenoId){
+      const i=suenos.findIndex(s=>s.id===editingSuenoId);
+      if(i>=0) suenos[i]=Object.assign(suenos[i], rec);
+    } else suenos.unshift(rec);
+    store.set("bio_suenos_v1", suenos);
+    toast((editingSuenoId?"Actualizado ":"Guardado ")+"sueño");
+    closeSuenoForm(); renderSuenos();
+    // detalle
+    const el=document.getElementById("sueno-detalle");
+    el.style.display="block";
+    el.innerHTML=`<div class="card-ficha" style="border-color:var(--accent)"><b>${esc(relato.slice(0,70))}</b><p class="small muted">${esc(rec.emocion||"—")}</p><div style="margin-top:8px">${rec.qa.map(x=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${x.resono?"border-left:2px solid var(--accent)":""}"><b>${esc(x.q)} ${x.resono?'★':''}</b><br>${esc(x.a||"—")}</div>`).join("")||"<span class=\"small muted\">Sin diálogo aún</span>"}</div><div class="row" style="margin-top:10px"><button class="btn btn-sm" onclick="document.getElementById('sueno-detalle').style.display='none'">Cerrar</button><button class="btn btn-sm" id="sd-editar">Editar</button><button class="btn btn-sm btn-danger" id="sd-borrar">Eliminar</button></div></div>`;
+    document.getElementById("sd-editar").onclick=()=> openSuenoForm(rec);
+    document.getElementById("sd-borrar").onclick=()=>{ if(!confirm("Eliminar este sueño?")) return; suenos=suenos.filter(s=>s.id!==rec.id); store.set("bio_suenos_v1", suenos); el.style.display="none"; renderSuenos(); toast("Eliminado"); };
+  });
+  document.getElementById("suenos-list")?.addEventListener("click", e=>{
+    const card=e.target.closest("[data-open-sueno]");
+    if(!card) return;
+    const s=suenos.find(x=>x.id===card.getAttribute("data-open-sueno"));
+    if(!s) return;
+    const el=document.getElementById("sueno-detalle");
+    el.style.display="block";
+    el.innerHTML=`<div class="card-ficha" style="border-color:var(--accent)"><div class="row" style="justify-content:space-between"><b>${esc(s.relato.slice(0,70))}</b><span class="small muted">${esc(s.fecha)}${s.consultante?" · "+esc(s.consultante):""}</span></div><p class="small muted" style="margin-top:6px">${esc(s.emocion||"—")}</p><div style="margin-top:8px">${(s.qa||[]).map(x=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${x.resono?"border-left:2px solid var(--accent)":""}"><b>${esc(x.q)} ${x.resono?'★':''}</b><br>${esc(x.a||"—")}</div>`).join("")||"<span class=\"small muted\">Sin diálogo aún</span>"}</div><div class="row" style="margin-top:10px"><button class="btn btn-sm" id="sd2-editar">Editar</button><button class="btn btn-sm btn-danger" id="sd2-borrar">Eliminar</button><button class="btn btn-sm btn-ghost" onclick="document.getElementById('sueno-detalle').style.display='none'">Cerrar</button></div></div>`;
+    document.getElementById("sd2-editar").onclick=()=> openSuenoForm(s);
+    document.getElementById("sd2-borrar").onclick=()=>{ if(!confirm("Eliminar este sueño?")) return; suenos=suenos.filter(x=>x.id!==s.id); store.set("bio_suenos_v1", suenos); el.style.display="none"; renderSuenos(); toast("Eliminado"); };
+    document.getElementById("sueno-form-wrap").style.display="none";
+  });
+  document.getElementById("btn-export-suenos")?.addEventListener("click", ()=>{
+    const blob=new Blob([JSON.stringify({suenos, exportado:new Date().toISOString()},null,2)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="suenos-export.json"; a.click(); URL.revokeObjectURL(a.href); toast("Sueños exportados");
+  });
+  document.getElementById("import-suenos")?.addEventListener("change", e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const rd=new FileReader(); rd.onload=()=>{
+      try{ const j=JSON.parse(rd.result); const arr=Array.isArray(j.suenos)?j.suenos:(Array.isArray(j)?j:[]); let n=0; arr.forEach(s=>{ if(s.id && !suenos.find(x=>x.id===s.id)){ suenos.push(s); n++; }}); store.set("bio_suenos_v1", suenos); renderSuenos(); toast("Importados "+n); }catch{ toast("JSON inválido"); }
+    }; rd.readAsText(f);
+  });
+})();
 
 /* =====================================================================
     ARRANQUE
