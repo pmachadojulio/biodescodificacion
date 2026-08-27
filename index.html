@@ -267,6 +267,35 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
   body{grid-template-columns:200px 1fr;grid-template-areas:"brand topbar" "nav main"}
   .insp{position:fixed;right:0;top:56px;bottom:0;width:min(380px,92vw);z-index:50;box-shadow:var(--shadow-2)}
 }
+@media (max-width:760px){
+  body{grid-template-columns:1fr;grid-template-areas:"brand" "topbar" "main";height:auto;min-height:100dvh;overflow:auto}
+  .brand{border-right:none;border-bottom:1px solid var(--border);padding:10px 14px;position:sticky;top:0;z-index:30;background:var(--bg)}
+  .topbar{padding:8px 12px;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);position:sticky;top:53px;z-index:29;background:var(--bg)}
+  .topbar .search-wrap{max-width:none;flex:1 1 100%}
+  .topbar .legend{display:none}
+  .nav{border-right:none;border-bottom:1px solid var(--border);padding:8px;flex-direction:row;flex-wrap:wrap;gap:4px;overflow:visible}
+  .nav .group{width:100%;padding:6px 6px 2px}
+  .nav button{flex:1 1 auto;justify-content:center;padding:8px 10px;min-width:0}
+  .nav .spacer{display:none}
+  .nav .foot{display:none}
+  .main{padding:14px 12px 22px;overflow:visible}
+  .view{margin:0}
+  .map-layout{grid-template-columns:1fr;gap:14px}
+  .grid2{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .hbar-row{grid-template-columns:80px 1fr 28px}
+  .donut-wrap{flex-direction:column;align-items:flex-start}
+  .insp{left:0;right:0;top:auto;bottom:0;width:auto;max-height:78dvh;border-left:none;border-top:1px solid var(--border-strong)}
+  .modal{max-width:96vw;margin:2vh auto}
+  .chart-card{padding:12px}
+  .tabla{font-size:12px;display:block;overflow-x:auto;white-space:nowrap}
+  .tabla th,.tabla td{white-space:nowrap}
+  .fase-body{padding:2px 12px 14px 12px}
+  .topbar #q{font-size:16px}
+}
+@media (max-width:380px){
+  .kpi-grid{grid-template-columns:1fr}
+}
 @media (prefers-reduced-motion:no-preference){
   .view.active{animation:fadein .18s ease}
   @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
