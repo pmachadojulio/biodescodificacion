@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:55:47"
+  "integrado": "2026-08-29T20:03:52"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3956,6 +3956,12 @@ function triggerFunnel(){
         "hermano": ["¿Cómo viviste tener que cuidar a tu hermano tan chica?", "¿Qué te hubiera gustado que hicieran por vos a esa edad?"],
         "tarea": ["¿Qué sentiste haciendo la tarea sola?", "¿Qué necesitabas que te dieran y no te dieron?"],
         "hilo": ["¿Qué hilo te faltó? ¿Qué te hubiera gustado que te sostuviera?", "¿Qué te sostiene hoy cuando no te tuvieron?"],
+      "aborto": ["¿Qué sabés de ese aborto? ¿Tu madre te habló de esa pérdida?", "¿Sentís que viniste a ocupar un lugar que había quedado vacío? ¿Qué lugar te dieron?"],
+      "5ta": ["¿Cómo viviste ser la 5ta hija? ¿Qué lugar te tocó ocupar?", "¿Te sentiste la que cerraba la familia o la que reemplazaba?"],
+      "quinta": ["¿Cómo viviste ser la 5ta hija? ¿Qué lugar te tocó ocupar?", "¿Te sentiste la que cerraba la familia o la que reemplazaba?"],
+      "fantasma": ["¿Sentís que a veces cargás tristezas que no son tuyas?", "¿Hay fechas o síntomas que se repiten en aniversario?"],
+      "lugar": ["¿Qué lugar sentís que ocupás hoy en tu familia? ¿Y cuál te gustaría?", "¿Dónde sentís que no tenés lugar?"],
+      "yacente": ["¿Te sentiste alguna vez como si llevaras a alguien encima? ¿Invisiblemente acompañada por esa historia?", "¿Qué duelo quedó sin hacer en tu familia?"],
       };
       const nq = ultimaResonada.q.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
       for(const [k, qs] of Object.entries(followUps)){
@@ -4008,6 +4014,7 @@ function triggerFunnel(){
     </div>`;
     setTimeout(()=> renderMiniGraph(relAsocs), 30);
     // click en inspector → agregar a sesión
+    insp.querySelector("[data-refresh-preguntas]")?.addEventListener("click", ()=>{ triggerFunnel(); toast("Preguntas refrescadas"); });
     insp.querySelectorAll("[data-inspector-q]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const qtxt = btn.getAttribute("data-inspector-q");
