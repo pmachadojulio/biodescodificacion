@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:40:38"
+  "integrado": "2026-08-29T19:55:47"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3933,6 +3933,44 @@ function triggerFunnel(){
   try{ yaRepRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
   let repsFiltradas = [];
   try{ repsFiltradas = reps.filter(r=> !yaRepRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){ repsFiltradas = reps; }
+  // Deduplicación robusta final: eliminar cualquier duplicado que haya sobrevivido (comparación por contenido)
+  {
+    const _ya = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim())));
+    const _isDup = (txt) => {
+      const ntxt = txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+      for(const ya of _ya){ if(!ya) continue; if(ntxt===ya || ntxt.includes(ya.slice(0,30)) || ya.includes(ntxt.slice(0,30))) return true; }
+      return false;
+    };
+    sugPregs = sugPregs.filter(s=> !_isDup(s.txt));
+    repsFiltradas = repsFiltradas.filter(r=> !_isDup(r));
+  }
+  // Follow-ups de resonancia: si la última QA resonó ★, ofrecer sus hijos
+  {
+    const ultimaResonada = [...sesionesDraft.flatMap(s=>s.qa||[])].reverse().find(x=>x.resono);
+    if(ultimaResonada){
+      const followUps = {
+        "tiempo": ["¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?", "¿Quién te apura realmente?"],
+        "permiso": ["¿Qué parte sentiste que si avanzabas dejabas de ser niña?", "¿Qué te diría tu padre si le pidieras permiso?"],
+        "niña": ["¿Qué te hubiera gustado hacer como niña que no pudiste?", "¿Quién te dijo que tenías que dejar de ser niña?"],
+        "avanzar": ["¿Qué te frena para avanzar?", "¿Qué necesitarías para sentirte con permiso?"],
+        "hermano": ["¿Cómo viviste tener que cuidar a tu hermano tan chica?", "¿Qué te hubiera gustado que hicieran por vos a esa edad?"],
+        "tarea": ["¿Qué sentiste haciendo la tarea sola?", "¿Qué necesitabas que te dieran y no te dieron?"],
+        "hilo": ["¿Qué hilo te faltó? ¿Qué te hubiera gustado que te sostuviera?", "¿Qué te sostiene hoy cuando no te tuvieron?"],
+      };
+      const nq = ultimaResonada.q.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      for(const [k, qs] of Object.entries(followUps)){
+        if(nq.includes(k)){
+          for(const q of qs){
+            const nq2 = q.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+            const ya = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim())));
+            let dup=false; for(const y of ya){ if(nq2.includes(y.slice(0,30)) || y.includes(nq2.slice(0,30))) {dup=true; break;}}
+            if(!dup && !repsFiltradas.includes(q) && !sugPregs.find(s=>s.txt===q)) repsFiltradas.push(q);
+          }
+          break;
+        }
+      }
+    }
+  }
   // Fallback vivo: si no hay match por keyword pero hay diálogo, ofrecer genéricas vivas
   if(!repsFiltradas.length && (sint||org||ctx)){
     const fallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
