@@ -579,7 +579,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T18:23:06"
+  "integrado": "2026-08-29T18:54:29"
  },
  "bibliografia": [
   {
@@ -3061,7 +3061,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3860,11 +3860,20 @@ function triggerFunnel(){
   if(sugPregs.length<3){
     poolCierre.slice(0, 3 - sugPregs.length).forEach(q=>addSug(q,"cierre"));
   }
-  // deduplicar: no volver a sugerir preguntas ya respondidas
-  const yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60))));
-  sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60)));
-  const repsFiltradas = reps.filter(r=> !yaRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60)));
-  // usar filtradas de acá en adelante
+  // deduplicar: no volver a sugerir preguntas ya respondidas (comparación laxa por primeras 40 chars)
+  let yaRespondidas = new Set();
+  try{ yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
+  try{ sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){}
+  let repsFiltradas = [];
+  try{ repsFiltradas = reps.filter(r=> !yaRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){ repsFiltradas = reps; }
+  // Fallback garantizado: si todo filtrado y hay datos, ofrecer genéricas no presentes en yaRespondidas
+  const poolCierreFallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
+  if(!sugPregs.length && (sint||org||ctx)){
+    for(const q of poolCierreFallback){ if(!Array.from(yaRespondidas).some(r=> q.toLowerCase().slice(0,15).includes(r.slice(0,15)) || r.includes(q.toLowerCase().slice(0,15)))){ sugPregs.push({txt:q, tag:"cierre"}); if(sugPregs.length>=2) break; } }
+  }
+  if(!repsFiltradas.length && (sint||org||ctx)){
+    for(const q of poolCierreFallback){ if(!sugPregs.find(s=>s.txt===q) && !Array.from(yaRespondidas).some(r=> q.toLowerCase().slice(0,15).includes(r.slice(0,15)))) repsFiltradas.push(q); if(repsFiltradas.length>=2) break; }
+  }
   // render
   if(sugPregs.length){
     sugWrap.style.display="block";
