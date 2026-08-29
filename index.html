@@ -444,6 +444,13 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
           </div>
           <div id="cf-sesiones-list" style="margin-top:8px"></div>
         </div>
+        <div id="cf-guia-wrap" style="margin-top:16px">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted)">Guía de consulta — este consultante</h3>
+            <button type="button" class="btn btn-sm btn-ghost" id="cf-guia-toggle">Mostrar/ocultar</button>
+          </div>
+          <div id="cf-guia" style="margin-top:8px"></div>
+        </div>
         <div id="cf-sugerencias" style="display:none;margin-top:14px"></div>
         <div id="cf-repreguntas" style="display:none;margin-top:10px"></div>
         <div id="cf-asocs" style="margin-top:14px"></div>
@@ -581,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T18:58:10"
+  "integrado": "2026-08-29T19:03:32"
  },
  "bibliografia": [
   {
@@ -3063,7 +3070,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3653,6 +3660,7 @@ function closeSuenoForm(){
     CONSULTANTES — ficha con embudo en tiempo real
     ===================================================================== */
 let sesionesDraft = []; // [{id, fecha, notas, qa: [{q,a}]}]
+let guiaDraft = {}; // {1:"",2:""...} por consultante
 function allConsultantes(){ return consultantes; }
 function ensureSesiones(c){
   if(!Array.isArray(c.sesiones) || !c.sesiones.length){
@@ -3734,6 +3742,19 @@ function resetCF(){
   document.getElementById("cf-cerebro").innerHTML="";
   renderSesionesDraft();
 }
+function renderCFGia(){
+  const fs = (typeof faseData !== 'undefined' ? faseData() : (DB.guia_fases||[]));
+  const wrap = document.getElementById("cf-guia");
+  if(!wrap) return;
+  wrap.innerHTML = fs.map(f=>`
+    <div class="fase open" style="margin-bottom:8px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface-2)">
+      <div class="fase-head" style="padding:8px 12px"><div class="fase-num">${f.fase}</div><b style="font-size:13px">${f.nombre}</b></div>
+      <div class="fase-body" style="display:block;padding:0 12px 12px 12px">
+        ${f.preguntas.map(p=>`<p class="fase-q" style="font-size:11.5px;color:var(--ink-muted)">— ${p}</p>`).join("")}
+        <textarea data-guia="${f.fase}" rows="2" placeholder="Notas fase ${f.fase} — ${f.nombre}..." style="margin-top:6px">${(guiaDraft[f.fase]||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</textarea>
+      </div>
+    </div>`).join("");
+}
 function renderSesionesDraft(){
   const wrap=document.getElementById("cf-sesiones-list");
   if(!wrap) return;
@@ -3767,15 +3788,18 @@ function openCF(pref={}){
     $("#cf-identidad").value=pref.identidad||"";
     $("#cf-contexto").value=pref.contexto||"";
     sesionesDraft = JSON.parse(JSON.stringify(ensureSesiones(pref)));
+    guiaDraft = Object.assign({}, pref.guia||{});
     $("#cf-title").textContent="Editar consultante";
   } else {
     $("#cf-alias").value=pref.alias||"C-"+String(consultantes.length+1).padStart(3,"0");
     if(pref.sintoma) $("#cf-sintoma").value=pref.sintoma;
     if(pref.organo) $("#cf-organo").value=pref.organo;
     sesionesDraft=[{id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]}];
+    guiaDraft={};
     $("#cf-title").textContent="Nuevo consultante";
   }
   renderSesionesDraft();
+  renderCFGia();
   $("#consultante-form-wrap").style.display="block";
   $("#consultante-detalle").style.display="none";
   $("#cf-alias").focus();
@@ -3829,9 +3853,15 @@ function triggerFunnel(){
     addSug("¿Qué edad tenían tu mamá y tu papá cuando naciste? → buscar correspondencia con tu edad actual ("+esc(edad)+" años) y el ciclo (±7/10 días).", "ciclo");
   }
   // repreguntas en base a lo respondido
-  const ctxAll = [sint, org, edad, desde, ctx, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
+  const guiaTxt = Object.values(guiaDraft||{}).join(" ");
+  const ctxAll = [sint, org, edad, desde, ctx, guiaTxt, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
   let reps = repreguntasPara(ctxAll);
   const repWrap = document.getElementById("cf-repreguntas");
+  // deduplicar repreguntas ya respondidas
+  let yaRepRespondidas = new Set();
+  try{ yaRepRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
+  let repsFiltradas = [];
+  try{ repsFiltradas = reps.filter(r=> !yaRepRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){ repsFiltradas = reps; }
   // Fallback vivo: si no hay match por keyword pero hay diálogo, ofrecer genéricas vivas
   if(!repsFiltradas.length && (sint||org||ctx)){
     const fallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
@@ -3868,7 +3898,7 @@ function triggerFunnel(){
   let yaRespondidas = new Set();
   try{ yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
   try{ sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){}
-  let repsFiltradas = [];
+  repsFiltradas = [];
   try{ repsFiltradas = reps.filter(r=> !yaRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){ repsFiltradas = reps; }
   // Fallback garantizado: si todo filtrado y hay datos, ofrecer genéricas no presentes en yaRespondidas
   const poolCierreFallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
@@ -4223,6 +4253,17 @@ $("#import-file").addEventListener("change",e=>{
     sesionesDraft = sesionesDraft.filter(s=>s.id!==btn.dataset.delSesion);
     renderSesionesDraft();
   });
+  document.getElementById("cf-guia-toggle")?.addEventListener("click", ()=>{
+    const w=document.getElementById("cf-guia");
+    w.style.display = w.style.display==="none" ? "block" : "none";
+  });
+  document.getElementById("cf-guia")?.addEventListener("input", e=>{
+    const ta=e.target.closest("[data-guia]");
+    if(!ta) return;
+    guiaDraft[ta.getAttribute("data-guia")] = ta.value;
+    // la guía también alimenta el embudo
+    triggerFunnel();
+  });
   document.getElementById("cf-cancelar")?.addEventListener("click", closeCF);
   document.getElementById("cf-guardar")?.addEventListener("click", ()=>{
     const alias = document.getElementById("cf-alias").value.trim();
@@ -4237,6 +4278,7 @@ $("#import-file").addEventListener("change",e=>{
       desde: document.getElementById("cf-desde").value.trim(),
       identidad: document.getElementById("cf-identidad").value.trim(),
       contexto: document.getElementById("cf-contexto").value.trim(),
+      guia: Object.assign({}, guiaDraft),
       sesiones: JSON.parse(JSON.stringify(sesionesDraft)),
       fecha: sesionesDraft[0]?.fecha || new Date().toISOString().slice(0,10),
     };
@@ -4278,10 +4320,12 @@ $("#import-file").addEventListener("change",e=>{
     const el=document.getElementById("consultante-detalle");
     el.style.display="block";
     const sesHtml = ensureSesiones(c).map((s,i)=>`<div class="sesion" style="margin-top:8px"><div class="sesion-head"><b>Sesión ${i+1} — ${esc(s.fecha)}</b></div><div class="small" style="white-space:pre-wrap">${esc(s.notas||"—")}</div>${(s.qa&&s.qa.length? s.qa.map(q=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${q.resono?'border-left:2px solid var(--accent)':''}"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"—")}</div>`).join("") : "")}</div>`).join("");
+    const guiaHtml = c.guia ? Object.entries(c.guia).filter(([k,v])=>String(v||"").trim()).map(([k,v])=>{ const fase=(typeof faseData!=="undefined"?faseData():DB.guia_fases||[]).find(f=>String(f.fase)===String(k)); return `<div class="small" style="margin:6px 0;padding:8px 10px;background:var(--surface-2);border-radius:6px"><b>Fase ${k} — ${fase?fase.nombre:""}</b><br>${String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>`; }).join("") : "";
     el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)">
       <div class="row" style="justify-content:space-between"><b>${esc(c.alias)} · ${esc(c.sintoma)}</b><span class="small muted">${esc(c.fecha)}</span></div>
       <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")}</p>
       <p class="small" style="margin-top:8px;white-space:pre-wrap">${esc(c.contexto||"—")}</p>
+      ${guiaHtml?`<div style="margin-top:10px"><b class="small" style="color:var(--accent)">Guía — este consultante</b>${guiaHtml}</div>`:""}
       <div style="margin-top:10px">${sesHtml}</div>
       <div class="row" style="margin-top:10px">
         <button class="btn btn-sm" id="cd2-editar">Editar</button>
