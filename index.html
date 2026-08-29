@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:17:16"
+  "integrado": "2026-08-29T19:23:31"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3601,7 +3601,7 @@ function triggerSuenoFunnel(){
   if(!sug.length && !relato){
     sugWrap.style.display="none"; sugWrap.innerHTML="";
   } else {
-    sugWrap.style.display="block";
+    sugWrap.style.display="none"; // movido a inspector derecho
     const nivelInfo = (DB.arbol_suenos||[]).find(n=>n.nivel===nivelActual);
     sugWrap.innerHTML = `<div class="cf-sugerencias">
       <h3>Nivel ${nivelActual}: ${esc(nivelInfo?.titulo||"") } <span class="sug-tag">${esc(nivelInfo?.lente||"")}</span></h3>
@@ -3911,14 +3911,15 @@ function triggerFunnel(){
           const lastTA = tas[tas.length-1];
           if(lastTA){ lastTA.focus(); lastTA.scrollIntoView({behavior:"smooth", block:"center"}); }
         }, 80);
-        toast("Pregunta agregada a la sesión");
+        toast("Pregunta agregada — dictá la respuesta con Wispr 🎙️");
       });
     });
   })();
 
-  if(repsFiltradas.length){
-    repWrap.style.display="block";
-    repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${repsFiltradas.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
+  // Centro oculto: las sugerencias/repreguntas viven solo en el inspector derecho
+  sugWrap.style.display="none"; sugWrap.innerHTML="";
+  repWrap.style.display="none"; repWrap.innerHTML="";
+  if(false && repsFiltradas.length){
     // resaltar repreguntas donde el disparador ya resonó: priorizar rama con ★
     const resonadas = sesionesDraft.flatMap(s=>(s.qa||[]).filter(x=>x.resono).map(x=>norm(x.q)));
     if(resonadas.length){
@@ -3998,7 +3999,7 @@ function triggerFunnel(){
 
   // render
   if(sugPregs.length){
-    sugWrap.style.display="block";
+    sugWrap.style.display="none"; // movido a inspector derecho
     sugWrap.innerHTML = `
       <div class="cf-sugerencias">
         <h3>Embudo — preguntas sugeridas (tiempo real)</h3>
