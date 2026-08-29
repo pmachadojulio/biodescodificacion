@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:28:38"
+  "integrado": "2026-08-29T19:32:30"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3829,7 +3829,7 @@ function renderSesionesDraft(){
         </div>
       </div>
       <textarea data-sid="${s.id}" data-field="notas" rows="2" placeholder="Notas de la sesión (qué se preguntó, qué surgió, decisiones…)">${esc(s.notas||"")}</textarea>
-      ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br><textarea data-qa-answer="${s.id}:${qi}" rows="2" placeholder="Respuesta del consultante — escribí y verás repreguntas nuevas abajo" style="width:100%;margin-top:6px;font-size:12.5px">${esc(q.a||"")}</textarea></div></div>`).join("")}</div>`:""}
+      ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br><div class="row" style="margin-top:6px"><textarea data-qa-answer="${s.id}:${qi}" rows="2" placeholder="Respuesta — escribí o dictá con Wispr 🎙️" style="flex:1;font-size:12.5px">${esc(q.a||"")}</textarea><button class="btn btn-sm btn-ghost" data-wispr-qa="${s.id}:${qi}" title="Dictar con Wispr Flow">🎙️</button></div></div></div>`).join("")}</div>`:""}
     </div>`).join("");
 }
 function openCF(pref={}){
@@ -4327,6 +4327,15 @@ $("#import-file").addEventListener("change",e=>{
   document.getElementById("cf-add-sesion")?.addEventListener("click", ()=>{
     sesionesDraft.push({id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
     renderSesionesDraft(); toast("Sesión agregada");
+  });
+  document.getElementById("cf-sesiones-list")?.addEventListener("click", e=>{
+    const wb=e.target.closest("[data-wispr-qa]");
+    if(wb){
+      const [sid, qi]=wb.getAttribute("data-wispr-qa").split(":");
+      const ta=document.querySelector(`[data-qa-answer="${sid}:${qi}"]`);
+      if(ta){ ta.focus(); toast("🎙️ Activá Wispr Flow y dictá — se escribe aquí"); }
+      return;
+    }
   });
   document.getElementById("cf-sesiones-list")?.addEventListener("input", e=>{
     // QA answer en vivo → actualiza dato y dispara repreguntas
