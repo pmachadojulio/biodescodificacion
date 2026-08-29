@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:23:31"
+  "integrado": "2026-08-29T19:28:38"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3453,6 +3453,52 @@ function renderRed(){
       <text x="${x}" y="${y+(isC?-11:16)}" text-anchor="middle" font-size="${isC?11.5:10.5}" fill="${isC?"var(--ink)":"var(--ink-muted)"}">${esc(label)}</text></g>`;
   });
   svg.innerHTML=edges+nodes;
+}
+
+function renderMiniGraph(assocs){
+  const svg=document.getElementById("mini-graph");
+  if(!svg) return;
+  if(!assocs || !assocs.length){
+    svg.innerHTML='<text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="var(--ink-muted)" font-size="11">Sin red para este contexto</text>';
+    return;
+  }
+  const nMap=new Map();
+  assocs.forEach(a=>{
+    if(!nMap.has(a.source_id)) nMap.set(a.source_id, {id:a.source_id, label: a.source_type==="concept"? conceptName(a.source_id): organName(a.source_id), type:a.source_type});
+    if(!nMap.has(a.target_id)) nMap.set(a.target_id, {id:a.target_id, label: a.target_type==="concept"? conceptName(a.target_id): organName(a.target_id), type:a.target_type});
+  });
+  const nodes=Array.from(nMap.values()).map((n,i)=>({...n, x:150+Math.cos(i*2*Math.PI/Math.max(nMap.size,1))*70, y:100+Math.sin(i*2*Math.PI/Math.max(nMap.size,1))*55}));
+  const svgNS="http://www.w3.org/2000/svg";
+  svg.innerHTML=""; svg.setAttribute("viewBox","0 0 300 200");
+  assocs.forEach(a=>{
+    const s=nodes.find(n=>n.id===a.source_id), t=nodes.find(n=>n.id===a.target_id);
+    if(!s||!t) return;
+    const l=document.createElementNS(svgNS,"line");
+    l.setAttribute("x1",s.x); l.setAttribute("y1",s.y); l.setAttribute("x2",t.x); l.setAttribute("y2",t.y);
+    l.setAttribute("stroke", capaColor[capaOf(a.evidence_level)]||"var(--border)"); l.setAttribute("stroke-opacity","0.35"); l.setAttribute("stroke-width","1.2");
+    svg.appendChild(l);
+  });
+  nodes.forEach(n=>{
+    const g=document.createElementNS(svgNS,"g"); g.style.cursor="pointer"; g.setAttribute("data-node",n.id);
+    const c=document.createElementNS(svgNS,"circle");
+    c.setAttribute("cx",n.x); c.setAttribute("cy",n.y); c.setAttribute("r", n.type==="concept"?"7":"5");
+    c.setAttribute("fill", n.type==="concept"?"var(--accent)":"var(--accent-2)"); c.setAttribute("stroke","var(--surface)"); c.setAttribute("stroke-width","1.5");
+    g.appendChild(c);
+    const txt=document.createElementNS(svgNS,"text");
+    txt.setAttribute("x",n.x); txt.setAttribute("y", n.type==="concept"? n.y-12: n.y+16); txt.setAttribute("text-anchor","middle");
+    txt.setAttribute("font-size", n.type==="concept"?"7":"6"); txt.setAttribute("fill", n.type==="concept"?"var(--ink)":"var(--ink-muted)");
+    txt.textContent=n.label.slice(0,14); g.appendChild(txt);
+    g.addEventListener("click", ()=>{
+      const extra=allAssoc().filter(a=> a.source_id===n.id || a.target_id===n.id).slice(0,6);
+      if(extra.length){
+        const ids=new Set([...assocs.map(a=>a.association_id), ...extra.map(a=>a.association_id)]);
+        const expanded=allAssoc().filter(a=> ids.has(a.association_id));
+        renderMiniGraph(expanded);
+        toast("Red expandida desde: "+n.label);
+      } else toast(n.label+" — sin vecinos");
+    });
+    svg.appendChild(g);
+  });
 }
 
 /* =====================================================================
@@ -3892,10 +3938,23 @@ function triggerFunnel(){
     const todas = [...sugPregs.map(s=>s.txt), ...repsFiltradas];
     if(!todas.length){ insp.classList.remove("open"); insp.innerHTML=""; return; }
     insp.classList.add("open");
-    insp.innerHTML = `<div class="insp-head"><div class="insp-kicker">Preguntas sugeridas</div><button class="insp-close" onclick="document.getElementById('inspector').classList.remove('open')">×</button></div>
-      <p class="small muted" style="margin:8px 0">Tocá una pregunta — se agrega a la sesión al centro y se activa Wispr.</p>
-      ${todas.map(q=>`<button class="btn btn-sm" data-inspector-q="${q.replace(/"/g,"&quot;")}" style="display:block;width:100%;text-align:left;white-space:normal;padding:8px 10px;margin-bottom:6px;background:var(--surface-2);border-color:var(--border)">${q}</button>`).join("")}
-      <p class="small muted" style="margin-top:10px">Se ordenan en la sesión al centro, abajo de lo ya respondido.</p>`;
+    insp.innerHTML = `<div style="display:flex;flex-direction:column;height:100%;max-height:calc(100vh - 90px)">
+      <div style="flex:1;overflow-y:auto;padding-right:2px">
+        <div class="insp-head"><div class="insp-kicker">Preguntas sugeridas</div><button class="insp-close" onclick="document.getElementById('inspector').classList.remove('open')">×</button></div>
+        <p class="small muted" style="margin:8px 0">Tocá una pregunta — se agrega a la sesión al centro y se activa Wispr.</p>
+        ${todas.map(q=>`<button class="btn btn-sm" data-inspector-q="${q.replace(/"/g,"&quot;")}" style="display:block;width:100%;text-align:left;white-space:normal;padding:8px 10px;margin-bottom:6px;background:var(--surface-2);border-color:var(--border)">${q}</button>`).join("")}
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;min-height:200px;border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent-2)">Red del cerebro</span>
+          <span class="small muted" style="font-size:10px">A: auto · B: clic nodo</span>
+        </div>
+        <div style="flex:1;position:relative;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;min-height:180px">
+          <svg id="mini-graph" width="100%" height="100%" style="display:block;min-height:180px"></svg>
+        </div>
+      </div>
+    </div>`;
+    setTimeout(()=> renderMiniGraph(relAsocs), 30);
     // click en inspector → agregar a sesión
     insp.querySelectorAll("[data-inspector-q]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
