@@ -579,7 +579,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-27T08:05:58"
+  "integrado": "2026-08-29T17:20:38"
  },
  "bibliografia": [
   {
@@ -857,6 +857,42 @@ const DB = {
    "notes": "Citado en Caso 2 (p2): 'Lorayne - Borgonovo', trabajo sobre secreto y comunicación. Confirmado por Julio (2026-08-25).",
    "verified": true,
    "group": "referencia_clase"
+  },
+  {
+   "reference_id": "B24",
+   "author": "Ryke Geerd Hamer",
+   "year": 1981,
+   "title": "German New Medicine — 5 Biological Laws (DHS/SBS)",
+   "type": "marco_teorico",
+   "publisher": "learninggnm.com",
+   "url": "https://learninggnm.com/SBS/documents/five_laws.html",
+   "notes": "Genealogía del modelo (vs Sellam en 05-04-25.md): DHS sincrónico psique-cerebro-órgano, SBS significativo. Se cita solo como marco histórico; asociaciones citables siguen siendo Sellam (B01-B23).",
+   "verified": true,
+   "group": "complementaria"
+  },
+  {
+   "reference_id": "B25",
+   "author": "Bruce H. Lipton",
+   "year": 2005,
+   "title": "The Biology of Belief (10th Anniversary, Hay House)",
+   "type": "libro",
+   "publisher": "Hay House / Penguin Random House HE",
+   "url": "https://www.brucelipton.com/product/the-biology-of-belief/",
+   "notes": "Citado por Vero/Adrián (clase y WhatsApp BioConexion). ISBN 978-1-4019-4891-7. Filtro creencias entre entorno real y biología; epigenética conductual.",
+   "verified": true,
+   "group": "complementaria"
+  },
+  {
+   "reference_id": "B26",
+   "author": "Enric Corbera",
+   "year": 2021,
+   "title": "Bioneuroemoción® — Biodescodificación vs Bioneuroemoción",
+   "type": "articulo",
+   "publisher": "Enric Corbera Institute",
+   "url": "https://www.enriccorberainstitute.com/biodescodificacion/",
+   "notes": "Diferencia vs determinismo síntoma-conflicto; evita premisas absolutistas, enfoque multifactorial biopsicosocial. Justifica torta multifactorial de la app.",
+   "verified": true,
+   "group": "complementaria"
   }
  ],
  "organs": [
@@ -3025,7 +3061,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3623,6 +3659,11 @@ function ensureSesiones(c){
   return c.sesiones;
 }
 const REPREGUNTAS_TREE = {
+  "permiso": ["¿Quién te dio o no te dio permiso para avanzar? (A020: ritmo de vida)", "¿Qué te diría tu padre si le pidieras permiso para ir más despacio?"],
+  "avanzar": ["¿Qué parte siente que si avanza deja de ser niña? (A038)", "¿Qué pasaría si te quedaras un tiempo más siendo esa niña antes de iniciar lo siguiente?"],
+  "autoexigencia": ["¿De quién aprendiste esa autoexigencia de estar siempre iniciando? ¿Qué decía esa voz?", "¿Qué te exigirías si nadie te mirara? ¿Y si te dieras permiso para no rendir?"],
+  "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
+  "tiroid": ["¿Dónde sentís que te apuran o te dejás apurar? (Hiper/Hipo)", "¿Qué no pudiste decir por falta de tiempo?"],
   "leal": ["¿Qué le pasó a esa persona?", "¿Cómo fue su muerte / pérdida?", "¿Qué no pudo hacer o ser?", "¿Qué programa estás reparando por fidelidad u oposición?"],
   "miedo": ["¿Cuál es tu miedo hoy? ¿Cuál era cuando surgió el síntoma? (p.18)", "¿Qué relación hay entre esa emoción y su función biológica? (p.18)"],
   "ciclo": ["¿Qué edad tenían tu mamá y tu papá cuando naciste? (ver ciclo ±7/10 días)", "¿Hay fechas que se repiten ±7/10 días? (doble, yacente, heredero)"],
@@ -3701,7 +3742,7 @@ function renderSesionesDraft(){
         </div>
       </div>
       <textarea data-sid="${s.id}" data-field="notas" rows="2" placeholder="Notas de la sesión (qué se preguntó, qué surgió, decisiones…)">${esc(s.notas||"")}</textarea>
-      ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"— sin respuesta —")}</div></div>`).join("")}</div>`:""}
+      ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br><textarea data-qa-answer="${s.id}:${qi}" rows="2" placeholder="Respuesta del consultante — escribí y verás repreguntas nuevas abajo" style="width:100%;margin-top:6px;font-size:12.5px">${esc(q.a||"")}</textarea></div></div>`).join("")}</div>`:""}
     </div>`).join("");
 }
 function openCF(pref={}){
@@ -3770,7 +3811,7 @@ function triggerFunnel(){
   (DB.sugerencias_embudo||[]).forEach(rule=>{
     const trig = rule.trigger||{};
     let hit=false;
-    if(trig.organo && trig.organo===org) hit=true;
+    if(trig.organo && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
     if(trig.concepto && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
     if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
   });
@@ -4082,6 +4123,14 @@ $("#import-file").addEventListener("change",e=>{
     renderSesionesDraft(); toast("Sesión agregada");
   });
   document.getElementById("cf-sesiones-list")?.addEventListener("input", e=>{
+    // QA answer en vivo → actualiza dato y dispara repreguntas
+    if(e.target.hasAttribute("data-qa-answer")){
+      const [sid, idx]=e.target.getAttribute("data-qa-answer").split(":");
+      const s=sesionesDraft.find(x=>x.id===sid); if(!s||!s.qa[idx]) return;
+      s.qa[idx].a=e.target.value;
+      triggerFunnel();
+      return;
+    }
     const sid=e.target.dataset.sid, field=e.target.dataset.field;
     if(!sid||!field) return;
     const s=sesionesDraft.find(x=>x.id===sid); if(!s) return;
