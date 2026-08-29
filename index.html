@@ -579,7 +579,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T17:20:38"
+  "integrado": "2026-08-29T18:23:06"
  },
  "bibliografia": [
   {
@@ -3061,7 +3061,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3664,6 +3664,11 @@ const REPREGUNTAS_TREE = {
   "autoexigencia": ["¿De quién aprendiste esa autoexigencia de estar siempre iniciando? ¿Qué decía esa voz?", "¿Qué te exigirías si nadie te mirara? ¿Y si te dieras permiso para no rendir?"],
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "tiroid": ["¿Dónde sentís que te apuran o te dejás apurar? (Hiper/Hipo)", "¿Qué no pudiste decir por falta de tiempo?"],
+  "columna": ["¿Qué sostén sentís que te falta? ¿Qué te desvaloriza de no poder sostener?", "¿Qué columna/estructura de tu vida tambalea?"],
+  "desvalorizacion": ["¿En qué sentís que no valés o no te valoran? ¿Desde cuándo?", "¿Qué te gustaría hacer y sentís que no podés sostener?"],
+  "territorio": ["¿Quién invadió tu territorio al volver tu hija y tener que mudarte?", "¿Dónde sentís que no tenés salida / no podés irte a otro lado?"],
+  "hija": ["¿Qué edad tenía tu hija cuando pasó esto? ¿Qué te espeja de tu propia historia con tu madre?", "¿Qué rol de madre sentís que te toca ocupar ahora?"],
+  "desplazamiento": ["¿Qué parte de vos se sintió desplazada? ¿Qué lugar perdiste?", "¿Qué harías si tuvieras ese lugar de vuelta?"],
   "leal": ["¿Qué le pasó a esa persona?", "¿Cómo fue su muerte / pérdida?", "¿Qué no pudo hacer o ser?", "¿Qué programa estás reparando por fidelidad u oposición?"],
   "miedo": ["¿Cuál es tu miedo hoy? ¿Cuál era cuando surgió el síntoma? (p.18)", "¿Qué relación hay entre esa emoción y su función biológica? (p.18)"],
   "ciclo": ["¿Qué edad tenían tu mamá y tu papá cuando naciste? (ver ciclo ±7/10 días)", "¿Hay fechas que se repiten ±7/10 días? (doble, yacente, heredero)"],
@@ -3823,6 +3828,11 @@ function triggerFunnel(){
   const ctxAll = [sint, org, edad, desde, ctx, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
   let reps = repreguntasPara(ctxAll);
   const repWrap = document.getElementById("cf-repreguntas");
+  // Fallback vivo: si no hay match por keyword pero hay diálogo, ofrecer genéricas vivas
+  if(!repsFiltradas.length && (sint||org||ctx)){
+    const fallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
+    fallback.forEach(q=>{ if(!Array.from(yaRespondidas).some(r=> q.toLowerCase().includes(r.slice(0,12)))) repsFiltradas.push(q); });
+  }
   if(repsFiltradas.length){
     repWrap.style.display="block";
     repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${repsFiltradas.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
