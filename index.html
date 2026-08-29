@@ -3821,11 +3821,11 @@ function triggerFunnel(){
   }
   // repreguntas en base a lo respondido
   const ctxAll = [sint, org, edad, desde, ctx, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
-  const reps = repreguntasPara(ctxAll);
+  let reps = repreguntasPara(ctxAll);
   const repWrap = document.getElementById("cf-repreguntas");
-  if(reps.length){
+  if(repsFiltradas.length){
     repWrap.style.display="block";
-    repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${reps.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
+    repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${repsFiltradas.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
     // resaltar repreguntas donde el disparador ya resonó: priorizar rama con ★
     const resonadas = sesionesDraft.flatMap(s=>(s.qa||[]).filter(x=>x.resono).map(x=>norm(x.q)));
     if(resonadas.length){
@@ -3850,6 +3850,11 @@ function triggerFunnel(){
   if(sugPregs.length<3){
     poolCierre.slice(0, 3 - sugPregs.length).forEach(q=>addSug(q,"cierre"));
   }
+  // deduplicar: no volver a sugerir preguntas ya respondidas
+  const yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60))));
+  sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60)));
+  const repsFiltradas = reps.filter(r=> !yaRespondidas.has(r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,60)));
+  // usar filtradas de acá en adelante
   // render
   if(sugPregs.length){
     sugWrap.style.display="block";
