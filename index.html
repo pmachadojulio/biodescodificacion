@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:06:53"
+  "integrado": "2026-08-29T19:09:55"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3762,7 +3762,7 @@ function renderCFGia(){
       <div class="fase-head" style="padding:8px 12px"><div class="fase-num">${f.fase}</div><b style="font-size:13px">${f.nombre}</b></div>
       <div class="fase-body" style="display:block;padding:0 12px 12px 12px">
         ${f.preguntas.map(p=>`<p class="fase-q" style="font-size:11.5px;color:var(--ink-muted)">— ${p}</p>`).join("")}
-        <textarea data-guia="${f.fase}" rows="2" placeholder="Notas fase ${f.fase} — ${f.nombre}..." style="margin-top:6px">${(guiaDraft[f.fase]||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</textarea>
+        <div class="row" style="margin-top:6px"><textarea data-guia="${f.fase}" rows="2" placeholder="Notas fase ${f.fase} — ${f.nombre}... (🎙️ con Wispr Flow)" style="flex:1">${(guiaDraft[f.fase]||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</textarea><button class="btn btn-sm btn-ghost" data-wispr-guia="${f.fase}" title="Dictar con Wispr Flow (mantener hotkey)">🎙️</button></div>
       </div>
     </div>`).join("");
 }
@@ -3836,14 +3836,14 @@ function triggerFunnel(){
   }
   // 1) asociaciones relacionadas por órgano
   let relAsocs=[];
-  if(org) relAsocs = allAssoc().filter(a=>a.target_id===org || a.source_id===org).slice(0,4);
+  if(org){ const w={B:0,A:1,C:2,NV:3}; relAsocs = allAssoc().filter(a=>a.target_id===org || a.source_id===org).sort((x,y)=>(w[capaOf(x.evidence_level)]??3)-(w[capaOf(y.evidence_level)]??3)).slice(0,4); }
   else if(sint){
     const ns = norm(sint);
-    relAsocs = allAssoc().filter(a=> norm(a.description+" "+assocTitle(a)).includes(ns) || norm(a.target_id+" "+a.source_id).includes(ns) ).slice(0,6);
+    { const w={B:0,A:1,C:2,NV:3}; relAsocs = allAssoc().filter(a=> norm(a.description+" "+assocTitle(a)).includes(ns) || norm(a.target_id+" "+a.source_id).includes(ns) ).sort((x,y)=>(w[capaOf(x.evidence_level)]??3)-(w[capaOf(y.evidence_level)]??3)).slice(0,6); }
     // fallback: búsqueda por palabra clave del síntoma en conceptos
     if(!relAsocs.length){
       const kws = ns.split(/\s+/).filter(w=>w.length>2);
-      relAsocs = allAssoc().filter(a=> kws.some(k=> norm(a.description).includes(k)) ).slice(0,4);
+      { const w={B:0,A:1,C:2,NV:3}; relAsocs = allAssoc().filter(a=> kws.some(k=> norm(a.description).includes(k)) ).sort((x,y)=>(w[capaOf(x.evidence_level)]??3)-(w[capaOf(y.evidence_level)]??3)).slice(0,4); }
     }
   }
   // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
@@ -4267,6 +4267,12 @@ $("#import-file").addEventListener("change",e=>{
   document.getElementById("cf-guia-toggle")?.addEventListener("click", ()=>{
     const w=document.getElementById("cf-guia");
     w.style.display = w.style.display==="none" ? "block" : "none";
+  });
+  document.getElementById("cf-guia")?.addEventListener("click", e=>{
+    const b=e.target.closest("[data-wispr-guia]");
+    if(!b) return;
+    const ta=document.querySelector(`[data-guia="${b.getAttribute("data-wispr-guia")}"]`);
+    if(ta){ ta.focus(); toast("🎙️ Activa Wispr Flow y dictá — se escribe aquí"); }
   });
   document.getElementById("cf-guia")?.addEventListener("input", e=>{
     const ta=e.target.closest("[data-guia]");
