@@ -443,6 +443,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
             <button type="button" class="btn btn-sm" id="cf-add-sesion">+ Sesión</button>
           </div>
           <div id="cf-sesiones-list" style="margin-top:8px"></div>
+  <div id="cf-grabacion-wrap" style="margin-top:12px;padding:10px;border:1px dashed var(--border);border-radius:var(--r-sm);background:var(--surface)"><div class="row" style="justify-content:space-between;align-items:center"><span class="small" style="color:var(--ink-muted)">Grabación de la sesión (requiere consentimiento)</span><button type="button" class="btn btn-sm" id="cf-grabar" style="background:var(--danger-soft);border-color:var(--danger);color:var(--danger)">● Grabar conversación</button></div><div id="cf-grabacion-status" class="small muted" style="margin-top:6px;display:none"></div><audio id="cf-audio-playback" controls style="width:100%;margin-top:8px;display:none"></audio></div>
         </div>
         <div id="cf-guia-wrap" style="margin-top:16px">
           <div class="row" style="justify-content:space-between;align-items:center">
@@ -588,7 +589,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T20:25:23"
+  "integrado": "2026-08-29T20:25:54"
  },
  "bibliografia": [
   {
@@ -3079,7 +3080,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -4402,6 +4403,36 @@ $("#import-file").addEventListener("change",e=>{
       const ta=document.querySelector(`[data-qa-answer="${sid}:${qi}"]`);
       if(ta){ ta.focus(); toast("🎙️ Campo enfocado — mantené presionada tu tecla de Wispr (Opción derecha / Fn) y hablá"); }
       return;
+    }
+  });
+  // Grabación con MediaRecorder
+  let mediaRecorder=null, audioChunks=[], grabarActivo=false;
+  document.getElementById("cf-grabar")?.addEventListener("click", async ()=>{
+    const btn=document.getElementById("cf-grabar"), st=document.getElementById("cf-grabacion-status"), audio=document.getElementById("cf-audio-playback");
+    if(!grabarActivo){
+      try{
+        const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+        mediaRecorder=new MediaRecorder(stream); audioChunks=[];
+        mediaRecorder.ondataavailable=e=>{ if(e.data.size>0) audioChunks.push(e.data); };
+        mediaRecorder.onstop=()=>{
+          const blob=new Blob(audioChunks,{type:"audio/webm"});
+          const url=URL.createObjectURL(blob);
+          audio.src=url; audio.style.display="block";
+          st.textContent="Grabación lista — podés reproducir y descargar. Tamaño: "+(blob.size/1024).toFixed(0)+" KB"; st.style.display="block";
+          // Guardar referencia en la última sesión
+          if(sesionesDraft.length){
+            const last=sesionesDraft[sesionesDraft.length-1];
+            last.audioURL=url; last.audioSize=blob.size;
+          }
+          btn.textContent="● Grabar conversación"; btn.style.background=""; grabarActivo=false;
+        };
+        mediaRecorder.start(); grabarActivo=true;
+        btn.textContent="■ Detener grabación"; btn.style.background="var(--danger)"; btn.style.color="#fff";
+        st.textContent="● Grabando... mantené la conversación cerca del micrófono"; st.style.display="block"; audio.style.display="none";
+      }catch(e){ alert("No se pudo acceder al micrófono: "+e.message+"\nVerificá permisos del navegador."); }
+    } else {
+      if(mediaRecorder && mediaRecorder.state!=="inactive") mediaRecorder.stop();
+      mediaRecorder?.stream?.getTracks().forEach(t=>t.stop());
     }
   });
   document.getElementById("cf-sesiones-list")?.addEventListener("input", e=>{
