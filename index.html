@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:13:14"
+  "integrado": "2026-08-29T19:17:16"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3878,6 +3878,44 @@ function triggerFunnel(){
     const fallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
     fallback.forEach(q=>{ if(!Array.from(yaRespondidas).some(r=> q.toLowerCase().includes(r.slice(0,12)))) repsFiltradas.push(q); });
   }
+  // ——— INSPECTOR DERECHO: espejo de preguntas como botones ———
+  (function renderInspectorSugerencias(){
+    const insp = document.getElementById("inspector");
+    if(!insp) return;
+    const enConsultantes = document.getElementById("view-consultantes")?.classList.contains("active");
+    const formAbierto = document.getElementById("consultante-form-wrap")?.style.display !== "none";
+    if(!enConsultantes || !formAbierto){
+      // si no estamos editando consultante, no tocar el inspector (deja fichas de órgano)
+      if(!enConsultantes) return;
+      insp.classList.remove("open"); return;
+    }
+    const todas = [...sugPregs.map(s=>s.txt), ...repsFiltradas];
+    if(!todas.length){ insp.classList.remove("open"); insp.innerHTML=""; return; }
+    insp.classList.add("open");
+    insp.innerHTML = `<div class="insp-head"><div class="insp-kicker">Preguntas sugeridas</div><button class="insp-close" onclick="document.getElementById('inspector').classList.remove('open')">×</button></div>
+      <p class="small muted" style="margin:8px 0">Tocá una pregunta — se agrega a la sesión al centro y se activa Wispr.</p>
+      ${todas.map(q=>`<button class="btn btn-sm" data-inspector-q="${q.replace(/"/g,"&quot;")}" style="display:block;width:100%;text-align:left;white-space:normal;padding:8px 10px;margin-bottom:6px;background:var(--surface-2);border-color:var(--border)">${q}</button>`).join("")}
+      <p class="small muted" style="margin-top:10px">Se ordenan en la sesión al centro, abajo de lo ya respondido.</p>`;
+    // click en inspector → agregar a sesión
+    insp.querySelectorAll("[data-inspector-q]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const qtxt = btn.getAttribute("data-inspector-q");
+        if(!sesionesDraft.length) sesionesDraft.push({id: (typeof uid!=="undefined"?uid("S"):Date.now().toString(36)), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
+        const last = sesionesDraft[sesionesDraft.length-1];
+        last.qa.push({q: qtxt, a:"", resono:false});
+        renderSesionesDraft();
+        triggerFunnel();
+        // enfocar el textarea de la nueva QA y sugerir Wispr
+        setTimeout(()=>{
+          const tas = document.querySelectorAll("[data-qa-answer]");
+          const lastTA = tas[tas.length-1];
+          if(lastTA){ lastTA.focus(); lastTA.scrollIntoView({behavior:"smooth", block:"center"}); }
+        }, 80);
+        toast("Pregunta agregada a la sesión");
+      });
+    });
+  })();
+
   if(repsFiltradas.length){
     repWrap.style.display="block";
     repWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--capa-c)"><h3 style="color:var(--capa-c)">Repreguntas — según lo que ya respondiste</h3>${repsFiltradas.map(r=>`<div class="repregunta" data-add-repreg="${esc(r)}">${esc(r)} <small>→ tocar para responder</small></div>`).join("")}</div>`;
