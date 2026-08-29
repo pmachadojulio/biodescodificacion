@@ -588,7 +588,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T19:36:59"
+  "integrado": "2026-08-29T19:40:38"
  },
  "bibliografia": [
   {
@@ -3079,7 +3079,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3766,6 +3766,17 @@ function scoreConsultante(c, q){
   return norm([c.alias,c.sintoma,organName(c.organo),c.desde,c.contexto].join(" ")).includes(nq);
 }
 let editingCid = null;
+function showConsultantesList(){
+  const listEl=document.getElementById("consultantes-list");
+  const formEl=document.getElementById("consultante-form-wrap");
+  const detEl=document.getElementById("consultante-detalle");
+  const searchRow=document.querySelector("#view-consultantes > .row:nth-of-type(2)");
+  if(listEl) listEl.style.display="";
+  if(searchRow) searchRow.style.display="";
+  if(formEl) formEl.style.display="none";
+  if(detEl){ detEl.style.display="none"; detEl.innerHTML=""; }
+  renderConsultantes();
+}
 function renderConsultantes(){
   cfOptions();
   const q = $("#consultantes-q")?.value || "";
@@ -3857,6 +3868,8 @@ function openCF(pref={}){
   }
   renderSesionesDraft();
   renderCFGia();
+  document.getElementById("consultantes-list").style.display="none";
+  const sr2=document.querySelector("#view-consultantes > .row:nth-of-type(2)"); if(sr2) sr2.style.display="none";
   $("#consultante-form-wrap").style.display="block";
   $("#consultante-detalle").style.display="none";
   $("#cf-alias").focus();
@@ -3865,6 +3878,7 @@ function openCF(pref={}){
 function closeCF(){
   $("#consultante-form-wrap").style.display="none";
   resetCF();
+  showConsultantesList();
 }
 function triggerFunnel(){
   const sint = ($("#cf-sintoma")?.value||"").trim();
@@ -4391,6 +4405,10 @@ $("#import-file").addEventListener("change",e=>{
     triggerFunnel();
   });
   document.getElementById("cf-cancelar")?.addEventListener("click", closeCF);
+  // Volver desde detalle: delegar clicks en Volver
+  document.getElementById("consultante-detalle")?.addEventListener("click", e=>{
+    if(e.target.closest("button") && e.target.textContent.includes("Volver")){ showConsultantesList(); }
+  });
   document.getElementById("cf-guardar")?.addEventListener("click", ()=>{
     const alias = document.getElementById("cf-alias").value.trim();
     const sintoma = document.getElementById("cf-sintoma").value.trim();
@@ -4440,6 +4458,9 @@ $("#import-file").addEventListener("change",e=>{
   document.getElementById("consultantes-list")?.addEventListener("click", e=>{
     const card=e.target.closest("[data-open-consultante]");
     if(!card) return;
+    // Ocultar lista y busqueda para vista enfocada
+    document.getElementById("consultantes-list").style.display="none";
+    const sr=document.querySelector("#view-consultantes > .row:nth-of-type(2)"); if(sr) sr.style.display="none";
     const id=card.dataset.openConsultante;
     const c=consultantes.find(x=>x.id===id);
     if(!c) return;
@@ -4448,6 +4469,7 @@ $("#import-file").addEventListener("change",e=>{
     const sesHtml = ensureSesiones(c).map((s,i)=>`<div class="sesion" style="margin-top:8px"><div class="sesion-head"><b>Sesión ${i+1} — ${esc(s.fecha)}</b></div><div class="small" style="white-space:pre-wrap">${esc(s.notas||"—")}</div>${(s.qa&&s.qa.length? s.qa.map(q=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${q.resono?'border-left:2px solid var(--accent)':''}"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"—")}</div>`).join("") : "")}</div>`).join("");
     const guiaHtml = c.guia ? Object.entries(c.guia).filter(([k,v])=>String(v||"").trim()).map(([k,v])=>{ const fase=(typeof faseData!=="undefined"?faseData():DB.guia_fases||[]).find(f=>String(f.fase)===String(k)); return `<div class="small" style="margin:6px 0;padding:8px 10px;background:var(--surface-2);border-radius:6px"><b>Fase ${k} — ${fase?fase.nombre:""}</b><br>${String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>`; }).join("") : "";
     el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)">
+      <button class="btn btn-sm btn-ghost" onclick="showConsultantesList()" style="margin-bottom:10px">← Volver a consultantes</button>
       <div class="row" style="justify-content:space-between"><b>${esc(c.alias)} · ${esc(c.sintoma)}</b><span class="small muted">${esc(c.fecha)}</span></div>
       <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")}</p>
       <p class="small" style="margin-top:8px;white-space:pre-wrap">${esc(c.contexto||"—")}</p>
