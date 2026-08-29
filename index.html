@@ -589,7 +589,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T20:31:30"
+  "integrado": "2026-08-29T20:35:45"
  },
  "bibliografia": [
   {
@@ -3080,7 +3080,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3841,6 +3841,7 @@ function renderSesionesDraft(){
         </div>
       </div>
       <textarea data-sid="${s.id}" data-field="notas" rows="2" placeholder="Notas de la sesión (qué se preguntó, qué surgió, decisiones…)">${esc(s.notas||"")}</textarea>
+      ${s.audioURL?`<audio src="${s.audioURL}" controls style="width:100%;margin-top:6px"></audio>`:""}
       ${s.qa && s.qa.length? `<div style="margin-top:6px">${s.qa.map((q,qi)=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;display:flex;gap:8px;align-items:start"><button class="resono-btn ${q.resono?"on":""}" data-resono="${s.id}:${qi}" title="Le resonó">${q.resono?"★":"☆"}</button><div style="flex:1"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br><div class="row" style="margin-top:6px"><textarea data-qa-answer="${s.id}:${qi}" rows="2" placeholder="Respuesta — escribí o dictá con Wispr 🎙️" style="flex:1;font-size:12.5px">${esc(q.a||"")}</textarea><button class="btn btn-sm btn-ghost" data-wispr-qa="${s.id}:${qi}" title="Dictar con Wispr Flow — mantené presionada tu tecla de Wispr mientras hablás">🎙️</button></div></div></div>`).join("")}</div>`:""}
     </div>`).join("");
 }
@@ -4418,12 +4419,17 @@ $("#import-file").addEventListener("change",e=>{
           const blob=new Blob(audioChunks,{type:"audio/webm"});
           const url=URL.createObjectURL(blob);
           audio.src=url; audio.style.display="block";
-          st.textContent="Grabación lista — podés reproducir y descargar. Tamaño: "+(blob.size/1024).toFixed(0)+" KB"; st.style.display="block";
-          // Guardar referencia en la última sesión
-          if(sesionesDraft.length){
-            const last=sesionesDraft[sesionesDraft.length-1];
-            last.audioURL=url; last.audioSize=blob.size;
-          }
+          st.textContent="Grabación lista — podés reproducir. Tamaño: "+(blob.size/1024).toFixed(0)+" KB — ¡No olvides Guardar consultante para que quede en la ficha!"; st.style.display="block";
+          // Guardar como dataURL persistente (para que sobreviva al recargar)
+          const reader=new FileReader();
+          reader.onload=()=>{
+            const dataUrl=reader.result;
+            if(sesionesDraft.length){
+              const last=sesionesDraft[sesionesDraft.length-1];
+              last.audioURL=dataUrl; last.audioDataUrl=dataUrl; last.audioSize=blob.size; last.audioTempUrl=url;
+            }
+          };
+          reader.readAsDataURL(blob);
           btn.textContent="● Grabar conversación"; btn.style.background=""; grabarActivo=false;
         };
         mediaRecorder.start(); grabarActivo=true;
@@ -4550,7 +4556,7 @@ $("#import-file").addEventListener("change",e=>{
     if(!c) return;
     const el=document.getElementById("consultante-detalle");
     el.style.display="block";
-    const sesHtml = ensureSesiones(c).map((s,i)=>`<div class="sesion" style="margin-top:8px"><div class="sesion-head"><b>Sesión ${i+1} — ${esc(s.fecha)}</b></div><div class="small" style="white-space:pre-wrap">${esc(s.notas||"—")}</div>${(s.qa&&s.qa.length? s.qa.map(q=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${q.resono?'border-left:2px solid var(--accent)':''}"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"—")}</div>`).join("") : "")}</div>`).join("");
+    const sesHtml = ensureSesiones(c).map((s,i)=>`<div class="sesion" style="margin-top:8px"><div class="sesion-head"><b>Sesión ${i+1} — ${esc(s.fecha)}</b></div><div class="small" style="white-space:pre-wrap">${esc(s.notas||"—")}</div>${s.audioURL?`<audio src="${s.audioURL}" controls style="width:100%;margin-top:6px"></audio>`:""}${(s.qa&&s.qa.length? s.qa.map(q=>`<div class="small" style="margin:4px 0;padding:4px 8px;background:var(--surface-2);border-radius:4px;${q.resono?'border-left:2px solid var(--accent)':''}"><b>${esc(q.q)} ${q.resono?'<span class="resono-star">★ le resonó</span>':''}</b><br>${esc(q.a||"—")}</div>`).join("") : "")}</div>`).join("");
     const guiaHtml = c.guia ? Object.entries(c.guia).filter(([k,v])=>String(v||"").trim()).map(([k,v])=>{ const fase=(typeof faseData!=="undefined"?faseData():DB.guia_fases||[]).find(f=>String(f.fase)===String(k)); return `<div class="small" style="margin:6px 0;padding:8px 10px;background:var(--surface-2);border-radius:6px"><b>Fase ${k} — ${fase?fase.nombre:""}</b><br>${String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>`; }).join("") : "";
     el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)">
       <button class="btn btn-sm btn-ghost" onclick="showConsultantesList()" style="margin-bottom:10px">← Volver a consultantes</button>
