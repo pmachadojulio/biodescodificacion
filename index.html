@@ -447,6 +447,8 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
         <div id="cf-sugerencias" style="display:none;margin-top:14px"></div>
         <div id="cf-repreguntas" style="display:none;margin-top:10px"></div>
         <div id="cf-asocs" style="margin-top:14px"></div>
+        <div id="cf-biblio" style="margin-top:14px"></div>
+        <div id="cf-cerebro" style="margin-top:14px"></div>
         <div class="form-actions">
           <button class="btn btn-ghost" id="cf-cancelar">Cancelar</button>
           <button class="btn btn-primary" id="cf-guardar">Guardar consultante</button>
@@ -579,7 +581,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T18:54:29"
+  "integrado": "2026-08-29T18:58:10"
  },
  "bibliografia": [
   {
@@ -3061,7 +3063,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3728,6 +3730,8 @@ function resetCF(){
   document.getElementById("cf-repreguntas").style.display="none";
   document.getElementById("cf-repreguntas").innerHTML="";
   document.getElementById("cf-asocs").innerHTML="";
+  document.getElementById("cf-biblio").innerHTML="";
+  document.getElementById("cf-cerebro").innerHTML="";
   renderSesionesDraft();
 }
 function renderSesionesDraft(){
@@ -3874,6 +3878,45 @@ function triggerFunnel(){
   if(!repsFiltradas.length && (sint||org||ctx)){
     for(const q of poolCierreFallback){ if(!sugPregs.find(s=>s.txt===q) && !Array.from(yaRespondidas).some(r=> q.toLowerCase().slice(0,15).includes(r.slice(0,15)))) repsFiltradas.push(q); if(repsFiltradas.length>=2) break; }
   }
+  // --- BIBLIO RELEVANTE (tiempo real): de asociaciones relacionadas ---
+  const biblioWrap = document.getElementById("cf-biblio");
+  const biblioIds = new Set();
+  relAsocs.forEach(a=>{
+    const m = String(a.source_reference||"").match(/B\d+/g);
+    if(m) m.forEach(id=> biblioIds.add(id));
+    // también por grupo: si el órgano es tiroides, priorizar B02/B04/B13 etc.
+  });
+  // además, buscar en DB.bibliografia por notas que mencionen el órgano/síntoma
+  const nOrg = norm(org||""); const nSint = norm(sint||"");
+  DB.bibliografia.forEach(b=>{
+    const hay = norm((b.title||"")+" "+(b.notes||"")).includes(nOrg) || (nSint && norm((b.title||"")+" "+(b.notes||"")).includes(nSint.slice(0,6)));
+    if(hay && biblioIds.size<4) biblioIds.add(b.reference_id);
+  });
+  if(biblioIds.size){
+    const refs = Array.from(biblioIds).map(id=> DB.bibliografia.find(b=>b.reference_id===id)).filter(Boolean).slice(0,3);
+    if(refs.length){
+      biblioWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--accent)"><h3 style="color:var(--accent)">Bibliografía que puede ayudar — según este caso</h3>${refs.map(r=>`<div class="small" style="margin:6px 0;padding:6px 10px;background:var(--surface-2);border-radius:4px;cursor:pointer" data-open="ref:${r.reference_id}"><b>${esc(r.title)}</b> — <span class="muted">${esc(r.author||"")} ${r.year? "· "+r.year:""}</span><br><span class="muted" style="font-size:11px">${esc((r.notes||"").slice(0,120))}${(r.notes||"").length>120?"…":""}</span> ${r.url?`<br><a href="${esc(r.url)}" target="_blank" style="font-size:11px;color:var(--accent)">ver fuente ↗</a>`:""}</div>`).join("")}</div>`;
+    } else biblioWrap.innerHTML="";
+  } else biblioWrap.innerHTML="";
+
+  // --- CEREBRO — mini grafo de lo que se activa para este consultante ---
+  const cerebroWrap = document.getElementById("cf-cerebro");
+  if(relAsocs.length){
+    const nodos = new Map();
+    relAsocs.forEach(a=>{
+      const s = a.source_type==="concept"? conceptName(a.source_id): organName(a.source_id);
+      const t = a.target_type==="concept"? conceptName(a.target_id): organName(a.target_id);
+      nodos.set(a.source_id, s); nodos.set(a.target_id, t);
+    });
+    // sumar concepto del síntoma si existe como keyword
+    const ctxN = norm(sint+" "+ctx);
+    DB.concepts.forEach(c=>{
+      if(c.keywords&& c.keywords.some(k=> ctxN.includes(norm(k))) ) nodos.set(c.concept_id, c.concept);
+    });
+    const lista = Array.from(nodos.entries()).slice(0,10);
+    cerebroWrap.innerHTML = `<div class="cf-sugerencias" style="border-color:var(--accent-2)"><h3 style="color:var(--accent-2)">Cerebro — red que se activa para este síntoma</h3><div class="small muted" style="margin-bottom:6px">${lista.map(([id,label])=>`<span class="pill" data-open="${DB.concepts.find(c=>c.concept_id===id)?"concept":"organ"}:${id}">${esc(label)}</span>`).join(" ")}</div><span class="small muted">${relAsocs.length} asociaciones relacionadas · tocá un nodo para abrir su ficha</span></div>`;
+  } else cerebroWrap.innerHTML="";
+
   // render
   if(sugPregs.length){
     sugWrap.style.display="block";
