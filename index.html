@@ -600,7 +600,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-30T10:21:38"
+  "integrado": "2026-08-30T10:26:30"
  },
  "bibliografia": [
   {
@@ -3091,7 +3091,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3753,14 +3753,14 @@ function renderCFArbol(){
   if(!wrap) return;
   if(wrap.style.display==="none") return;
   // Asegurar estructura de árbol manipulable
-  if(!arbolDraft || !Array.isArray(arbolDraft.nodes)){
+  if(!arbolDraft || !Array.isArray(arbolDraft.nodes) || !arbolDraft.nodes.length){
     const alias=document.getElementById("cf-alias")?.value||"Consultante";
     const ctx=(document.getElementById("cf-contexto")?.value||"");
     arbolDraft={ nodes:[], edges:[] };
     // Seed inicial desde contexto si está vacío
     const addNode=(id,label,tipo,x,y)=>{ if(!arbolDraft.nodes.find(n=>n.id===id)) arbolDraft.nodes.push({id,label,tipo,x,y}); };
-    const madreY = (ctx.match(/madre[^\n]*?(\d{4})/i)||[])[1]||"";
-    const padreY = (ctx.match(/padre[^\n]*?(\d{4})/i)||[])[1]||"";
+    const madreY = (ctx.match(/madre[^\n]*?(\d{4}|\d{1,2})/i)||[])[1]||"";
+    const padreY = (ctx.match(/padre[^\n]*?(\d{4}|\d{1,2})/i)||[])[1]||"";
     addNode("madre", madreY?`Madre ${madreY}`:"Madre", "madre", 80, 40);
     addNode("padre", padreY?`Padre ${padreY}`:"Padre", "padre", 220, 40);
     if(/aborto/i.test(ctx)) addNode("aborto", "Aborto previo", "evento", 150, 75);
@@ -4013,6 +4013,10 @@ function openCF(pref={}){
   renderSesionesDraft();
   renderCFGia();
   renderCFTimeline();
+  // forzar que el árbol tome el contexto actual aunque estuviera vacío
+  if(arbolDraft && arbolDraft.nodes && !arbolDraft.nodes.length){
+    const tmp = document.getElementById("cf-arbol-view"); if(tmp) tmp.style.display="none";
+  }
   // arbol se renderiza cuando se despliega (lazy), pero pre-inicializar estructura
   if(!arbolDraft) arbolDraft = {nodes:[], edges:[]};
   renderCFArbol();
