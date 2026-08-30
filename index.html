@@ -437,6 +437,17 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
         </div>
         <div class="form-row"><label>Notas de contexto (qué cambió antes del inicio, con quién vive y rol)</label><textarea id="cf-contexto" rows="2" placeholder="Qué pasó 30–60 días antes… Con quién vive…"></textarea></div>
         <!-- Sesiones -->
+        <div id="cf-timeline-wrap" style="margin-top:14px">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted)">Línea de tiempo — ciclos</h3>
+            <div class="row" style="gap:6px">
+              <button type="button" class="btn btn-sm btn-ghost" id="cf-timeline-add">+ Evento</button>
+              <button type="button" class="btn btn-sm btn-ghost" id="cf-arbol-btn" title="Ver árbol genealógico">Árbol 🌳</button>
+            </div>
+          </div>
+          <div id="cf-timeline" style="margin-top:8px;display:flex;gap:8px;overflow-x:auto;padding:8px 0;min-height:44px;border:1px dashed var(--border);border-radius:var(--r-sm);background:var(--surface)"></div>
+          <div id="cf-arbol-view" style="display:none;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface)"></div>
+        </div>
         <div id="cf-sesiones-wrap" style="margin-top:14px">
           <div class="row" style="justify-content:space-between;align-items:center">
             <h3 style="font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted)">Sesiones</h3>
@@ -589,7 +600,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-29T20:45:01"
+  "integrado": "2026-08-30T10:15:37"
  },
  "bibliografia": [
   {
@@ -3080,7 +3091,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3717,6 +3728,49 @@ function closeSuenoForm(){
     ===================================================================== */
 let sesionesDraft = []; // [{id, fecha, notas, qa: [{q,a}]}]
 let guiaDraft = {}; // {1:"",2:""...} por consultante
+
+let timelineDraft = [];
+let arbolDraft = null;
+function renderCFTimeline(){
+  const wrap=document.getElementById("cf-timeline");
+  if(!wrap) return;
+  if(!timelineDraft.length){
+    wrap.innerHTML='<span class="small muted" style="padding:6px">Sin eventos — se crea solo desde tus respuestas. Ej: "a los 10/11 cuidé a mi hermano" → evento 10/11. Podés agregarlo manual con + Evento.</span>';
+    return;
+  }
+  // ordenar por fecha/edad intento: por id o fecha
+  wrap.innerHTML = timelineDraft.map((ev,i)=>`
+    <div style="flex:0 0 auto;min-width:140px;max-width:180px;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);position:relative">
+      <div style="font-size:11px;color:var(--accent);font-weight:700">${esc(ev.fecha||ev.edad||"s/f")}</div>
+      <div style="font-size:12px;font-weight:600;margin:2px 0">${esc(ev.titulo||"Evento")}</div>
+      <div class="small muted" style="font-size:11px;white-space:normal">${esc((ev.desc||"").slice(0,80))}</div>
+      <button data-del-timeline="${ev.id}" title="Quitar" style="position:absolute;top:4px;right:4px;background:transparent;border:none;color:var(--danger);cursor:pointer">×</button>
+    </div>
+  `).join("");
+}
+function renderCFArbol(){
+  const wrap=document.getElementById("cf-arbol-view");
+  if(!wrap) return;
+  if(wrap.style.display==="none") return;
+  // Arbol simple basado en contexto familiar
+  const alias=document.getElementById("cf-alias")?.value||"Consultante";
+  const ctx=(document.getElementById("cf-contexto")?.value||"") + " " + timelineDraft.map(e=>e.desc||"").join(" ");
+  // Extraer datos familiares del contexto
+  const madreMatch = ctx.match(/madre[^.]*?(\d{4})/i);
+  const padreMatch = ctx.match(/padre[^.]*?(\d{4})/i);
+  const esQuinta = /5ta|quinta/i.test(ctx);
+  const aborto = /aborto/i.test(ctx);
+  const hermano = /FUPU/i.test(ctx) ? "FUPU" : (/hermano/i.test(ctx) ? "Hermano" : null);
+  let html = `<div class="small" style="font-family:var(--mono);font-size:11px;line-height:1.6">`;
+  html += `<div>Padre ${padreMatch?padreMatch[0].slice(-4):"?"} + Madre ${madreMatch?madreMatch[0].slice(-4):"?"} ${aborto?'<span style="color:var(--danger)">● aborto previo</span>':""}</div>`;
+  html += `<div style="margin-left:12px">├─ ${esQuinta?"... (4 hermanas/os) ...<br>├─ ":""}<b>${esc(alias)} (5ta hija)</b> ${aborto?'<span style="color:var(--accent)">← yacente/reemplazo?</span>':""}</div>`;
+  if(hermano) html += `<div style="margin-left:12px">└─ ${esc(hermano)} (nace cuando ${esc(alias)} tenía 10/11)</div>`;
+  html += `</div>`;
+  html += `<p class="small muted" style="margin-top:8px">Vista para investigación transgeneracional. Los nodos con ● son eventos de la línea de tiempo.</p>`;
+  html += `<div style="margin-top:6px">` + timelineDraft.filter(e=>e.fecha||e.edad).slice(0,6).map(e=>`<span class="pill" style="font-size:10px">${esc((e.fecha||e.edad)+"·"+(e.titulo||"").slice(0,12))}</span>`).join(" ") + `</div>`;
+  wrap.innerHTML = html;
+}
+
 function allConsultantes(){ return consultantes; }
 function ensureSesiones(c){
   if(!Array.isArray(c.sesiones) || !c.sesiones.length){
@@ -3859,6 +3913,19 @@ function openCF(pref={}){
     $("#cf-contexto").value=pref.contexto||"";
     sesionesDraft = JSON.parse(JSON.stringify(ensureSesiones(pref)));
     guiaDraft = Object.assign({}, pref.guia||{});
+    timelineDraft = JSON.parse(JSON.stringify(pref.timeline||[]));
+    // auto-extraer eventos si el contexto ya tiene fechas/edades y timeline vacío
+    if(!timelineDraft.length && pref.contexto){
+      const extraer=(txt)=>{
+        const evs=[];
+        const m1=txt.match(/(?:a los )?10\/11[^.]*/gi); if(m1) evs.push({id:"auto-10-11", edad:"10/11", titulo:"Cuidar a hermano", desc:m1[0].slice(0,80)});
+        const m2=txt.match(/5ta hija[^.]*/gi); if(m2) evs.push({id:"auto-5ta", edad:"—", titulo:"5ta hija", desc:m2[0].slice(0,80)});
+        const m3=txt.match(/aborto[^.]*/gi); if(m3) evs.push({id:"auto-aborto", edad:"—", titulo:"Aborto previo materno", desc:m3[0].slice(0,80)});
+        return evs;
+      };
+      const autos=extraer(pref.contexto+" "+(pref.sintoma||""));
+      autos.forEach(a=>{ if(!timelineDraft.find(x=>x.id===a.id)) timelineDraft.push(a); });
+    }
     $("#cf-title").textContent="Editar consultante";
   } else {
     $("#cf-alias").value=pref.alias||"C-"+String(consultantes.length+1).padStart(3,"0");
@@ -3870,6 +3937,7 @@ function openCF(pref={}){
   }
   renderSesionesDraft();
   renderCFGia();
+  renderCFTimeline(); renderCFArbol();
   document.getElementById("consultantes-list").style.display="none";
   const sr2=document.querySelector("#view-consultantes > .row:nth-of-type(2)"); if(sr2) sr2.style.display="none";
   $("#consultante-form-wrap").style.display="block";
@@ -3927,7 +3995,8 @@ function triggerFunnel(){
   }
   // repreguntas en base a lo respondido
   const guiaTxt = Object.values(guiaDraft||{}).join(" ");
-  const ctxAll = [sint, org, edad, desde, ctx, guiaTxt, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
+  const tlTxt = timelineDraft.map(e=>[e.fecha,e.edad,e.titulo,e.desc].join(" ")).join(" ");
+  const ctxAll = [sint, org, edad, desde, ctx, guiaTxt, tlTxt, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.q+" "+x.a))].join(" ");
   let reps = repreguntasPara(ctxAll);
   const repWrap = document.getElementById("cf-repreguntas");
   // deduplicar repreguntas ya respondidas
@@ -4497,6 +4566,26 @@ $("#import-file").addEventListener("change",e=>{
     // la guía también alimenta el embudo
     triggerFunnel();
   });
+  document.getElementById("cf-timeline-add")?.addEventListener("click", ()=>{
+    const fecha=prompt("Fecha o edad (ej: 10/11, 1971, febrero 2026):","")||"";
+    if(!fecha && !confirm("¿Crear evento sin fecha?")) return;
+    const titulo=prompt("Título del evento:","")||"Evento";
+    const desc=prompt("Descripción breve:","")||"";
+    timelineDraft.push({id: (typeof uid!=="undefined"?uid("T"):Date.now().toString(36)), fecha: fecha, titulo: titulo, desc: desc});
+    renderCFTimeline(); renderCFArbol();
+  });
+  document.getElementById("cf-arbol-btn")?.addEventListener("click", ()=>{
+    const v=document.getElementById("cf-arbol-view");
+    if(!v) return;
+    v.style.display = v.style.display==="none"?"block":"none";
+    if(v.style.display==="block") renderCFArbol();
+  });
+  document.getElementById("cf-timeline")?.addEventListener("click", e=>{
+    const btn=e.target.closest("[data-del-timeline]");
+    if(!btn) return;
+    timelineDraft = timelineDraft.filter(x=>x.id!==btn.getAttribute("data-del-timeline"));
+    renderCFTimeline(); renderCFArbol();
+  });
   document.getElementById("cf-cancelar")?.addEventListener("click", closeCF);
   // Volver desde detalle: delegar clicks en Volver
   document.getElementById("consultante-detalle")?.addEventListener("click", e=>{
@@ -4516,6 +4605,7 @@ $("#import-file").addEventListener("change",e=>{
       identidad: document.getElementById("cf-identidad").value.trim(),
       contexto: document.getElementById("cf-contexto").value.trim(),
       guia: Object.assign({}, guiaDraft),
+      timeline: JSON.parse(JSON.stringify(timelineDraft)),
       sesiones: JSON.parse(JSON.stringify(sesionesDraft)),
       fecha: sesionesDraft[0]?.fecha || new Date().toISOString().slice(0,10),
     };
@@ -4566,6 +4656,7 @@ $("#import-file").addEventListener("change",e=>{
       <div class="row" style="justify-content:space-between"><b>${esc(c.alias)} · ${esc(c.sintoma)}</b><span class="small muted">${esc(c.fecha)}</span></div>
       <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")}</p>
       <p class="small" style="margin-top:8px;white-space:pre-wrap">${esc(c.contexto||"—")}</p>
+      ${(c.timeline&&c.timeline.length?`<div style="margin-top:8px"><b class="small" style="color:var(--accent)">Línea de tiempo</b><div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0">${c.timeline.map(e=>`<span class="pill" style="font-size:11px">${esc((e.fecha||e.edad||"")+" · "+(e.titulo||"").slice(0,14))}</span>`).join(" ")}</div></div>`:"")}
       ${guiaHtml?`<div style="margin-top:10px"><b class="small" style="color:var(--accent)">Guía — este consultante</b>${guiaHtml}</div>`:""}
       <div style="margin-top:10px">${sesHtml}</div>
       <div class="row" style="margin-top:10px">
