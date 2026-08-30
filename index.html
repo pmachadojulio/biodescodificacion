@@ -446,6 +446,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
             </div>
           </div>
           <div id="cf-timeline" style="margin-top:8px;display:flex;gap:8px;overflow-x:auto;padding:8px 0;min-height:44px;border:1px dashed var(--border);border-radius:var(--r-sm);background:var(--surface)"></div>
+  <div id="cf-ciclos" style="margin-top:8px;display:none"></div>
           <div id="cf-arbol-view" style="display:none;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface)"></div>
         </div>
         <div id="cf-sesiones-wrap" style="margin-top:14px">
@@ -599,8 +600,8 @@ const DB = {
  "meta": {
   "version": 2,
   "generado": "2026-08-25",
-  "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-30T10:26:30"
+  "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.",
+  "integrado": "2026-08-30T14:15:03"
  },
  "bibliografia": [
   {
@@ -914,6 +915,30 @@ const DB = {
    "notes": "Diferencia vs determinismo síntoma-conflicto; evita premisas absolutistas, enfoque multifactorial biopsicosocial. Justifica torta multifactorial de la app.",
    "verified": true,
    "group": "complementaria"
+  },
+  {
+   "reference_id": "B27",
+   "author": "Salomon Sellam",
+   "year": 2010,
+   "title": "Curso El Transgeneracional — Transcripción San Cugat 6-8 abril 2010 (corregido, 117p)",
+   "type": "curso",
+   "publisher": "Bérangel / transcripción",
+   "url": null,
+   "notes": "HPT (Hit Parade Transgeneracional), reparación por enfermedad/profesión/comportamiento/hijos, vals, nombres/fechas/semejanzas/padrinos/secretos. Base de 38 asociaciones HPT.",
+   "verified": true,
+   "group": "modelo_sellam"
+  },
+  {
+   "reference_id": "B28",
+   "author": "Salomon Sellam",
+   "year": null,
+   "title": "Sistema Osteoarticular — síntesis 15p + tratado 39p",
+   "type": "libro",
+   "publisher": "Bérangel",
+   "url": null,
+   "notes": "Fisiología Ca/Mg, desvalorización precisión quirúrgica, pie/rodilla/cadera/columna/hombro/mano. 20 asociaciones osteo.",
+   "verified": true,
+   "group": "modelo_sellam"
   }
  ],
  "organs": [
@@ -1795,6 +1820,230 @@ const DB = {
     "casa inundada"
    ],
    "description": "Topografía del Self: sótano=inconsciente/transgeneracional, ático=proyectos, cocina=nutrición afectiva."
+  },
+  {
+   "concept_id": "flechazo-gemelo",
+   "concept": "Flechazo / Gemelo simbólico",
+   "category": "vínculo",
+   "synonyms": [],
+   "description": "Reconocimiento inconsciente instantáneo con electricidad: el otro vibra como gemelo perdido (mismo N, C invertido, santoral). Incesto simbólico hermano-hermana."
+  },
+  {
+   "concept_id": "incesto-simbolico",
+   "concept": "Incesto simbólico",
+   "category": "vínculo",
+   "synonyms": [],
+   "description": "Tener pareja con quien sin ser familia se vive como familia (misma fecha/nombre/rasgo unión). Activo = sin sexo, desactivo = con sexo."
+  },
+  {
+   "concept_id": "amor-imposible",
+   "concept": "Amor imposible / difícil (programa)",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Mensaje transgeneracional/PS: casarse/morirse, placer/morirse, amor en otro lado, hacer amor=engañar."
+  },
+  {
+   "concept_id": "gemelo-perdido",
+   "concept": "Gemelo perdido / Placenta perdida",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Gemelo real no progresado (hemorragia inicio embarazo) o placenta como confidente perdido; busca fusión, come para dos, funciona de dos en dos."
+  },
+  {
+   "concept_id": "parto-programa",
+   "concept": "Programa de parto",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Cómo nací = cómo entro al mundo y concluyo proyectos: bloqueado, rápido, lento, fórceps, tardío, inducido, cesárea."
+  },
+  {
+   "concept_id": "secreto-familiar",
+   "concept": "Secreto familiar (PS implícito)",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Secreto parental como energía que pasa al hijo y da trastorno/enfermedad."
+  },
+  {
+   "concept_id": "hijo-programa",
+   "concept": "Tipología hijo-programa",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Bastón vejez, mosquetero reina, esponja, basura (tóxicos→agua), síntoma, medicamento, sustitución/yaciente/eventual."
+  },
+  {
+   "concept_id": "arquetipo-sexual",
+   "concept": "Arquetipo sexual biológico",
+   "category": "vínculo",
+   "synonyms": [],
+   "description": "Predominancia ciervo/león/conejo/bonobo/mono que condiciona sexualidad adulta."
+  },
+  {
+   "concept_id": "yacente",
+   "concept": "Yacente",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Vida trabada a consecuencia de fallecimiento injustificado/injustificable (hijo, adulto joven) acontecido antes de la concepción del consultante. Memoria familiar de duelo imposible que se transmite a descendiente inocente. Signos cardinales: tristeza leída en cara + 'Tengo la impresión de que no estoy viviendo mi vida'. cita: Un duelo familiar transgeneracional bloqueado podía mantenerse mucho tiempo y hasta transmitirse más adelante a un descendiente... Distinguía el duelo vertical transgeneracional del duelo horizontal contemporáneo. [YII:p10] + 'no estoy viviendo mi vida' [YII:p10] [B07 YI"
+  },
+  {
+   "concept_id": "vida-bloqueada",
+   "concept": "Vida Bloqueada",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Duelo bloqueado (total o parcial) que bloquea fuerzas vitales. No es solo yacente transgeneracional: mismo bloqueo puede venir de duelo durante embarazo, infancia/adolescencia o contemporáneo. cita: solo era cuestión de duelo no hecho, o bien en parte o bien bloqueado, bloqueando así sus fuerzas vitales [YII:p8] [B07 YII:p8-9 'bloqueando así sus fuerzas vitales' [YII:p8-9], YII:p11 cronología del drama familiar]"
+  },
+  {
+   "concept_id": "falso-yacente",
+   "concept": "Falso Yacente",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Personas con criterios de yacente (tristeza sobre todo) sin defunción previa a concepción. Revelan duelo real durante Proyecto/Sentido (gestación/lactancia/primer año): madre destila moléculas de duelo y el bebé, presente en el drama, queda embebido. cita: estarían de una manera como embebidas de moléculas de duelo, destiladas involuntariamente por la madre... Le tocó a Ud. porque estaba presente... [YII:p11-12] [B07 YII:p11 (p16-17 md) + YII:p11-12]"
+  },
+  {
+   "concept_id": "duelo-bloqueado",
+   "concept": "Duelo Bloqueado",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: duelo_bloqueado"
+  },
+  {
+   "concept_id": "bloqueo-integracion",
+   "concept": "Bloqueo Integracion",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Frecuente por bloqueo previo en Explicación/Comprensión. Persona pendiente de sus emociones/resentidos, dicotomía cuerpo-espíritu como filtro a nivel del cuello separando cabeza del resto. Requiere técnicas psicocorporales para mover el mental. El captar intelectual (explicación+comprensión) no se hace visceral. cita: La persona está como pendiente de sus emociones... una verdadera dicotomía entre el cuerpo y el espíritu como si se hubiera colocado un filtro a nivel del cuello [YII:p57] [B07 YII:p57 (p106-107 md)]"
+  },
+  {
+   "concept_id": "bloqueo-aceptacion",
+   "concept": "Bloqueo Aceptacion",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Sutileza diagnóstica: persona pasa correctamente todas las fases pero queda atrapada porque no acepta la partida. A menudo queda duelo específico activo, algo inacabado no dicho/no exteriorizado en la relación. Caso Sra. Caballo Adorado: 20 años vínculo caballo Touran confidante, muerte negada socialmente, duelo bloqueado en aceptación; bloqueo permite tratar y volver a montar. cita: algunas veces la persona... pasa correctamente por todas las fases pero queda atrapada aquí porque no acepta la partida... algo que no ha podido decirse o exteriorizarse [YII:p57] [B07 YII:p57-58 (p106-108 md)]"
+  },
+  {
+   "concept_id": "bloqueo-reinversion",
+   "concept": "Bloqueo Reinversion",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Hay un antes/después del drama. Persona parece querer reinvertirse pero en fondo no lo consigue: vive/come/duerme/sale pero sola vuelve engranaje recuerdos/fotos. Clásico viuda de negro largo luto español/portugués/griego. Falsa reinversión = sobrevivir, no vivir. Requiere revisar bloqueos primarios en otras etapas. Caso Sra. Hasta Luego: malestar cada despedida (amiga/hermana/velada) triste horas/días = duelo antiguo no reinvertido. cita: la viuda o el viudo no conciben rehacer sus vidas y llevan luto durante largos años... Ciertamente vive, come, duerme... pero... está sobreviviendo [YII:p58"
+  },
+  {
+   "concept_id": "bloqueo-negacion",
+   "concept": "Bloqueo Negacion",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_negacion"
+  },
+  {
+   "concept_id": "bloqueo-rabia",
+   "concept": "Bloqueo Rabia",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_rabia"
+  },
+  {
+   "concept_id": "bloqueo-tristeza",
+   "concept": "Bloqueo Tristeza",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_tristeza"
+  },
+  {
+   "concept_id": "bloqueo-explicacion",
+   "concept": "Bloqueo Explicacion",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_explicacion"
+  },
+  {
+   "concept_id": "bloqueo-comprension",
+   "concept": "Bloqueo Comprension",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_comprension"
+  },
+  {
+   "concept_id": "bloqueo-regateo",
+   "concept": "Bloqueo Regateo",
+   "category": "familia",
+   "synonyms": [],
+   "description": "Concepto Sellam YII/OST: bloqueo_regateo"
+  },
+  {
+   "concept_id": "lateralidad-biologica",
+   "concept": "Lateralidad Biologica",
+   "category": "existencial",
+   "synonyms": [],
+   "description": "Concepto osteo lateralidad_biologica"
+  },
+  {
+   "concept_id": "ciclo-biologico-memorizado",
+   "concept": "Ciclo Biologico Memorizado",
+   "category": "existencial",
+   "synonyms": [],
+   "description": "Concepto osteo ciclo_biologico_memorizado"
+  },
+  {
+   "concept_id": "mineral-ca-mg",
+   "concept": "Mineral Ca Mg",
+   "category": "existencial",
+   "synonyms": [],
+   "description": "Concepto osteo mineral_ca_mg"
+  },
+  {
+   "concept_id": "fantasma",
+   "concept": "Fantasma transgeneracional",
+   "category": "familia",
+   "description": "Secreto no dicho que habla a través del descendiente: 'todo lo que no decimos se queda grabado'. Se hereda como patología del secreto. Secretos sexual/dinero/verguenza (sexual 99%). Se condensa generaciones y descarga en cuerpo (cadera, pelvis, cervicales, malformación).",
+   "synonyms": []
+  },
+  {
+   "concept_id": "doble",
+   "concept": "Doble (y doble por nombre/fecha)",
+   "category": "familia",
+   "description": "Doble: vínculo donde el cliente está unido a familiar por mismo nombre, misma fecha nacimiento/concepción (±7 días, 10 si límite), misma patología, misma profesión/parecido/actividad. Puede ser vertical (padre/hijo) u horizontal (gemelo). Marca con mismo color en árbol.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "sindrome-aniversario",
+   "concept": "Síndrome aniversario",
+   "category": "tiempo",
+   "description": "Repetición en fecha aniversario (±7/10 días): enfermedad/muerte se repite en misma fecha o edad que el drama ancestral. Ej cáncer seno 52 años abuela/madre/hija. Buscar fidelidad invisible + aniversario.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "reparacion",
+   "concept": "Reparación transgeneracional",
+   "category": "familia",
+   "description": "Formas de reparar drama: 1 Enfermedad (orgánica/funcional/psíquica), 2 Profesión (bombero fuego, médico enfermedad, madera vesícula/cólera, flores procreación, maestro estudios), 3 Comportamiento (obsesiones, risa), 4 Hijos (Proyecto Sentido). Descarga energía psíquica hasta liberar clan.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "vals-transgeneracional",
+   "concept": "Vals transgeneracional (rango fraternidad)",
+   "category": "familia",
+   "description": "Rango de fraternidad y cuadrado mágico (1-4-7 trazos rectos, 2-5-8 mixtos, 3-6-9 redondos). Cada persona ligada a familiares con mismo número (contando abortos/pérdidas). Afinidades por número explican con quién te llevas bien.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "semejanza",
+   "concept": "Semejanza (parecido físico/carácter/actividad)",
+   "category": "familia",
+   "description": "Semejanza como pista HPT: parecido físico ('eres igual a tu abuelo'), carácter ('eres tan enojón como...'), actividad/gustos (fútbol, música, colecciones). Crea doble por apariencia y hereda memorias.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "padrinos",
+   "concept": "Padrinos / Madrinas",
+   "category": "familia",
+   "description": "Padrinos como sustitutos de padres cuando mueren. Si vínculo importante, tomar nombres/fechas/semejanzas: doble por ser padrino + nombre + fecha + número (2 y 5 afines). Señala historia tía.",
+   "synonyms": []
+  },
+  {
+   "concept_id": "fidelidad-invisible",
+   "concept": "Fidelidad familiar invisible",
+   "category": "familia",
+   "description": "Doble obligación: vivir mi vida = contra clan sin alimento afectivo vs vivir vida de otro = con alimento pero dejo de vivir mi vida. Bloquea sanación (50% yacentes curan en 1 sesión, resto bloqueado por fidelidad). Requiere acción, no solo conciencia.",
+   "synonyms": []
   }
  ],
  "associations": [
@@ -2755,6 +3004,1073 @@ const DB = {
    "description": "Insomnio bajo etiqueta «SOMATIZANDO»: ligado a muerte/pérdida y al bloque de duelos del consultante.",
    "evidence_level": "observacion_clinica",
    "source_reference": "Caso 2 (notas de clase, 24 pags) — transcripción caso_2_p16/p17/p18/p21/p22.json; revision_caso_2.md sec.5"
+  },
+  {
+   "association_id": "A088",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "PS explícito de élite deportiva (padres gimnastas 4º/5º que proyectan campeón) → a los 13 desvía camino y aparecen tendinitis/dolores espalda osteoarticulares para dejar gimnasia.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p1-2"
+  },
+  {
+   "association_id": "A089",
+   "source_type": "concept",
+   "source_id": "inexistencia",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Ser niña cuando esperaban niño (o viceversa) o figura protectora o yaciente → PS inexistencia 'no debías haber nacido / no tengo derecho a vivir'; muchos zurdos biológicos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p2"
+  },
+  {
+   "association_id": "A090",
+   "source_type": "concept",
+   "source_id": "duelo",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Madre en duelo bloqueado tristeza/angustia/depresión en embarazo (muerte padre) impregna feto con hormonas estrés → depresión PS de fondo desde siempre vs conflictual (con antes/después).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p3"
+  },
+  {
+   "association_id": "A091",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Clima peleas/ruido embarazo e infancia → asma desde nacimiento (uno de los conflictos del asma son peleas familiares) mejora fuera del clima y vuelve al volver.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p3 — 'Mis padres hablan peleas, yo hablo asma'"
+  },
+  {
+   "association_id": "A092",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "PS urgencia por drama (padre enferma muerte temida en gestación, niño nombrado como muerto) → repara siendo médico sin gustarle; reparar sin pasión = trabajar mucho y no ganar bien.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p3-4"
+  },
+  {
+   "association_id": "A093",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto bloqueado con sufrimiento fetal y cesárea urgencia 'si concluyo me muero' → patrón adulto desarrollar bien proyectos pero siempre algo impide concluirlos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4"
+  },
+  {
+   "association_id": "A094",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "tiroides",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto muy rápido sin llegar hospital 'ser rápido me salvó' → hacer todo muy rápido muchas ideas; llevado al extremo hipertiroidismo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4"
+  },
+  {
+   "association_id": "A095",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "tiroides",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto muy lento 'nacer despacito me salvó' → lentitud pereza ningún apuro; puede dar hipotiroidismo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4"
+  },
+  {
+   "association_id": "A096",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto muy lento → personas perezosas en algunos casos con sobrepeso.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4"
+  },
+  {
+   "association_id": "A097",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nacer con fórceps/ventosa intervención dolorosa tercero 'gracias al fórceps sigo vivo' → dificultad nacer a algo nuevo sin ayuda, aversión control, miedo dolor, nunca suficiente, 'mi cabeza es sólida' intelecto.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4"
+  },
+  {
+   "association_id": "A098",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto tardío 'no estoy preparada para separarme' / 'si naces te mueres' (muertes neonatales familia) → ritmo lento indefensión pensar no conseguir lo deseado, vida dura.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p4-5"
+  },
+  {
+   "association_id": "A099",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Parto inducido 'los demás ponen reglas' → dificultades iniciar proyectos y con el tiempo, apatía, no eligen relaciones son elegidos, esperan impulso, les cuesta salir de cama.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A100",
+   "source_type": "concept",
+   "source_id": "parto-programa",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cesárea programada miedo materno/ginecólogo riesgo → dependencia hacer tareas solos, cuesta cambios ciclo/colegio/amigos, dificultad concretar proyectos solos, baja autoestima.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A101",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "PS inconsciente / yaciente: sin emoción o busca/bloquea emociones, atracción ropa oscura, sueño largo fatigado, molestia luz/ruido/frío, mirada triste fondo depresión.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A102",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "pancreas",
+   "relationship_type": "asociacion_clinica",
+   "description": "Mismo PS inconsciente yaciente → patología diabetes listada entre sus patologías típicas.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A103",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Mismo PS inconsciente → sobrepeso entre patologías yaciente.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A104",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "boca-dientes",
+   "relationship_type": "asociacion_clinica",
+   "description": "Mismo PS inconsciente → bruxismo y parásitos intestinales entre patologías; parálisis/apneas/hiperactividad también listadas.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p5"
+  },
+  {
+   "association_id": "A105",
+   "source_type": "concept",
+   "source_id": "secreto-familiar",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Secreto sexual parental (abuelo cura pueblo oculto) → nieta 15 años artrosis bilateral caderas; cadera conflicto sexualidad.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p6"
+  },
+  {
+   "association_id": "A106",
+   "source_type": "concept",
+   "source_id": "separacion",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Eccema nalga al nacer marca separación carnal 'cuando alguien me toca me siento protegido, existir'; nalga tocada por papás/pareja; programa amor difícil madre obligada casar otro.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p6"
+  },
+  {
+   "association_id": "A107",
+   "source_type": "concept",
+   "source_id": "hijo-programa",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hijo bastón vejez madre final edad fértil para sostener padres → sobrepeso sólido fuerte, soltero eterno vive con padres no se autoriza casar.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p7"
+  },
+  {
+   "association_id": "A108",
+   "source_type": "concept",
+   "source_id": "hijo-programa",
+   "target_type": "organ",
+   "target_id": "rinones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Niño basura para absorber tóxicos familia → retiene líquidos agua para diluir/limpiar tóxicos bloquea pérdida peso no puede eliminar agua.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p7"
+  },
+  {
+   "association_id": "A109",
+   "source_type": "concept",
+   "source_id": "hijo-programa",
+   "target_type": "organ",
+   "target_id": "rinones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Niño esponja absorbe todos los líquidos conflictuales familia (duelo→tristeza, enfado→destruir juguetes) antes 3 años no puede expresarse.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p7"
+  },
+  {
+   "association_id": "A110",
+   "source_type": "concept",
+   "source_id": "separacion",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Mes్మismo clima peleas ya citado refuerza asma; coherencia con pulmones como órgano peleas/separación.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El proyecto sentido p3 (refuerzo teoría)"
+  },
+  {
+   "association_id": "A111",
+   "source_type": "concept",
+   "source_id": "flechazo-gemelo",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Flechazo con electricidad = gemelos simbólicos → inconsciente vive incesto simbólico hermano-hermana; diagnóstico transgeneracional en minutos por fechas.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p1-2"
+  },
+  {
+   "association_id": "A112",
+   "source_type": "concept",
+   "source_id": "amor-imposible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Programa 'casarse=morirse' (yaciente de dos esposas muertas) → mujer no se compromete rechaza matrimonios no quiere hijos; bloquea instinto base procrear.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p2"
+  },
+  {
+   "association_id": "A113",
+   "source_type": "concept",
+   "source_id": "amor-imposible",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Programa 'hacer amor=peligroso puedes morir' (bisabuela violada muere al parir) → nunca siente placer.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p2"
+  },
+  {
+   "association_id": "A114",
+   "source_type": "concept",
+   "source_id": "amor-imposible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Madre quería José obligada casar Antonio piensa en otro al hacer amor → hijo 'amor nunca con persona adecuada' nunca encontrará amor está en otra parte.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p3"
+  },
+  {
+   "association_id": "A115",
+   "source_type": "concept",
+   "source_id": "amor-imposible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Marido engaña embarazada → hijo 'hacer amor es engañar por eso no hago amor ni tengo parejas'.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p3"
+  },
+  {
+   "association_id": "A116",
+   "source_type": "concept",
+   "source_id": "nutricion",
+   "target_type": "organ",
+   "target_id": "estomago",
+   "relationship_type": "asociacion_clinica",
+   "description": "Estado oral alimento afectivo=alimento real (seguridad/comer, hambre-coger con amor/tristeza) → allí nacen anorexias y bulimias.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p3-4"
+  },
+  {
+   "association_id": "A117",
+   "source_type": "concept",
+   "source_id": "control",
+   "target_type": "organ",
+   "target_id": "colon",
+   "relationship_type": "asociacion_clinica",
+   "description": "Personalidad anal rígida rácana heces=dinero 'Dime como cagas te diré quien eres' obsesiva marrón necesita controlarlo todo → estreñimiento.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p4"
+  },
+  {
+   "association_id": "A118",
+   "source_type": "concept",
+   "source_id": "incesto-simbolico",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Incesto simbólico activo = sin actividad sexual (tras tener hijos deseo cae progresivo); desactivo = con actividad; 90% parejas en incesto pero solo activo molesta; mínimo 1 vez/mes por ovulación.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p9"
+  },
+  {
+   "association_id": "A119",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Herpes genital recidivante como permiso inconsciente para disminuir frecuencia sexual en incesto simbólico (caso Electra fuerte padre) → se cura al trabajar relación padre.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p16"
+  },
+  {
+   "association_id": "A120",
+   "source_type": "concept",
+   "source_id": "pareja",
+   "target_type": "organ",
+   "target_id": "columna",
+   "relationship_type": "asociacion_clinica",
+   "description": "Todo lo que impide hacer el amor (desorden amoroso) puede manifestarse en ciática, cándidas recidivantes, herpes; nariz temática sexualidad.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p33"
+  },
+  {
+   "association_id": "A121",
+   "source_type": "concept",
+   "source_id": "gemelo-perdido",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Gemelo perdido hemorragia inicio embarazo 'come para dos no puede quedar nada en plato' → sobrepeso 50kg, dos trabajos/marido y amante, funciona de dos en dos (calcetín sin par).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p24"
+  },
+  {
+   "association_id": "A122",
+   "source_type": "concept",
+   "source_id": "arquetipo-sexual",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Eyaculación precoz conejo: peligro ser descubierto copulando o padre castrador que expulsa joven ciervo del territorio → hacer amor rápido para no ser pillado.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p28"
+  },
+  {
+   "association_id": "A123",
+   "source_type": "concept",
+   "source_id": "arquetipo-sexual",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Frigidez por castración materna celosa (niña bonita padre se enamora madre dice 'me va a quitar marido' castra hija) → problemas sexuales vida hija.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p28"
+  },
+  {
+   "association_id": "A124",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "pancreas",
+   "relationship_type": "asociacion_clinica",
+   "description": "Coma diabético decodificado 'Dejadme tranquilo, olvidarme' — deseo volver contacto umbilical madre (estado umbilical).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p3-4"
+  },
+  {
+   "association_id": "A125",
+   "source_type": "concept",
+   "source_id": "duelo",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Duelo bloqueado no elaborar separación pareja que representa madre/padre → 'no puedo hacer duelo de mi madre' sigue buscando madre nunca rehace vida.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p6"
+  },
+  {
+   "association_id": "A126",
+   "source_type": "concept",
+   "source_id": "lealtad-invisible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Reparación obligatoria tras duelo/muerte: reparamos con hijos, amigos, enfermedad, profesión, pareja (sustituto del muerto).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p13-14"
+  },
+  {
+   "association_id": "A127",
+   "source_type": "concept",
+   "source_id": "gemelo-perdido",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Placenta perdida como confidente vivo en vientre cuando afuera es desastre → busca placenta perdida de adulto; permite curarse.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Desórdenes amorosos p25"
+  },
+  {
+   "association_id": "A128",
+   "source_type": "concept",
+   "source_id": "yacente",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Yacente: vida trabada por duelo injustificado/injustificable antes de concepción (hijo/adulto joven). Signos: tristeza facial + 'No estoy viviendo mi vida'. Duelo transgeneracional transmitido. Técnica: distinguir duelo vertical transgeneracional vs horizontal contemporáneo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, El Yaciente II (YII) p10-11 — B07"
+  },
+  {
+   "association_id": "A129",
+   "source_type": "concept",
+   "source_id": "vida-bloqueada",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Vida bloqueada/trabada: duelo bloqueado (total/parcial) bloquea fuerzas vitales. Puede ser yacente transgeneracional o duelo durante embarazo, infancia/adolescencia o contemporáneo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p8-9 — B07"
+  },
+  {
+   "association_id": "A130",
+   "source_type": "concept",
+   "source_id": "falso-yacente",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Falso yacente: criterios yacente sin defunción previa a concepción. Revela duelo real durante Proyecto Sentido (gestación/lactancia/primer año): madre destila moléculas de duelo y bebé queda embebido. Frase curativa: 'Le tocó a Ud. porque estaba presente...'",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p11-12 — B07"
+  },
+  {
+   "association_id": "A131",
+   "source_type": "concept",
+   "source_id": "duelo-bloqueado",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Duelo bloqueado 9 etapas (Kübler-Ross 5 + 4 Sellam): Shock+negación, Regateo, Rabia, Tristeza, Explicación, Comprensión, Integración, Aceptación/Soltar/Perdón, Reinversión. No lineal, cada etapa se franquea en proporción. Cierre = reinversión real.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p18-20 — B07"
+  },
+  {
+   "association_id": "A132",
+   "source_type": "concept",
+   "source_id": "duelo-bloqueado",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Duelo tridimensional: global + duelo del cuerpo + duelo emocional + duelo del espíritu/recuerdo ('tres por el precio de uno'). Aporte terapéutico primordial.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p10 — B07"
+  },
+  {
+   "association_id": "A133",
+   "source_type": "concept",
+   "source_id": "bloqueo-integracion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Bloqueo integración: dicotomía cuerpo-espíritu con filtro a nivel del cuello separando cabeza del resto. Pendiente de emociones/resentidos, captar intelectual no se hace visceral. Requiere psicocorporal.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p57 — B07"
+  },
+  {
+   "association_id": "A134",
+   "source_type": "concept",
+   "source_id": "bloqueo-aceptacion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Bloqueo aceptación/soltar/perdón: pasa todas las fases pero no acepta partida. Queda duelo específico activo, algo inacabado no dicho. Caso Caballo Adorado: 20 años vínculo caballo Touran, muerte no llorada socialmente.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p57-58 — B07"
+  },
+  {
+   "association_id": "A135",
+   "source_type": "concept",
+   "source_id": "bloqueo-reinversion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Bloqueo reinversión: antes/después sin reinvertir, sobrevive no vive (viuda de negro). Vive/come/duerme pero vuelve fotos/recuerdos. Caso Sra. Hasta Luego: malestar en cada despedida horas/días.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Yacente II p58-59 — B07"
+  },
+  {
+   "association_id": "A136",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "HUESO = DESVALORIZACIÓN DE PRECISIÓN QUIRÚRGICA. Mismo conflicto vale para músculo/tendón/fascia periarticular, cambia intensidad: músculo leve, tendinitis medio, hueso máximo íntimo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteoarticular 39p p1-2 — B09-B11"
+  },
+  {
+   "association_id": "A137",
+   "source_type": "concept",
+   "source_id": "mineral-ca-mg",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Calcio = ayuda/estructura/solidez ('no me siento sólido'); pérdida calcio = doy mi calcio a alguien débil. Magnesio = madre (magnetismo=tierra) — a mi lado alguien función materna. Ca+Mg = frágil + función materna. Caso calcitonina 1200.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteoarticular 39p p2-4 — B09-B11"
+  },
+  {
+   "association_id": "A138",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "marco_interpretativo",
+   "description": "4 matices desvalorización: Evaluación, Resultados obligatorios, Impotencia, Falta de respeto. Crónico = gota a gota repetitiva, no bioshock único. Dolor físico proporcional a dolor psíquico.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteoarticular 39p p5-6 — B09-B11"
+  },
+  {
+   "association_id": "A139",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Periostio ectodérmico muy inervado: sin él no duele. Conflicto separación contacto impuesto 3-14 años (tocamientos/incestos reales/simbólicos, padre entra baño niña).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteoarticular 39p p15-16 — B09-B11"
+  },
+  {
+   "association_id": "A140",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "columna",
+   "relationship_type": "marco_interpretativo",
+   "description": "Eje madre/padre y línea vida: pie (0 infancia)-tobillo 3a-rodilla adolescencia-cadera 20 adulto-sacro sagrado-columna fundamentos (lumbares relaciones, dorsales pilar familia, cervicales comunicación)-hombro responsabilidad-codo profesional-muñeca gesto-manos padre/dedos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteoarticular 39p p10-11 — B09-B11"
+  },
+  {
+   "association_id": "A141",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Pie = Madre/Protección (Padre=Permiso). Plano = no despegarme/aplastado madre; cavo = resisto agobio; puntillas = no tocar madre; dedo I obligación madre (hallux valgus cuidar hermanos), IV vesícula cólera madre, V territorio vejiga. Espolón = no tengo derecho marcharme.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 15p p2-3 — B09-B11"
+  },
+  {
+   "association_id": "A142",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "RODILLA = SUMISIÓN (doblegarse a ley del padre). Variante tendinitis = no quiere someterse. Incluye desvalorización + sumisión + dirección + gestos. Meseta tibial balanza justicia obligada someterse; menisco no puedo adaptarme; derrame necesito dulzura en sumisión; rótula futuro/proyectos; ligamentos cruzados cruce caminos/dirección.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 39p p18-21 — B09-B11"
+  },
+  {
+   "association_id": "A143",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cadera/fémur = postura guerrero oposición (real vs simbólica), vesícula/cólera-rencor-injusticia, incesto simbólico (cabeza fémur penetra acetábulo, C1-C2 espiritual), secreto familiar. Pelvis ligada a próstata/útero: hijos, casa, nietos, sexualidad fuera norma.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 15p p5-7 — B09-B11"
+  },
+  {
+   "association_id": "A144",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "columna",
+   "relationship_type": "asociacion_clinica",
+   "description": "Cóccix = identidad sexual (chico/querían chica) + lugar clan 'dónde pongo culo' + sobrecarga sin tiempo sentarse. Sacro = 6 instantes sagrados (concepción, nacimiento, adulto, padres, abuelos, muerte) + prohibición incesto + sagrado personal + dirección. Lumbares relaciones, dorsales pilar familia.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 15p p7-11 — B09-B11"
+  },
+  {
+   "association_id": "A145",
+   "source_type": "concept",
+   "source_id": "desvalorizacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Hombro/omoplato = vestigio alas libertad 'me impiden volar'. Iz paternal (no cuidé hijos), D pareja/trabajo (no ocupo pareja). Codo trabajo arquetípico; muñeca negación 'pienso no realizo'; mano padre/dedos I pulgar madre/II nariz sexualidad/III corazón sexualidad real/IV anular alianza/V meñique secretos. Fibromialgia = fibras familiares + impotencia + dolor moral doble obligación.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 15p p11-15 — B09-B11"
+  },
+  {
+   "association_id": "A146",
+   "source_type": "concept",
+   "source_id": "ciclo-biologico",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Lateralidad bio: lado impacto vs lateralidad biológica (ciática derecha cerebro izq femenino = deseo contrariado, izq cerebro dcho masculino = acción contrariada). Ciclos celulares memorizados predominan en hueso: fractura 50 → /2 buscar desvalorización misma tonalidad. No medicalizar: usar palabra clave + pausa.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Sistema Osteo 39p p9-10 — B09-B11"
+  },
+  {
+   "association_id": "A147",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Transgeneracional: de 100 clientes, origen antes de concepción explica motivo vago ('no me siento bien'). Necesario motivo preciso (enfermedad/frase) para explorar árbol 4 generaciones; 5ª+ rara vez se usa (bisabuelos ya se pierde memoria).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional San Cugat 2010 p1-2 — B27"
+  },
+  {
+   "association_id": "A148",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Reparación del drama: toda enfermedad grave/crónica (esclerosis, insuf respiratoria, artrosis 100% transgeneracional; neurológicas parálisis/parkinson) es materialización de problemática transgeneracional. Si persistencia síntoma = persiste conflicto.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p4-5 — B27"
+  },
+  {
+   "association_id": "A149",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Memoria de pulmón: muerte por gas en trincheras WWII o enterrado vivo/asfixia simbólica (casa pequeña, ahogo pareja/trabajo, fumar para respirar) → asma. Buscar transgeneracional y Proyecto Sentido (0-7 años esponja).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p20-21 — B27"
+  },
+  {
+   "association_id": "A150",
+   "source_type": "concept",
+   "source_id": "yacente",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Yacente 진단: nacimiento en misma fecha que muerte de familiar (← Yacente) vs muerte en tu cumpleaños = mensaje heredero ('te elijo'). Bisabuela suicida ahogada → nieta alérgica agua como protección. Alergia joyas (metal) por abuela asesinada puñal metal.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p5 — B27"
+  },
+  {
+   "association_id": "A151",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Asma niña 5a ligada a abuelo paterno suicida ahorcado (ahogamiento) por fecha doble (15 abril niña / 18 abril abuelo). Padre aún no hizo duelo → niña metaboliza carga. Revisar ambos lados árbol.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p21-22 — B27"
+  },
+  {
+   "association_id": "A152",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "pulmones",
+   "relationship_type": "marco_interpretativo",
+   "description": "Niño 0-7 años esponja: enfermedad 100% Proyecto Sentido durante gestación o transgeneracional. Ejemplo leucemia <7a 'chupa' conflicto padre/madre; círculo Camembert 50% PS madre + 25% TG madre +25% TG padre. Flor demanda explicación afectiva.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p24-26 — B27"
+  },
+  {
+   "association_id": "A153",
+   "source_type": "concept",
+   "source_id": "vals-transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Vals transgeneracional: rango fraternidad cuadrado mágico (1-4-7 rectos, 2-5-8 mixtos, 3-6-9 redondos). Madre 9 + hermanos 3,6,8 explica afinidad; falta hermano aborto cambia números (8→9).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p27-28 — B27"
+  },
+  {
+   "association_id": "A154",
+   "source_type": "concept",
+   "source_id": "doble",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Doble por número: ser hijo 2 lado madre afinidad 2-5-8 y 1 lado padre afinidad 1-4-7. Esterilidad por abortos: madre 7 abortos, abuela 35 abortos mensaje 'no sirve tener hijos serán abortados' + parentalización padre huérfano 12a cabeza familia.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p28 — B27"
+  },
+  {
+   "association_id": "A155",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Relación Black oculta (hija ilegítima) cambia vals: señora es hija 1 pero madre ocultó hija de padre antes de casarse → es hija 2, afinidad con media hermana. Doble por vals + fechas + nombres revela historia oculta.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p29 — B27"
+  },
+  {
+   "association_id": "A156",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Enfermedad que inmoviliza repara 'correr' del abuelo: abuelo cartero caballo mulheriego 25 hijos Black → nieto síndrome cerebelo vértigos (reparación reaccional: detener carrera tras faldas). Testículo no descendido = hijos escondidos/ocultos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p30 — B27"
+  },
+  {
+   "association_id": "A157",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "piel",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nombre y apellido: señora acné grave cambia apellido árabe Karchabui→Bertrand por rechazo laboral padre → pérdida identidad: cara = identidad (dar la cara) → acné en cara. Nombres doble vertical/horizontal por nombre idéntico crea conflicto si relación mala (Eulalia madre/abuela).",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p31-32 — B27"
+  },
+  {
+   "association_id": "A158",
+   "source_type": "concept",
+   "source_id": "yacente",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nombre de muerto = yacente. Padre pone a hijo nombre de hermano muerto Pedro Luis con mala relación → hijo yacente tío, relación pésima padre-hijo sin conocerse. Liberar carga corresponde al padre hacer duelo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p33-34 — B27"
+  },
+  {
+   "association_id": "A159",
+   "source_type": "concept",
+   "source_id": "yacente",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Nombre compuesto y medio yacente: niño Juan Luis Cristian por abuela quiere Cristian muerto 1.5a pero madre se niega → registrado Juan Luis Cristian pero llamado Cristian → hemiplejia mitad sana/mitad muerta (arrastra lado cuerpo 'lado muerto'). Toma conciencia recupera mano.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p35-36 — B27"
+  },
+  {
+   "association_id": "A160",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "marco_interpretativo",
+   "description": "Nombre simbólico/temático: Navidad/Natividad/Natalia → abortos/partos difíciles/muerte parto; María/Dolores/Asunción/Inmaculada/Virginia/Pilar y Salvador/Jesús/Cristian/Moisés con carga simbólica; terminación -EL ángeles (Miguel/Rafael/Gabriel) intermediarios cielo-tierra; Renato Renatus renacimiento tras hijo muerto.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p36 — B27"
+  },
+  {
+   "association_id": "A161",
+   "source_type": "concept",
+   "source_id": "doble",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Fecha nacimiento HPT: día+mes (no año) ±7 días (0-7 doble certificado, 7-10 siente relación). Ej 28 dic vs 29 dic doble; 4 marzo vs 4 marzo muerto = yacente. Santoral solo exacto (no 7 días). Ampliar a 10 si horario límite 23:59 cambia día.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p37-38 — B27"
+  },
+  {
+   "association_id": "A162",
+   "source_type": "concept",
+   "source_id": "doble",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Fecha concepción: cálculo 9 meses atrás (enero→abril, abril→julio, julio→octubre, octubre→enero). Niño 5 ene concebido 5 abril doble abuelo 17 abril. Gemelos simbólicos = doble nacimiento+concepción mismo familiar mal pronóstico.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p38-39 — B27"
+  },
+  {
+   "association_id": "A163",
+   "source_type": "concept",
+   "source_id": "yacente",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Fecha defunción exacta (no rango 7): nacer en fecha que otro murió = yacente reparador; morir en cumpleaños vivo = mensaje heredero universal (Sr Grandulón abuela muere su cumpleaños 'último regalo te elijo').",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p40 — B27"
+  },
+  {
+   "association_id": "A164",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Fecha boda/histórica: nacimiento coincide con boda escandalosa (abuela católica casada protestante 24 aug San Bartolomé masacre ríos sangre) → exceso plaquetas 1.2M (taponar hemorragia) baja a 800k al comprender. Histórica colectiva 1492 árabes, Guerra Civil → yacentes colectivos 4-5 generaciones.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p41-42 — B27"
+  },
+  {
+   "association_id": "A165",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Semejanza HPT: parecido físico ('igual a tu abuelo'), carácter ('tan enojón como...'), actividad/gustos (fútbol, música). Chica 22a embarazada borracha feria pueblo → hija es doble abuela (mismo físico/carácter) que tuvo amor prohibido por tierras → nietos reparan amor imposible.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p43-44 — B27"
+  },
+  {
+   "association_id": "A166",
+   "source_type": "concept",
+   "source_id": "padrinos",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Padrinos/madrinas sustitutos padres: si vínculo importante, tomar nombres/fechas/semejanzas. Gloria 23 marzo doble madrina tía 15 marzo mismo nombre + número 2-5 afinidad → 4 puntos HPT, historia tía explica.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p44-45 — B27"
+  },
+  {
+   "association_id": "A167",
+   "source_type": "concept",
+   "source_id": "fantasma",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Secretos familiares BLACK: sexual (doble vida, hijos fuera, preferencias), dinero (herencias/quiebras), vergüenza (deficiencia, loco, ETS, suicidio, cárcel). Zona cuerpo indica secreto: cadera/pelvis/cervicales C1-C2 sexual espiritual; malformación arteria aorta condense secreto.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p46 — B27"
+  },
+  {
+   "association_id": "A168",
+   "source_type": "concept",
+   "source_id": "fantasma",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Poliartritis reumatoide niña 14a silla ruedas + dedo medio corto (sexualidad) → padre pastor protestante secreto: madre abuela paterna quedó embarazada otro pastor amante → hija oculta. Dedo gordo madre, índice padre, medio sexualidad, anular compromiso, meñique secretos.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p46-47 — B27"
+  },
+  {
+   "association_id": "A169",
+   "source_type": "concept",
+   "source_id": "fantasma",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Secreto cargado por madre enamorada otro hombre: embaraza amante y simultáneo marido para coincidir fechas → hijo medio hermano oculto  años hasta madre moribunda confiesa a hija 'cofre secretos'. Terapeuta guarda secreto, descarga con cajita papeles. Todo lo no dicho se queda grabado.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p47-48 — B27"
+  },
+  {
+   "association_id": "A170",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Profesiones reparación: identificadora cadáveres sumergidos → abuelo muerto mar sin cuerpo (busca abuelo); salvavidas desierto → muerto ahogado familia; salvavidas alérgica cloro → primo muere fondo alberca 10 niños. Profesión sin lógica real tiene lógica transgeneracional.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p48-49 — B27"
+  },
+  {
+   "association_id": "A171",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "marco_interpretativo",
+   "description": "Resentir determina enfermedad: misma escena infidelidad → desvalorización sexual cadera, territorio emocional tos / propiedad infarto, arrepentimiento hombro, traición leucemia/sangre. Si no genera resentir → no enfermedad. Ya en vientre materno resentir activo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p50 — B27"
+  },
+  {
+   "association_id": "A172",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "huesos-articulaciones",
+   "relationship_type": "asociacion_clinica",
+   "description": "Fibromialgia = fibras familiares (Fibro) + impotencia muscular (Mio) + dolor moral (Algia) = doble compromiso familiar sin saber elegir, fidelidad con familia molesta. Dos casos con incesto/violación (abuelo toca nieta, mujeres violadas clan) duda decir o callar.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p50-51 — B27"
+  },
+  {
+   "association_id": "A173",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Empleado bancario 35a vende solo productos seguros contra jefe que quiere riesgo → bisabuelo perdió fortuna trenes rusos/bonos/minas Panamá/Canal. Reparación consciente (trabaja tranquilo gana bien) vs inconsciente (culpa cobrar, no cobra, gana poco). Señal reparación = no ganar dinero.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p52 — B27"
+  },
+  {
+   "association_id": "A174",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "vejiga",
+   "relationship_type": "asociacion_clinica",
+   "description": "Inmobiliario repara pérdida territorio: franceses Argelia 1962 repatriados pierden propiedades → descendientes agentes inmobiliarios Costa Azul recuperan simbólicamente.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p52 — B27"
+  },
+  {
+   "association_id": "A175",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Médico repara enfermedad no curada: madre embarazo padre enfermo renal 'falta médico competente' → hija se hace médico sin querer; Sellam mismo voz interior 'debes ser médico' → hermano cirujano + él homeópata/acupuntura/psicología/canto/biodescodificación; abuelo Salomón muerte diarrea deshidratación 6 meses antes de su concepción.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p53 — B27"
+  },
+  {
+   "association_id": "A176",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "vesicula",
+   "relationship_type": "asociacion_clinica",
+   "description": "Madera = vesícula/cólera (medicina china): carpintero/escultor/mueblero trabaja madera para liberar cólera. Marquetería barquito pulir madera libera energía. Cliente madera desde 18a → cólera clan transgeneracional.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p54 — B27"
+  },
+  {
+   "association_id": "A177",
+   "source_type": "concept",
+   "source_id": "reparacion",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "asociacion_clinica",
+   "description": "Flores = belleza/procreación (flor da fruto fecundación). 90 macetas sin hijos → reproducción simbólica; niños muertos = flor sin fruto (florista conoce flores repara amor). Niño muerto colegio → todos llevan flores fruto no materializado.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p54-55 — B27"
+  },
+  {
+   "association_id": "A178",
+   "source_type": "concept",
+   "source_id": "sindrome-aniversario",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Síndrome aniversario: profesora cáncer seno 51a, madre y abuela 52a mismo seno conflicto nido vertical. Doble aniversario + fidelidad invisible. Enfermedad pulmón gas/ahogo = memoria pulmón colectiva.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p19-20 — B27"
+  },
+  {
+   "association_id": "A179",
+   "source_type": "concept",
+   "source_id": "fidelidad-invisible",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Fidelidad invisible bloquea sanación: 50% yacentes curan 1 sesión al comprender 'no me pertenece', 50% bloquea fidelidad (doble obligación vivir mi vida vs alimento afectivo). Requiere acción (acto simbólico cajita 5€ bicicleta). Artereoesclerosis = reemplazo 2-4 muertos 'prefiero muerto vivo que muerto muerto'.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p15-16 y 18 — B27"
+  },
+  {
+   "association_id": "A180",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Afinidades: 4 tipos natural (sangre todo clan), afectiva (profesor amigo familia político), psicológica (Freud desorden amoroso madre-hija/padre-hija etc), transgeneracional (nombre/fechas/profesión memorias conflictuales). Buscar dobles solo sangre; sin lazo sangre → Black secreto.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p27 — B27"
+  },
+  {
+   "association_id": "A181",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "HPT método Palmeres: subrayar con colores árbol, crear relaciones, buscar violeta predominante. No analizar toda genealogía, disparo rápido <5 min a familiar con drama preciso; si no es buscar otro pista. Diamante 1000 facetas solo 1 faceta motivo consulta.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p17-18 — B27"
+  },
+  {
+   "association_id": "A182",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "tejido-adiposo",
+   "relationship_type": "asociacion_clinica",
+   "description": "Dinero real y simbólico: falta dinero = falta afecto/cariño/grasakilos. Sobrepeso almacena alimento afectivo (alimento real excedente → grasa): hija no deseada 20kg (7 agua 13 grasa, padre quería varón). Riqueza simbólica incluye alimento afectivo.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p14-15 — B27"
+  },
+  {
+   "association_id": "A183",
+   "source_type": "concept",
+   "source_id": "transgeneracional",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Jerarquía conflictos: espiritual (fin vida, paz) → energético (Reiki/acupuntura/chakras) → psíquico (cerebro resentir) → enfermedad palpable. Todo conflicto viene de espiritual (culpa Black abuela pastor). Paz interior = salud: 'LA PAZ DEL ESPÍRITU ENGENDRA PAZ EN EL CUERPO'.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p56-57 — B27"
+  },
+  {
+   "association_id": "A184",
+   "source_type": "concept",
+   "source_id": "proyecto-sentido",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "asociacion_clinica",
+   "description": "Caso desorden amoroso por madre ideal: hombre renueva carrocerías Jaguar/Mercedes (estética madre, motor padre) doble madre, no encuentra pareja porque madre lo programa 'te necesito' fidelidad letrero ocupado perceptible por mujeres. Coaching alimentario coger alimento → padre hijo reemplazo muerto ahogado alubias 1a.",
+   "evidence_level": "teoria_sellam",
+   "source_reference": "Sellam, Curso Transgeneracional p59-60 — B27"
   }
  ],
  "guia_fases": [
@@ -2917,7 +4233,8 @@ const DB = {
     "concepto": "proyecto-sentido"
    },
    "preguntas": [
-    "¿Para qué te quiso tener mamá? (bastón, compañía, síntoma, etc.) — Brozo p.21"
+    "¿Para qué te quiso tener mamá? (bastón, compañía, síntoma, etc.) — Brozo p.21",
+    "¿Para qué te quiso tener mamá? (bastón, medicamento, mosquetero, esponja, basura, síntoma, sustitución/yaciente...) [Sellam PS p6-7] — Si menciona no casarse + sobrepeso sólido → bastón; si retiene agua → basura; si cura → medicamento"
    ]
   },
   {
@@ -2926,6 +4243,257 @@ const DB = {
    },
    "preguntas": [
     "¿A quién le decís esto?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "inexistencia",
+    "organo": "cabeza-mente"
+   },
+   "preguntas": [
+    "¿Te esperaban de otro sexo o para proteger/cuidar? ¿Coincides con un muerto? [Sellam PS p2] — Muchos zurdos biológicos en este PS"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "transgeneracional",
+    "organo": "pulmones"
+   },
+   "preguntas": [
+    "¿Había peleas/ruido fuerte en casa durante embarazo/primer año? ¿Mejora tu asma fuera del clima familiar? [Sellam PS p3] — Mis padres hablan peleas → yo hablo asma"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "parto-programa",
+    "organo": "tiroides"
+   },
+   "preguntas": [
+    "¿Cómo naciste exactamente? ¿Muy rápido (hiper) o muy lento (hipo + sobrepeso) o con fórceps/cesárea? [Sellam PS p4-5] — Parto rápido → hipertiroidismo; lento → hipotiroidismo + sobrepeso"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "secreto-familiar",
+    "organo": "huesos-articulaciones"
+   },
+   "preguntas": [
+    "Si cadera/artrosis joven: ¿qué secreto sexual familiar (p. ej. cura) se ocultó? [Sellam PS p6] — Cadera = sexualidad"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "separacion",
+    "organo": "piel"
+   },
+   "preguntas": [
+    "Si eccema/lesión nalga al nacer: ¿qué amor difícil vivió mamá (obligada casar otro) que te marcó piel? [Sellam PS p6] — Nalga tocada por papás/pareja → separación carnal"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "hijo-programa",
+    "organo": "tejido-adiposo"
+   },
+   "preguntas": [
+    "Si sobrepeso sólido + soltero eterno que vive con padres: ¿eres bastón de la vejez? [Sellam PS p7] — Adapta trabajo/vida a necesidades padres"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "hijo-programa",
+    "organo": "rinones"
+   },
+   "preguntas": [
+    "Si retienes líquidos y no bajas peso pese a todo: ¿eres niño basura que diluye tóxicos familiares con agua? [Sellam PS p7] — Bloquea tratamientos pérdida peso"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "flechazo-gemelo",
+    "organo": null
+   },
+   "preguntas": [
+    "Si flechazo electricidad: ¿coinciden fechas 7 días, fecha invertida o santoral? ¿Hemorragia inicio embarazo gemelo perdido? [Sellam DA p1-2, p22-24] — Revisar gemelo rescatado / placenta perdida"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "incesto-simbolico",
+    "organo": "utero-prostata"
+   },
+   "preguntas": [
+    "Si baja deseo tras hijos o sin ganas progresivo: ¿tu pareja tiene fecha/nombre/rasgo unión de padre/madre/hermano? ¿Estás en incesto simbólico activo? [Sellam DA p9, p33] — Revisar 90% incestos, activo=sin sexo"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "pareja",
+    "organo": null
+   },
+   "preguntas": [
+    "¿Qué programa amor imposible portas: 'casarse=morirse', 'placer=peligro', 'amor en otra parte', 'hacer amor=engañar'? [Sellam DA p2-3] — Origen antes nacimiento PS/transgeneracional"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "amor-imposible",
+    "organo": "cabeza-mente"
+   },
+   "preguntas": [
+    "Si no te comprometes / muchas rupturas: ¿de quién es el duelo no hecho que reparas (muerte/abandono)? [Sellam DA p13-14] — Mujer 25/12 y padre muerto 23/12"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "control",
+    "organo": "colon"
+   },
+   "preguntas": [
+    "Si estreñimiento personalidad rígida rácana: ¿qué necesitas controlar/guardar? Heces=dinero. [Sellam DA p4] — Dime como cagas te diré quien eres"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": null,
+    "organo": "utero-prostata"
+   },
+   "preguntas": [
+    "Si herpes genital / cándidas recidivantes / ciática sin causa mecánica: ¿qué te impide hacer y qué te permite no hacer sexualmente? [Sellam DA p16, p33] — Pregunta clave desorden amoroso"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "gemelo-perdido",
+    "organo": "tejido-adiposo"
+   },
+   "preguntas": [
+    "Si sobrepeso + vives de dos en dos (dos casas/parejas/trabajos) y no queda nada en plato: ¿hubo gemelo/placenta perdida? [Sellam DA p24-25] — 50kg, dos profesiones, marido+amante"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "arquetipo-sexual",
+    "organo": "utero-prostata"
+   },
+   "preguntas": [
+    "Si eyaculación precoz / frigidez: ¿hubo padre castrador o madre celosa? ¿Eres ciervo/conejo vs león? [Sellam DA p28] — Conejo peligro ser pillado, ciervo expulsado territorio"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "duelo",
+    "organo": "cabeza-mente"
+   },
+   "preguntas": [
+    "Si no puedes rehacer vida tras ruptura y pareja era madre/padre: ¿estás en duelo bloqueado de madre/padre (no puedes divorciarte de madre)? [Sellam DA p6] — Sigue buscando madre"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "nutricion",
+    "organo": "estomago"
+   },
+   "preguntas": [
+    "Si anorexia/bulimia o avidez oral (hablar/comer): ¿cómo fue alimento afectivo y contacto al mamar (hambre-seguridad)? [Sellam DA p3-4] — Alimento real = alimento afectivo"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "yacente"
+   },
+   "preguntas": [
+    "¿Tienes la sensación de 'no estar viviendo tu vida' o de llevar una tristeza que no es tuya? ¿Hubo en tu familia una muerte injusta/injustificable justo antes de que tú nacieras? [YII:p10]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "duelo-bloqueado"
+   },
+   "preguntas": [
+    "¿Qué duelo sigues llevando sin poder cerrar? ¿En qué etapa sientes que te quedaste — negación, rabia, tristeza, búsqueda de explicación, o no poder soltar/reinvertir? [YII:p45, YII:p18-19 9 etapas]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "bloqueo-integracion"
+   },
+   "preguntas": [
+    "¿Sientes como si tu cabeza entendiera pero tu cuerpo no lo integrara — una separación entre mente y cuerpo, como un filtro en el cuello? [YII:p57]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "bloqueo-aceptacion"
+   },
+   "preguntas": [
+    "¿Hay algo no dicho con esa persona que te impide aceptar su partida, aunque intelectualmente lo entiendas? [YII:p57-58]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "bloqueo-reinversion"
+   },
+   "preguntas": [
+    "¿Sientes que hay un antes y un después y no consigues reinvertir — vives pero en soledad vuelven fotos/recuerdos y te hundes en cada despedida? [YII:p58-59]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "desvalorizacion-(existente,-ampliar-subtipos)"
+   },
+   "preguntas": [
+    "¿En qué campo sientes que no te valorás — evaluación, resultados, impotencia o falta de respeto? ¿Gota a gota o cubo? [OST39:p5-6]"
+   ]
+  },
+  {
+   "trigger": {
+    "organo": "huesos-articulaciones"
+   },
+   "preguntas": [
+    "¿Tu rodilla — sumisión/dirección — cuándo empezó a doler y qué te molestó justo antes? ¿Sentís que debes doblegarte a una autoridad y no querés ceder? [OST39:p6,p19 rótula futuro, menisco amortiguación]",
+    "¿En qué gesto preciso de tu trabajo te desvalorizás con las manos? ¿Pulgar-madre/nutrición, anular-alianza/duelo, meñique-secreto? ¿Hay algo que te niegas a ver? [OST39:p1, OST15:p14-15]",
+    "¿Tu pie — madre/protección — es plano 'no puedo despegarme/Aplastado' o cavo 'quiero autonomía'? ¿Tu madre te obliga a...? ¿Tienes derecho a marcharte de casa sin culpa? [OST15:p2-3]"
+   ]
+  },
+  {
+   "trigger": {
+    "organo": "hombro_codo"
+   },
+   "preguntas": [
+    "¿Tu hombro/codo — función paterna/trabajo — sentís que no protegiste/cuidaste bien (Iz) o que no te valoran en pareja/trabajo (D)? ¿Tendón (presente) o ligamento (futuro)? [OST15:p11-13]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "usar-huesos-articulaciones-+-desvalorizacion"
+   },
+   "preguntas": [
+    "¿Dónde duele exactamente (hueso/tendón/músculo) y desde cuándo se instala crónicamente? ¿Qué tejido: músculo impotencia, tendón presente, ligamento futuro, periostio contacto impuesto? [OST39:p1,p9-10]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "mineral-ca-mg"
+   },
+   "preguntas": [
+    "¿Hay a tu lado alguien frágil que necesita ayuda y le estás dando tu calcio? ¿Y alguien que requiere función materna (magnesio — magnetismo/tierra)? [OST39:p3-4]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "lateralidad-biologica"
+   },
+   "preguntas": [
+    "¿Lado derecho (deseo contrariado, cerebro femenino) o izquierdo (acción contrariada, cerebro masculino)? ¿O es solo lado del impacto (pierna que usás, hombro que tira puerta)? [OST39:p10]"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "ciclo-biologico-(existente-ciclo-biologico-+-ciclo-reparador)"
+   },
+   "preguntas": [
+    "¿Qué edad tenías en la fractura/dolor? Dividamos por 2 y otra vez por 2 — ¿qué pasó a esa edad en desvalorización familiar? [OST39:p9,p15]"
    ]
   }
  ],
@@ -3091,7 +4659,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3748,6 +5316,35 @@ function renderCFTimeline(){
     </div>
   `).join("");
 }
+
+function renderCFCiclos(){
+  const wrap=document.getElementById("cf-ciclos");
+  if(!wrap) return;
+  const edad = parseInt((document.getElementById("cf-edad")?.value||"").trim(),10);
+  const ctx = (document.getElementById("cf-contexto")?.value||"") + " " + timelineDraft.map(e=>[e.fecha,e.edad,e.titulo].join(" ")).join(" ");
+  const ciclos=[];
+  // Regla 1: misma edad que padre/madre al tenerte
+  const mMadre = ctx.match(/madre[^0-9]*?(\d{1,2})/i);
+  const mPadre = ctx.match(/padre[^0-9]*?(\d{1,2})/i);
+  if(edad && mMadre && parseInt(mMadre[1],10)===edad) ciclos.push(`¡Posible lealtad por edad! Tenés ${edad} y tu madre te tuvo a los ${mMadre[1]} — ¿qué no pudo hacer tu madre a esa edad?`);
+  if(edad && mPadre && parseInt(mPadre[1],10)===edad) ciclos.push(`¡Posible lealtad por edad! Tenés ${edad} y tu padre te tuvo a los ${mPadre[1]} — ¿qué no pudo hacer tu padre a esa edad?`);
+  // Regla 2: evento 10/11 repetido
+  if(/10\/11/.test(ctx) && timelineDraft.some(e=>String(e.edad||"").includes("10/11"))) ciclos.push(`Evento a los 10/11 se repite — ¿qué rol tomaste a esa edad y qué rol tomás hoy?`);
+  // Regla 3: febrero/marzo
+  if(/febrero/i.test(ctx) && /marzo/i.test(ctx)) ciclos.push(`Febrero (cumple) → Marzo (gatillo) — ciclo aniversario ±30 días — ¿qué pasó ese febrero?`);
+  if(!ciclos.length){ wrap.style.display="none"; wrap.innerHTML=""; return; }
+  wrap.style.display="block";
+  wrap.innerHTML = `<div style="padding:8px 10px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r-sm)"><b style="font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em">Ciclos detectados</b>${ciclos.map(c=>`<div class="small" style="margin-top:6px;padding:6px 8px;background:var(--surface);border-radius:4px">${c} <button class="btn btn-sm btn-ghost" data-add-ciclo-q style="margin-left:6px;padding:2px 6px;font-size:11px">+ Pregunta</button></div>`).join("")}</div>`;
+  wrap.querySelectorAll("[data-add-ciclo-q]").forEach((btn,i)=>{
+    btn.addEventListener("click", ()=>{
+      const q=ciclos[i];
+      if(!sesionesDraft.length) sesionesDraft.push({id: (typeof uid!=="undefined"?uid("S"):Date.now().toString(36)), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
+      sesionesDraft[sesionesDraft.length-1].qa.push({q: q, a:"", resono:false});
+      renderSesionesDraft(); triggerFunnel();
+    });
+  });
+}
+
 function renderCFArbol(){
   const wrap=document.getElementById("cf-arbol-view");
   if(!wrap) return;
@@ -4013,6 +5610,7 @@ function openCF(pref={}){
   renderSesionesDraft();
   renderCFGia();
   renderCFTimeline();
+  renderCFCiclos();
   // forzar que el árbol tome el contexto actual aunque estuviera vacío
   if(arbolDraft && arbolDraft.nodes && !arbolDraft.nodes.length){
     const tmp = document.getElementById("cf-arbol-view"); if(tmp) tmp.style.display="none";
