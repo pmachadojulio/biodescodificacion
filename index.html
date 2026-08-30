@@ -600,7 +600,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.",
-  "integrado": "2026-08-30T10:15:37"
+  "integrado": "2026-08-30T10:21:38"
  },
  "bibliografia": [
   {
@@ -3091,7 +3091,7 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 /* Datos del usuario (persisten en localStorage) */
 const store = {
@@ -3752,23 +3752,97 @@ function renderCFArbol(){
   const wrap=document.getElementById("cf-arbol-view");
   if(!wrap) return;
   if(wrap.style.display==="none") return;
-  // Arbol simple basado en contexto familiar
-  const alias=document.getElementById("cf-alias")?.value||"Consultante";
-  const ctx=(document.getElementById("cf-contexto")?.value||"") + " " + timelineDraft.map(e=>e.desc||"").join(" ");
-  // Extraer datos familiares del contexto
-  const madreMatch = ctx.match(/madre[^.]*?(\d{4})/i);
-  const padreMatch = ctx.match(/padre[^.]*?(\d{4})/i);
-  const esQuinta = /5ta|quinta/i.test(ctx);
-  const aborto = /aborto/i.test(ctx);
-  const hermano = /FUPU/i.test(ctx) ? "FUPU" : (/hermano/i.test(ctx) ? "Hermano" : null);
-  let html = `<div class="small" style="font-family:var(--mono);font-size:11px;line-height:1.6">`;
-  html += `<div>Padre ${padreMatch?padreMatch[0].slice(-4):"?"} + Madre ${madreMatch?madreMatch[0].slice(-4):"?"} ${aborto?'<span style="color:var(--danger)">● aborto previo</span>':""}</div>`;
-  html += `<div style="margin-left:12px">├─ ${esQuinta?"... (4 hermanas/os) ...<br>├─ ":""}<b>${esc(alias)} (5ta hija)</b> ${aborto?'<span style="color:var(--accent)">← yacente/reemplazo?</span>':""}</div>`;
-  if(hermano) html += `<div style="margin-left:12px">└─ ${esc(hermano)} (nace cuando ${esc(alias)} tenía 10/11)</div>`;
-  html += `</div>`;
-  html += `<p class="small muted" style="margin-top:8px">Vista para investigación transgeneracional. Los nodos con ● son eventos de la línea de tiempo.</p>`;
-  html += `<div style="margin-top:6px">` + timelineDraft.filter(e=>e.fecha||e.edad).slice(0,6).map(e=>`<span class="pill" style="font-size:10px">${esc((e.fecha||e.edad)+"·"+(e.titulo||"").slice(0,12))}</span>`).join(" ") + `</div>`;
+  // Asegurar estructura de árbol manipulable
+  if(!arbolDraft || !Array.isArray(arbolDraft.nodes)){
+    const alias=document.getElementById("cf-alias")?.value||"Consultante";
+    const ctx=(document.getElementById("cf-contexto")?.value||"");
+    arbolDraft={ nodes:[], edges:[] };
+    // Seed inicial desde contexto si está vacío
+    const addNode=(id,label,tipo,x,y)=>{ if(!arbolDraft.nodes.find(n=>n.id===id)) arbolDraft.nodes.push({id,label,tipo,x,y}); };
+    const madreY = (ctx.match(/madre[^\n]*?(\d{4})/i)||[])[1]||"";
+    const padreY = (ctx.match(/padre[^\n]*?(\d{4})/i)||[])[1]||"";
+    addNode("madre", madreY?`Madre ${madreY}`:"Madre", "madre", 80, 40);
+    addNode("padre", padreY?`Padre ${padreY}`:"Padre", "padre", 220, 40);
+    if(/aborto/i.test(ctx)) addNode("aborto", "Aborto previo", "evento", 150, 75);
+    addNode("yo", alias + ( /5ta|quinta/i.test(ctx) ? " (5ta)" : ""), "yo", 150, 130);
+    if(/FUPU/i.test(ctx)) addNode("fupu", "FUPU", "hermano", 220, 130);
+    else if(/hermano/i.test(ctx)) addNode("hno", "Hermano", "hermano", 220, 130);
+    arbolDraft.edges=[
+      {from:"padre", to:"yo", label:""}, {from:"madre", to:"yo", label:""},
+      ...(arbolDraft.nodes.find(n=>n.id==="aborto")?[{from:"madre", to:"aborto", label:""}]:[]),
+      ...(arbolDraft.nodes.find(n=>n.id==="fupu")?[{from:"madre", to:"fupu", label:""}, {from:"padre", to:"fupu", label:""}]:[]),
+      ...(arbolDraft.nodes.find(n=>n.id==="hno")?[{from:"madre", to:"hno", label:""}, {from:"padre", to:"hno", label:""}]:[])
+    ];
+  }
+  // Render
+  let html = `<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+    <span class="small muted">Tocá un nodo para preguntar por esa rama. Arrastrá para reordenar.</span>
+    <button type="button" class="btn btn-sm" id="arbol-add-nodo">+ Persona</button>
+  </div>
+  <div style="position:relative;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;height:260px">
+    <svg id="arbol-svg" width="100%" height="260" style="display:block"></svg>
+  </div>
+  <p class="small muted" style="margin-top:6px">Tip: preguntá “¿qué sabés de tu abuela materna? ¿y de tu abuelo paterno? ¿tenés hermanos? ¿qué lugar ocupás?” y agregalos con + Persona.</p>`;
   wrap.innerHTML = html;
+  const svg=document.getElementById("arbol-svg");
+  if(!svg) return;
+  const W=300, H=260;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML="";
+  const ns="http://www.w3.org/2000/svg";
+  // Dibujar aristas
+  (arbolDraft.edges||[]).forEach(e=>{
+    const a=arbolDraft.nodes.find(n=>n.id===e.from), b=arbolDraft.nodes.find(n=>n.id===e.to);
+    if(!a||!b) return;
+    const l=document.createElementNS(ns,"line");
+    l.setAttribute("x1",a.x); l.setAttribute("y1",a.y); l.setAttribute("x2",b.x); l.setAttribute("y2",b.y);
+    l.setAttribute("stroke","var(--border-strong)"); l.setAttribute("stroke-width","1.2"); l.setAttribute("stroke-opacity","0.6");
+    svg.appendChild(l);
+  });
+  // Nodos
+  arbolDraft.nodes.forEach(n=>{
+    const g=document.createElementNS(ns,"g"); g.style.cursor="pointer";
+    const c=document.createElementNS(ns,"circle");
+    c.setAttribute("cx",n.x); c.setAttribute("cy",n.y); c.setAttribute("r", n.tipo==="yo"?"14": n.tipo==="evento"?"6":"10");
+    c.setAttribute("fill", n.tipo==="yo"?"var(--accent)": n.tipo==="evento"?"var(--danger)": n.tipo==="madre"?"var(--accent-2)":"var(--surface-3)");
+    c.setAttribute("stroke","var(--border-strong)"); c.setAttribute("stroke-width","1");
+    g.appendChild(c);
+    const t=document.createElementNS(ns,"text");
+    t.setAttribute("x",n.x); t.setAttribute("y",n.y + (n.tipo==="yo"?28:22)); t.setAttribute("text-anchor","middle");
+    t.setAttribute("font-size","8"); t.setAttribute("fill","var(--ink)"); t.textContent=n.label.slice(0,16);
+    g.appendChild(t);
+    // arrastrar
+    let drag=false, offX=0, offY=0;
+    const pt = (e)=>{ const r=svg.getBoundingClientRect(); const sx=W/r.width, sy=H/r.height; return {x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy}; };
+    g.addEventListener("pointerdown", e=>{ drag=true; const p=pt(e); offX=p.x-n.x; offY=p.y-n.y; g.setPointerCapture(e.pointerId); });
+    g.addEventListener("pointermove", e=>{ if(!drag) return; const p=pt(e); n.x=p.x-offX; n.y=p.y-offY; renderCFArbol(); });
+    g.addEventListener("pointerup", ()=> drag=false);
+    g.addEventListener("click", ()=>{
+      const q=prompt(`Preguntar por ${n.label}: ¿qué querés explorar?\nEj: ¿qué sabés de su historia? ¿qué edad tenía? ¿qué le pasó?`, "");
+      if(q && q.trim()){
+        if(!n.preguntas) n.preguntas=[];
+        n.preguntas.push(q.trim());
+        // también agregar como QA a la sesión para que alimente el embudo
+        if(sesionesDraft.length){
+          sesionesDraft[sesionesDraft.length-1].qa.push({q: `${n.label}: ${q.trim()}`, a:"", resono:false});
+          renderSesionesDraft(); triggerFunnel();
+          toast("Pregunta agregada a la sesión desde el árbol");
+        }
+      }
+    });
+    svg.appendChild(g);
+  });
+  // Botón + Persona
+  wrap.querySelector("#arbol-add-nodo")?.addEventListener("click", ()=>{
+    const nombre=prompt("Nombre o rol (ej: Abuela materna, Hermano 2, Tío):",""); if(!nombre) return;
+    const tipo=prompt("Tipo: madre/padre/hermano/evento/yo","hermano")||"otro";
+    const id=nombre.toLowerCase().replace(/[^a-z0-9]+/g,"-")+"-"+Date.now().toString(36).slice(-3);
+    arbolDraft.nodes.push({id, label:nombre, tipo, x: 150+ (Math.random()*60-30), y: 180+ (Math.random()*30-15)});
+    // conectar al nodo seleccionado o a "yo" por defecto
+    const yo=arbolDraft.nodes.find(n=>n.tipo==="yo");
+    if(yo) arbolDraft.edges.push({from: yo.id, to: id, label:""});
+    renderCFArbol();
+  });
 }
 
 function allConsultantes(){ return consultantes; }
@@ -3914,6 +3988,7 @@ function openCF(pref={}){
     sesionesDraft = JSON.parse(JSON.stringify(ensureSesiones(pref)));
     guiaDraft = Object.assign({}, pref.guia||{});
     timelineDraft = JSON.parse(JSON.stringify(pref.timeline||[]));
+    arbolDraft = pref.arbol ? JSON.parse(JSON.stringify(pref.arbol)) : null;
     // auto-extraer eventos si el contexto ya tiene fechas/edades y timeline vacío
     if(!timelineDraft.length && pref.contexto){
       const extraer=(txt)=>{
@@ -3937,7 +4012,10 @@ function openCF(pref={}){
   }
   renderSesionesDraft();
   renderCFGia();
-  renderCFTimeline(); renderCFArbol();
+  renderCFTimeline();
+  // arbol se renderiza cuando se despliega (lazy), pero pre-inicializar estructura
+  if(!arbolDraft) arbolDraft = {nodes:[], edges:[]};
+  renderCFArbol();
   document.getElementById("consultantes-list").style.display="none";
   const sr2=document.querySelector("#view-consultantes > .row:nth-of-type(2)"); if(sr2) sr2.style.display="none";
   $("#consultante-form-wrap").style.display="block";
@@ -4606,6 +4684,7 @@ $("#import-file").addEventListener("change",e=>{
       contexto: document.getElementById("cf-contexto").value.trim(),
       guia: Object.assign({}, guiaDraft),
       timeline: JSON.parse(JSON.stringify(timelineDraft)),
+      arbol: JSON.parse(JSON.stringify(arbolDraft||{nodes:[],edges:[]})),
       sesiones: JSON.parse(JSON.stringify(sesionesDraft)),
       fecha: sesionesDraft[0]?.fecha || new Date().toISOString().slice(0,10),
     };
