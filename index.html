@@ -5769,8 +5769,8 @@ function triggerFunnel(){
       let hit=false;
       // Match por órgano del consultante
       if(trig.organo && org && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
-      // Match por concepto del consultante
-      if(trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
+      // Match por concepto del consultante (solo si el órgano NO matcheó — evita falsos negativos cuando el concepto no está en el texto)
+      if(!hit && trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
       // Match por guía del consultante (temas que ya lleva puesto este paciente)
       if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
       if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
