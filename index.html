@@ -5720,6 +5720,7 @@ function triggerFunnel(){
   const addSug=(txt,tag)=>{
     if(!sugPregs.includes(txt)) sugPregs.push({txt,tag});
   };
+  let relAsocs=[];
   let occMatch = null;
   if(ocup){
     const nocup = norm(ocup);
@@ -5748,7 +5749,7 @@ function triggerFunnel(){
     if(occMatch.conflictos) ctx += " " + occMatch.conflictos.join(" ");
   }
   // 1) asociaciones relacionadas por órgano
-  let relAsocs=[];
+  relAsocs=[];
   if(org){ const w={B:0,A:1,C:2,NV:3}; relAsocs = allAssoc().filter(a=>a.target_id===org || a.source_id===org).sort((x,y)=>(w[capaOf(x.evidence_level)]??3)-(w[capaOf(y.evidence_level)]??3)).slice(0,4); }
   else if(sint){
     const ns = norm(sint);
