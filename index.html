@@ -5714,6 +5714,10 @@ function triggerFunnel(){
     return;
   }
   // ——— Match ocupación → zonas + conflictos (Prof. Sellam: "no es casualidad") ———
+  let sugPregs=[];
+  const addSug=(txt,tag)=>{
+    if(!sugPregs.includes(txt)) sugPregs.push({txt,tag});
+  };
   let occMatch = null;
   if(ocup){
     const nocup = norm(ocup);
@@ -5755,10 +5759,6 @@ function triggerFunnel(){
   }
   // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
   // SOLAMENTE si hay datos del consultante actual; si no, no mostramos globales para evitar preguntas de otros pacientes
-  let sugPregs=[];
-  const addSug=(txt,tag)=>{
-    if(!sugPregs.includes(txt)) sugPregs.push({txt,tag});
-  };
   // reglas del embudo: solo si hay síntoma u órgano consultado
   if(sint || org){
     (DB.sugerencias_embudo||[]).forEach(rule=>{
