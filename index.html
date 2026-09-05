@@ -5781,32 +5781,47 @@ function triggerFunnel(){
         if(g && g.length>5) addSug(`¿Sobre "${g.substring(0,40)}"... ¿qué sentido tiene para vos ahora?`, "guiadepaciente");
       });
     }
-    // Fallback vivo: si no hay regla DB para este órgano, generar preguntas genéricas basadas en él
+    // Fallback vivo: si no hay regla DB para este órgano, generar preguntas desde las asociaciones reales
     if(!sugPregs.length && org){
       const orgObj = DB.organs.find(o=> o.organ_id===org);
       const orgName = orgObj ? orgObj.name : org;
-      const BANK = [
-        // siempre: abrir relación con el cuerpo
-        `¿Qué estas emociones tienen que ver con tu ${orgName.toLowerCase()}?`,
-        // ciclo biológico — siempre presente
-        "¿Qué estaba pasando en tu vida cuando apareció este síntoma?",
-        // duelo — casi siempre hay algo
-        "¿Hay algún duelo cerca de este síntoma? ¿Lo viviste o alguien de tu familia?",
-        // transgeneracional — patrones familiares
-        "¿Alguien en tu familia tuvo algo parecido o vivió algo similar en esa zona?",
-        // sexualidad / pareja — si hay contexto
-        "¿Cómo está tu vida de pareja? ¿Hay algo que no te animate a decir?",
-        // autoestima / valoración
-        "¿Qué parte de vos sentís que no te valorás o te cuesta cuidar?",
-        // trabajo / proyecto
-        "¿Cómo está tu trabajo o proyecto de vida? ¿Hay algo que te esté pesando?",
-        // permiso / libertad
-        "¿Hay algo que sentís que no te damás permiso para hacer o ser?",
-      ];
-      // elegir 3-4 al azar
-      const shuffled = BANK.slice().sort(()=> Math.random()-0.5);
-      const elegidas = shuffled.slice(0, Math.min(4, shuffled.length));
-      elegidas.forEach(q => addSug(q, "generico"));
+      const orgAsocs = allAssoc().filter(a=> a.target_id===org);
+      if(orgAsocs.length){
+        // Extraer temas clave de las asociaciones del órgano (de los PDFs de Sellam)
+        const temas = [...new Set(orgAsocs.flatMap(a=>{
+          const txt = norm((a.description||"")+" "+(a.title||"")+" "+assocTitle(a));
+          const kws = [];
+          if(txt.includes("nutricion") || txt.includes("alimento") || txt.includes("comer")) kws.push("alimentación/nutrición");
+          if(txt.includes("ira") || txt.includes("bronca") || txt.includes("enojo")) kws.push("ira/bronca");
+          if(txt.includes("desvaloriz")) kws.push("desvalorización");
+          if(txt.includes("pareja") || txt.includes("amor") || txt.includes("sexual")) kws.push("pareja/sexualidad");
+          if(txt.includes("transgeneracional") || txt.includes("familia") || txt.includes("ancestro")) kws.push("transgeneracional");
+          if(txt.includes("expresion") || txt.includes("proyecto") || txt.includes("sueno")) kws.push("expresión/proyectos");
+          if(txt.includes("control") || txt.includes("poder")) kws.push("control/poder");
+          if(txt.includes("duelo") || txt.includes("perdida")) kws.push("duelo/pérdida");
+          if(txt.includes("autoestima") || txt.includes("valor")) kws.push("autoestima");
+          if(txt.includes("secreto") || txt.includes("oculto")) kws.push("secreto");
+          if(txt.includes("hijo") || txt.includes("madre") || txt.includes("padre")) kws.push("vínculos familiares");
+          return kws;
+        }))].slice(0,4);
+        // Generar preguntas usando los temas reales de Sellam
+        const plantillas = [
+          (t)=>`¿Hay algo de ${t} en tu vida que conecte con tu ${orgName.toLowerCase()}?`,
+          (t)=>`¿Qué viniste a vivir o resolver con tu ${orgName.toLowerCase()} respecto a ${t}?`,
+          (t)=>`¿Cómo se manifiesta ${t} en tu cuerpo ahora?`,
+          (t)=>`¿Ves esta conexión entre tu ${orgName.toLowerCase()} y ${t} en tu historia?`,
+        ];
+        let idx=0;
+        temas.forEach(t=>{
+          const q = plantillas[idx % plantillas.length](t);
+          addSug(q, "asoc:"+t);
+          idx++;
+        });
+      } else {
+        // Sin asociaciones: preguntas genéricas de apertura
+        addSug(`¿Qué emociones sentís cuando pensás en tu ${orgName.toLowerCase()}?`, "generico");
+        addSug(`¿Qué pasaba en tu vida cuando apareció este síntoma?`, "generico");
+      }
     }
   }
   // además: si hay edad+desde, sugerir ciclos
