@@ -5634,19 +5634,112 @@ function closeCF(){
   resetCF();
   showConsultantesList();
 }
+
+// ── Mapping ocupación → zonas corporales + conflictos emocionales ──
+// Base: enseñanzas del Prof. Sellam — "no es casualidad lo que hacemos"
+const OCCUPATION_MAP = {
+  // ── Profesiones de pie (sostener, carga, cuidar) ──
+  "enfermera":  { zonas: ["lumbar","columna","pie","pierna","garganta"], conflictos: ["sostener","cuidar","carga","no dormir"], preguntas: ["¿Qué carga estás sosteniendo que no es tuya?", "¿A quién cuidás que no te cuida a vos?", "¿Qué层次 sentís que si dejás de sostener se cae?"] },
+  "enfermero":  { zonas: ["lumbar","columna","pie","pierna","garganta"], conflictos: ["sostener","cuidar","carga","no dormir"], preguntas: ["¿Qué carga estás sosteniendo que no es tuya?", "¿A quién cuidás que no te cuida a vos?", "¿Qué层次 sentís que si dejás de sostener se cae?"] },
+  "medico":     { zonas: ["espalda","cabeza","estomago","insomnio"], conflictos: ["responsabilidad","muerte","control","diagnosticar"], preguntas: ["¿Qué responsabilidad sentís que no te pertenece?", "¿Qué pasa cuando no podés curar/salvar a alguien?", "¿Qué层次 diagnosticás en vos mismo que no ves en otros?"] },
+  "doctor":     { zonas: ["espalda","cabeza","estomago","insomnio"], conflictos: ["responsabilidad","muerte","control"], preguntas: ["¿Qué responsabilidad sentís que no te pertenece?", "¿Qué pasa cuando no podés curar a alguien?"] },
+  "cocinero":   { zonas: ["mano","muneca","pierna","espalda"], conflictos: ["precision","ritmo","calor","alimentar"], preguntas: ["¿Qué alimentás en otros que no te alimenta a vos?", "¿Qué tan caliente está tu entorno?", "¿Qué querés alimentar que se resiste?"] },
+  "cocinera":   { zonas: ["mano","muneca","pierna","espalda"], conflictos: ["precision","ritmo","calor","alimentar"], preguntas: ["¿Qué alimentás en otros que no te alimenta a vos?", "¿Qué tan caliente está tu entorno?"] },
+  // ── Profesiones de escritorio (visión, expresión, estancamiento) ──
+  "oficina":    { zonas: ["cuello","hombro","espalda","muneca","vista"], conflictos: ["vision","expresion","estancamiento","mirar"], preguntas: ["¿Qué mirás todos los días que no querés ver?", "¿Qué querés decir que no decís?", "¿Qué sentís estancado en tu vida?"] },
+  "empleado":   { zonas: ["cuello","hombro","espalda","muneca"], conflictos: ["expresion","estancamiento","obediencia"], preguntas: ["¿A quién obedecés que no querés obedecer?", "¿Qué querés decir y no decís?"] },
+  "programador":{ zonas: ["cuello","hombro","ojo","muneca","espalda"], conflictos: ["vision","control","perfeccion","logica"], preguntas: ["¿Qué necesitás controlar que se escapa?", "¿Qué mirás que no te gusta?", "¿Qué querés que salga perfecto y no sale?"] },
+  "contador":   { zonas: ["cuello","ojo","espalda","estomago"], conflictos: ["control","cuenta","orden","equilibrio"], preguntas: ["¿Qué estás contando que no cierra?", "¿Qué balance necesitás en tu vida?"] },
+  "abogado":    { zonas: ["cabeza","estomago","insomnio"], conflictos: ["justicia","razon","conflicto","defender"], preguntas: ["¿Qué injusticia sentís que no se resuelve?", "¿Qué conflicto tenés con vos mismo?", "¿A quién querés defender que no podés?"] },
+  "arquitecto": { zonas: ["espalda","cuello","ojo"], conflictos: ["construccion","espacio","vision","creacion"], preguntas: ["¿Qué estás construyendo que no te sostiene a vos?", "¿Qué espacio necesitás que no tenés?"] },
+  // ── Profesiones de movimiento (avanzar, dirección, estancamiento) ──
+  "chofer":     { zonas: ["lumbar","prostata","columna","cuello"], conflictos: ["direccion","avanzar","estancamiento","espera"], preguntas: ["¿Hacia dónde querés avanzar y no avanzás?", "¿Qué te estanca?", "¿Quién te frena?"] },
+  "camionero":  { zonas: ["lumbar","prostata","columna","rodilla"], conflictos: ["direccion","avanzar","soledad","espera"], preguntas: ["¿Hacia dónde vas que no llegás?", "¿Qué soledad cargás en el camino?"] },
+  "delivery":   { zonas: ["lumbar","rodilla","muneca"], conflictos: ["rapidez","tiempo","entregar"], preguntas: ["¿Qué te apura realmente?", "¿Qué entregás que no te devuelve nada?"] },
+  "deportista": { zonas: ["rodilla","tendon","musculo","hombro"], conflictos: ["limite","rendimiento","competencia","cuerpo"], preguntas: ["¿Cuál es tu verdadero límite?", "¿Con quién estás compitiendo realmente?", "¿Qué te dice tu cuerpo que tu mente no escucha?"] },
+  // ── Profesiones de cuidado / enseñanza (expresión, autoridad, sostener) ──
+  "maestro":    { zonas: ["garganta","voz","lumbar","cabeza"], conflictos: ["expresion","autoridad","sostener","enseñar"], preguntas: ["¿Qué te gustaría decir que no decís?", "¿Qué autoridad sentís que no tenés?", "¿Qué querés enseñar que no te enseñaron?"] },
+  "profesor":   { zonas: ["garganta","voz","lumbar","cabeza"], conflictos: ["expresion","autoridad","sostener"], preguntas: ["¿Qué querés decir que no decís?", "¿Qué autoridad sentís que no tenés?"] },
+  "docente":    { zonas: ["garganta","voz","lumbar"], conflictos: ["expresion","autoridad","sostener"], preguntas: ["¿Qué querés decir que no decís?", "¿Qué autoridad sentís que no tenés?"] },
+  "psicologo":  { zonas: ["cabeza","estomago","insomnio"], conflictos: ["absorber","proyectar","limite","escuchar"], preguntas: ["¿Qué de tus pacientes es tuyo?", "¿Dónde terminan los otros y empezás vos?"] },
+  "terapeuta":  { zonas: ["cabeza","estomago","mano"], conflictos: ["absorber","sanar","limite"], preguntas: ["¿Qué sanás en otros que necesitás sanar en vos?", "¿Dónde están tus límites?"] },
+  "trabajador social": { zonas: ["espalda","estomago","cabeza"], conflictos: ["sostener","ayudar","injusticia"], preguntas: ["¿Qué injusticia cargás que no es tuya?", "¿A quién sostenés que no te sostiene a vos?"] },
+  // ── Profesiones manuales (construir, arreglar, peso) ──
+  "albañil":    { zonas: ["lumbar","rodilla","hombro","mano"], conflictos: ["construir","sostener","peso","tierra"], preguntas: ["¿Qué estás construyendo que no te sostiene a vos?", "¿Qué peso cargás que no es tuyo?"] },
+  "constructor": { zonas: ["lumbar","rodilla","hombro"], conflictos: ["construir","sostener","peso"], preguntas: ["¿Qué estás construyendo que no te sostiene a vos?"] },
+  "mecanico":   { zonas: ["mano","muneca","espalda","hombro"], conflictos: ["arreglar","control","precision","fuerza"], preguntas: ["¿Qué intentás arreglar que no se arregla?", "¿Qué se te escapa del control?"] },
+  "electricista":{ zonas: ["espalda","mano","ojo"], conflictos: ["energia","conexion","precision"], preguntas: ["¿Qué energía necesitás que no tenés?", "¿Qué conexión se cortó en tu vida?"] },
+  "soldador":   { zonas: ["ojo","mano","espalda"], conflictos: ["fusion","calor","precision"], preguntas: ["¿Qué querés fusionar que no se une?"] },
+  // ── Profesiones de outdoors (tierra, crecimiento) ──
+  "jardinero":  { zonas: ["espalda","rodilla","mano","sol"], conflictos: ["tierra","crecimiento","cuidado","ciclo"], preguntas: ["¿Qué crece en tu vida que necesitás cuidar?", "¿Qué relación tenés con la tierra?", "¿Qué ciclo se repite en tu vida?"] },
+  "agricultor": { zonas: ["espalda","rodilla","mano"], conflictos: ["tierra","siembra","cosecha","ciclo"], preguntas: ["¿Qué sembraste que estás cosechando ahora?", "¿Qué necesitás sembrar?"] },
+  "ganadero":   { zonas: ["espalda","rodilla","cabeza"], conflictos: ["tierra","cuidado","sostener"], preguntas: ["¿Qué cuidás que no te cuida a vos?"] },
+  // ── Profesiones de precisión (armonía, expresión) ──
+  "musico":     { zonas: ["mano","dedo","oido","garganta"], conflictos: ["expresion","armonia","ritmo","escuchar"], preguntas: ["¿Qué armonía buscás en tu vida?", "¿Qué expresión te falta?", "¿Qué querés decir con tu música?"] },
+  "artista":    { zonas: ["mano","ojo","cabeza"], conflictos: ["creacion","expresion","vacío","belleza"], preguntas: ["¿Qué querés crear que no terminás?", "¿Qué vacío llenás con tu arte?"] },
+  "peluquero":  { zonas: ["cuello","hombro","mano","pierna"], conflictos: ["belleza","transformacion","cuidado","mirada"], preguntas: ["¿Qué transformación querés hacer en vos?", "¿Qué belleza sentís que no tenés?", "¿Para quién te arreglás?"] },
+  "costurera":  { zonas: ["ojo","mano","cuello","espalda"], conflictos: ["precision","reparar","unir","detail"], preguntas: ["¿Qué querés reparar que no se repara?", "¿Qué estás uniendo que necesita separarse?"] },
+  // ── Profesiones de autoridad / fuerza (control, orden) ──
+  "policia":    { zonas: ["rodilla","columna","estomago","cabeza"], conflictos: ["control","autoridad","orden","violencia"], preguntas: ["¿Qué querés controlar que no podés?", "¿Qué orden necesitás que no tenés?", "¿Qué violencia cargás que no es tuya?"] },
+  "bombero":    { zonas: ["hombro","espalda","rodilla"], conflictos: ["rescatar","sostener","urgencia"], preguntas: ["¿A quién querés rescatar que no podés?", "¿Qué urgencia sentís que no para?"] },
+  "militar":    { zonas: ["rodilla","columna","cabeza"], conflictos: ["orden","obediencia","control","guerra"], preguntas: ["¿Con quién estás en guerra?", "¿Qué obediencia te pesa?"] },
+  // ── Ama de casa (repetición, invisibilidad, sostener) ──
+  "ama de casa":{ zonas: ["espalda","mano","rodilla","cuello"], conflictos: ["sostener","repeticion","invisible","cuidar"], preguntas: ["¿Qué hacés todos los días que nadie ve?", "¿Qué necesitás que no te dan?", "¿Para quién desaparecés?"] },
+  "casa":       { zonas: ["espalda","mano","rodilla"], conflictos: ["sostener","repeticion","invisible"], preguntas: ["¿Qué hacés todos los días que nadie ve?", "¿Qué necesitás que no te dan?"] },
+  // ── Comercio / ventas (ofrecer, recibir, intercambio) ──
+  "comerciante":{ zonas: ["pierna","muneca","espalda"], conflictos: ["ofrecer","recibir","intercambio","valor"], preguntas: ["¿Qué ofrecés que no te valen?", "¿Qué recibís que no querés?", "¿Cuánto valeás vos?"] },
+  "vendedor":   { zonas: ["garganta","pierna","muneca"], conflictos: ["ofrecer","convencer","valor"], preguntas: ["¿Qué vendés que no te convence a vos?", "¿Cuánto valeás vos realmente?"] },
+  "cajero":     { zonas: ["muneca","espalda","cuello"], conflictos: ["repetición","recibir","entregar"], preguntas: ["¿Qué recibís que no es tuyo?", "¿Qué entregás que no querés entregar?"] },
+  // ── Tech / datos (visión, control, lógica) ──
+  "analista":   { zonas: ["ojo","cuello","cabeza"], conflictos: ["vision","control","datos","logica"], preguntas: ["¿Qué analizás que no te deja dormir?", "¿Qué dato necesitás que no tenés?"] },
+  "diseñador":  { zonas: ["ojo","cuello","muneca"], conflictos: ["belleza","creacion","vision","perfeccion"], preguntas: ["¿Qué querés crear que no sale como lo ves?", "¿Qué perfección te frena?"] },
+  // ── Seguridad / vigilancia (vigilar, control, espera) ──
+  "seguridad":  { zonas: ["rodilla","lumbar","cabeza"], conflictos: ["vigilar","control","espera","amenaza"], preguntas: ["¿Qué vigilás que te vigila a vos?", "¿Qué amenaza sentís que no para?"] },
+  "vigilante":  { zonas: ["rodilla","lumbar","cabeza"], conflictos: ["vigilar","control","espera"], preguntas: ["¿Qué vigilás que te vigila a vos?"] },
+};
+
 function triggerFunnel(){
   const sint = ($("#cf-sintoma")?.value||"").trim();
   const org = $("#cf-organo")?.value||"";
   const edad = ($("#cf-edad")?.value||"").trim();
   const desde = ($("#cf-desde")?.value||"").trim();
   const ctx = ($("#cf-contexto")?.value||"").trim();
-  const hasAny = sint || org || edad || desde || ctx;
+  const ocup = ($("#cf-ocupacion")?.value||"").trim().toLowerCase();
+  const hasAny = sint || org || edad || desde || ctx || ocup;
   const sugWrap = $("#cf-sugerencias");
   const ascWrap = $("#cf-asocs");
   if(!hasAny){
     sugWrap.style.display="none";
     ascWrap.innerHTML="";
     return;
+  }
+  // ——— Match ocupación → zonas + conflictos (Prof. Sellam: "no es casualidad") ———
+  let occMatch = null;
+  if(ocup){
+    const nocup = norm(ocup);
+    for(const [key, val] of Object.entries(OCCUPATION_MAP)){
+      if(nocup.includes(norm(key)) || norm(key).includes(nocup.slice(0,5))) { occMatch = val; break; }
+    }
+    // fallback: buscar palabra parcial (ej: "enfermer" matchea "enfermera")
+    if(!occMatch){
+      const ocupTokens = nocup.split(/\s+/);
+      for(const [key, val] of Object.entries(OCCUPATION_MAP)){
+        if(ocupTokens.some(t=> t.length>3 && (norm(key).includes(t) || t.includes(norm(key).slice(0,5))))) { occMatch = val; break; }
+      }
+    }
+  }
+  // Si hay match de ocupación, inyectar zonas como órgano virtual y conflictos al contexto
+  if(occMatch){
+    // Agregar zonas al query para que el matching de órgano las capture
+    if(!org && occMatch.zonas.length){
+      // Usar primera zona como órgano virtual para asociaciones
+      const virtualOrg = occMatch.zonas[0];
+      relAsocs = allAssoc().filter(a=> occMatch.zonas.some(z=> norm(a.target_id+" "+a.source_id).includes(z))).slice(0,4);
+    }
+    // Agregar preguntas de ocupación a sugerencias
+    (occMatch.preguntas||[]).forEach(q=> addSug(q, "ocupacion"));
+    // Agregar conflictos al contexto para repreguntas
+    if(occMatch.conflictos) ctx += " " + occMatch.conflictos.join(" ");
   }
   // 1) asociaciones relacionadas por órgano
   let relAsocs=[];
