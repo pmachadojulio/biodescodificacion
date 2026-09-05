@@ -5807,32 +5807,12 @@ function triggerFunnel(){
       { const w={B:0,A:1,C:2,NV:3}; relAsocs = allAssoc().filter(a=> kws.some(k=> norm(a.description).includes(k)) ).sort((x,y)=>(w[capaOf(x.evidence_level)]??3)-(w[capaOf(y.evidence_level)]??3)).slice(0,4); }
     }
   }
-  // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
-  // SOLAMENTE si hay datos del consultante actual; si no, no mostramos globales para evitar preguntas de otros pacientes
-  // reglas del embudo: solo si hay síntoma, órgano u ocupación matcheada
+  // 2) preguntas sugeridas del embudo — PRIORIDAD ABSOLUTA: clase_notas > DB rules > Sellam > internet
   if(sint || org || occMatch){
-    (DB.sugerencias_embudo||[]).forEach(rule=>{
-      const trig = rule.trigger||{};
-      let hit=false;
-      // Match por órgano del consultante
-      if(trig.organo && org && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
-      // Match por concepto del consultante (solo si el órgano NO matcheó — evita falsos negativos cuando el concepto no está en el texto)
-      if(!hit && trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
-      // Match por guía del consultante (temas que ya lleva puesto este paciente)
-      if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
-      if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
-    });
-    // Si aún no hay sugerencias y hay guía, sugerir basada en lo que el paciente ya tiene
-    if(!sugPregs.length && guiaDraft){
-      Object.values(guiaDraft).forEach(g=>{
-        if(g && g.length>5) addSug(`¿Sobre "${g.substring(0,40)}"... ¿qué sentido tiene para vos ahora?`, "guiadepaciente");
-      });
-    }
-    // Fallback: clase_notas (#1) → asociaciones Sellam (#2) → internet (#3)
-    if(!sugPregs.length && org){
-      const orgObj = DB.organs.find(o=> o.organ_id===org);
-      const orgName = orgObj ? orgObj.name : org;
-      // --- #1 Notas de clase (prioridad máxima) ---
+    const orgObj = org ? DB.organs.find(o=> o.organ_id===org) : null;
+    const orgName = orgObj ? orgObj.name : org;
+    // --- #1 NOTAS DE CLASE (prioridad máxima) ---
+    if(org){
       const notas = (DB.clase_notas||[]).filter(n=>{
         const orgs = (n.o||[]).map(x=>norm(x));
         return orgs.includes(norm(org));
@@ -5842,32 +5822,47 @@ function triggerFunnel(){
           addSug(n.p, "clase:"+n.f);
         });
       }
-      // --- #2 Asociaciones Sellam (si no hubo notas) ---
-      if(!sugPregs.length){
-        const orgAsocs = allAssoc().filter(a=> a.target_id===org);
-        if(orgAsocs.length){
-          const temas = [];
-          const seen = new Set();
-          orgAsocs.forEach(a=>{
-            const txt = norm((a.description||"")+" "+(a.title||"")+" "+assocTitle(a));
-            ["nutricion|alimento|comer →alimentación/nutrición","ira|bronca|enojo →ira/bronca","desvaloriz →desvalorización","pareja|amor|sexual →pareja/sexualidad","transgeneracional|familia|ancestro →transgeneracional","expresion|proyecto|sueno →expresión/proyectos","control|poder →control/poder","duelo|perdida →duelo/pérdida","autoestima|valor →autoestima","secreto|oculto →secreto","hijo|madre|padre →vínculos familiares"].forEach(rule=>{
-              const [keys,label] = rule.split(" →");
-              if(keys.split("|").some(k=>txt.includes(k)) && !seen.has(label)){ seen.add(label); temas.push(label); }
-            });
+    }
+    // --- #2 REGLAS DB (solo si no hubo notas de clase) ---
+    if(!sugPregs.length){
+      (DB.sugerencias_embudo||[]).forEach(rule=>{
+        const trig = rule.trigger||{};
+        let hit=false;
+        if(trig.organo && org && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
+        if(!hit && trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
+        if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
+        if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
+      });
+    }
+    // --- #3 ASOCIACIONES SELLAM (si no hubo notas ni reglas) ---
+    if(!sugPregs.length && org){
+      const orgAsocs = allAssoc().filter(a=> a.target_id===org);
+      if(orgAsocs.length){
+        const temas = [];
+        const seen = new Set();
+        orgAsocs.forEach(a=>{
+          const txt = norm((a.description||"")+" "+(a.title||"")+" "+assocTitle(a));
+          ["nutricion|alimento|comer →alimentación/nutrición","ira|bronca|enojo →ira/bronca","desvaloriz →desvalorización","pareja|amor|sexual →pareja/sexualidad","transgeneracional|familia|ancestro →transgeneracional","expresion|proyecto|sueno →expresión/proyectos","control|poder →control/poder","duelo|perdida →duelo/pérdida","autoestima|valor →autoestima","secreto|oculto →secreto","hijo|madre|padre →vínculos familiares"].forEach(rule=>{
+            const [keys,label] = rule.split(" →");
+            if(keys.split("|").some(k=>txt.includes(k)) && !seen.has(label)){ seen.add(label); temas.push(label); }
           });
-          temas.slice(0,4).forEach(t=>{
-            const qs = [`¿Hay algo de ${t} en tu vida que conecte con tu ${orgName.toLowerCase()}?`,`¿Qué viniste a vivir o resolver con tu ${orgName.toLowerCase()} respecto a ${t}?`,`¿Cómo se manifiesta ${t} en tu cuerpo ahora?`,`¿Ves esta conexión entre tu ${orgName.toLowerCase()} y ${t} en tu historia?`];
-            addSug(qs[temas.indexOf(t)%qs.length], "asoc:"+t);
-          });
-        }
-      }
-      // --- #3 Internet: sugerir buscar bibliografía ---
-      if(!sugPregs.length){
-        addSug(`📚 Buscar en internet: "biodescodificación ${orgName}" para encontrar información relevante sobre este órgano.`, "internet");
-        addSug(`📚 Podés buscar también: "enfermedades ${orgName} causas emocionales" para ampliar el panorama.`, "internet");
+        });
+        temas.slice(0,4).forEach(t=>{
+          const qs = [`¿Hay algo de ${t} en tu vida que conecte con tu ${orgName.toLowerCase()}?`,`¿Qué viniste a vivir o resolver con tu ${orgName.toLowerCase()} respecto a ${t}?`,`¿Cómo se manifiesta ${t} en tu cuerpo ahora?`,`¿Ves esta conexión entre tu ${orgName.toLowerCase()} y ${t} en tu historia?`];
+          addSug(qs[temas.indexOf(t)%qs.length], "asoc:"+t);
+        });
       }
     }
-    // Fallback para síntoma sin órgano: sugerir internet
+    // --- #4 GUÍA DEL PACIENTE (si no hubo nada) ---
+    if(!sugPregs.length && guiaDraft){
+      Object.values(guiaDraft).forEach(g=>{
+        if(g && g.length>5) addSug(`¿Sobre "${g.substring(0,40)}"... ¿qué sentido tiene para vos ahora?`, "guiadepaciente");
+      });
+    }
+    // --- #5 INTERNÚ: sugerir buscar bibliografía ---
+    if(!sugPregs.length && orgName){
+      addSug(`📚 Buscar en internet: "biodescodificación ${orgName}" para encontrar información relevante sobre este órgano.`, "internet");
+    }
     if(!sugPregs.length && sint && !org){
       addSug(`📚 Buscar en internet: "biodescodificación ${sint}" para explorar posibles conexiones emocionales.`, "internet");
     }
