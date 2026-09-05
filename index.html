@@ -5502,6 +5502,8 @@ function showConsultantesList(){
   if(searchRow) searchRow.style.display="";
   if(formEl) formEl.style.display="none";
   if(detEl){ detEl.style.display="none"; detEl.innerHTML=""; }
+  // Limpiar sugerencias y repreguntas al volver a la lista (evitar arrastre entre consultantes)
+  ["cf-sugerencias","cf-repreguntas","cf-asocs","cf-biblio","cf-cerebro"].forEach(id=>{ const el=document.getElementById(id); if(el){ el.innerHTML=""; el.style.display="none"; } });
   renderConsultantes();
 }
 function renderConsultantes(){
@@ -5759,8 +5761,8 @@ function triggerFunnel(){
   }
   // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
   // SOLAMENTE si hay datos del consultante actual; si no, no mostramos globales para evitar preguntas de otros pacientes
-  // reglas del embudo: solo si hay síntoma u órgano consultado
-  if(sint || org){
+  // reglas del embudo: solo si hay síntoma, órgano u ocupación matcheada
+  if(sint || org || occMatch){
     (DB.sugerencias_embudo||[]).forEach(rule=>{
       const trig = rule.trigger||{};
       let hit=false;
