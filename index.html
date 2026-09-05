@@ -5781,6 +5781,33 @@ function triggerFunnel(){
         if(g && g.length>5) addSug(`¿Sobre "${g.substring(0,40)}"... ¿qué sentido tiene para vos ahora?`, "guiadepaciente");
       });
     }
+    // Fallback vivo: si no hay regla DB para este órgano, generar preguntas genéricas basadas en él
+    if(!sugPregs.length && org){
+      const orgObj = DB.organs.find(o=> o.organ_id===org);
+      const orgName = orgObj ? orgObj.name : org;
+      const BANK = [
+        // siempre: abrir relación con el cuerpo
+        `¿Qué estas emociones tienen que ver con tu ${orgName.toLowerCase()}?`,
+        // ciclo biológico — siempre presente
+        "¿Qué estaba pasando en tu vida cuando apareció este síntoma?",
+        // duelo — casi siempre hay algo
+        "¿Hay algún duelo cerca de este síntoma? ¿Lo viviste o alguien de tu familia?",
+        // transgeneracional — patrones familiares
+        "¿Alguien en tu familia tuvo algo parecido o vivió algo similar en esa zona?",
+        // sexualidad / pareja — si hay contexto
+        "¿Cómo está tu vida de pareja? ¿Hay algo que no te animate a decir?",
+        // autoestima / valoración
+        "¿Qué parte de vos sentís que no te valorás o te cuesta cuidar?",
+        // trabajo / proyecto
+        "¿Cómo está tu trabajo o proyecto de vida? ¿Hay algo que te esté pesando?",
+        // permiso / libertad
+        "¿Hay algo que sentís que no te damás permiso para hacer o ser?",
+      ];
+      // elegir 3-4 al azar
+      const shuffled = BANK.sort(()=> Math.random()-0.5);
+      const elegidas = shuffled.slice(0, Math.min(4, shuffled.length));
+      elegidas.forEach(q => addSug(q, "generico"));
+    }
   }
   // además: si hay edad+desde, sugerir ciclos
   if(edad && desde){
