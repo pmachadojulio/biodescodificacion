@@ -5870,6 +5870,20 @@ function triggerFunnel(){
         addSug(`¿Qué pasaba en tu vida cuando apareció este síntoma?`, "generico");
       }
     }
+    // Fallback por síntoma (sin órgano): buscar en Sellam por el texto del síntoma
+    if(!sugPregs.length && sint && !org){
+      const ns = norm(sint);
+      const hitAsocs = allAssoc().filter(a=> norm(a.target_id+" "+a.source_id+" "+a.description+" "+assocTitle(a)).includes(ns)).slice(0,4);
+      hitAsocs.forEach(a=>{
+        const target = (a.target_id||"").replace(/-/g," ");
+        const desc = (a.description||"").slice(0,120);
+        addSug(`Sellam → ${target}: ${desc}`, "asoc:"+a.target_id);
+      });
+      if(!sugPregs.length){
+        addSug(`¿Qué emociones sentís cuando experimentás "${sint}"?`, "generico");
+        addSug(`¿Qué pasaba en tu vida cuando apareció "${sint}"?`, "generico");
+      }
+    }
   }
   // además: si hay edad+desde, sugerir ciclos
   if(edad && desde){
