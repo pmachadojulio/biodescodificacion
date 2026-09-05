@@ -5525,6 +5525,8 @@ function renderConsultantes(){
 function resetCF(){
   editingCid=null;
   sesionesDraft=[];
+  arbolDraft = null;
+  timelineDraft = [];
   ["cf-alias","cf-edad","cf-sintoma","cf-desde","cf-identidad","cf-contexto"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
   const sel=document.getElementById("cf-organo"); if(sel) sel.value="";
   document.getElementById("cf-sugerencias").style.display="none";
