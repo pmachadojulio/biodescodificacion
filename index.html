@@ -434,6 +434,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
           <div class="form-row"><label>Órgano / sistema</label><select id="cf-organo"><option value="">— elegir —</option></select></div>
           <div class="form-row"><label>Desde cuándo</label><input id="cf-desde" placeholder="Ej: 3 meses, desde los 14 años…"></div>
           <div class="form-row"><label>Identidad / sexo (opcional)</label><input id="cf-identidad" placeholder="M / F / X"></div>
+          <div class="form-row"><label>Ocupación (opcional)</label><input id="cf-ocupacion" placeholder="Ej: enfermera, autonomo, estudiante…"></div>
         </div>
         <div class="form-row"><label>Notas de contexto (qué cambió antes del inicio, con quién vive y rol)</label><textarea id="cf-contexto" rows="2" placeholder="Qué pasó 30–60 días antes… Con quién vive…"></textarea></div>
         <!-- Sesiones -->
@@ -5527,7 +5528,7 @@ function resetCF(){
   sesionesDraft=[];
   arbolDraft = null;
   timelineDraft = [];
-  ["cf-alias","cf-edad","cf-sintoma","cf-desde","cf-identidad","cf-contexto"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
+  ["cf-alias","cf-edad","cf-sintoma","cf-desde","cf-identidad","cf-contexto","cf-ocupacion"].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=""; });
   const sel=document.getElementById("cf-organo"); if(sel) sel.value="";
   document.getElementById("cf-sugerencias").style.display="none";
   document.getElementById("cf-sugerencias").innerHTML="";
@@ -5584,6 +5585,7 @@ function openCF(pref={}){
     $("#cf-desde").value=pref.desde||"";
     $("#cf-identidad").value=pref.identidad||"";
     $("#cf-contexto").value=pref.contexto||"";
+    $("#cf-ocupacion").value=pref.ocupacion||"";
     sesionesDraft = JSON.parse(JSON.stringify(ensureSesiones(pref)));
     guiaDraft = Object.assign({}, pref.guia||{});
     timelineDraft = JSON.parse(JSON.stringify(pref.timeline||[]));
@@ -5754,6 +5756,9 @@ function triggerFunnel(){
       }
     }
   }
+  // Pre-calcular preguntas ya respondidas (usado en fallback y dedup)
+  let yaRespondidas = new Set();
+  try{ yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
   // Fallback vivo: si no hay match por keyword pero hay diálogo, ofrecer genéricas vivas
   if(!repsFiltradas.length && (sint||org||ctx)){
     const fallback = ["¿Qué sentiste en tu cuerpo cuando pasó eso?", "¿Qué te hubiera gustado hacer/decir y no pudiste?", "¿A quién te recuerda esta situación de tu historia?"];
@@ -5840,7 +5845,7 @@ function triggerFunnel(){
     poolCierre.slice(0, 3 - sugPregs.length).forEach(q=>addSug(q,"cierre"));
   }
   // deduplicar: no volver a sugerir preguntas ya respondidas (comparación laxa por primeras 40 chars)
-  let yaRespondidas = new Set();
+  yaRespondidas = new Set();
   try{ yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
   try{ sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){}
   repsFiltradas = [];
@@ -6298,6 +6303,7 @@ $("#import-file").addEventListener("change",e=>{
       organo: document.getElementById("cf-organo").value||"",
       desde: document.getElementById("cf-desde").value.trim(),
       identidad: document.getElementById("cf-identidad").value.trim(),
+      ocupacion: document.getElementById("cf-ocupacion").value.trim(),
       contexto: document.getElementById("cf-contexto").value.trim(),
       guia: Object.assign({}, guiaDraft),
       timeline: JSON.parse(JSON.stringify(timelineDraft)),
@@ -6319,7 +6325,7 @@ $("#import-file").addEventListener("change",e=>{
     el.style.display="block";
     el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)"><b>${esc(rec.alias)}</b> — ${esc(rec.sintoma)}
       <p class="small muted" style="margin-top:8px">${esc(rec.contexto||"—")}</p>
-      <p class="small muted">Órgano: ${esc(organName(rec.organo)||"—")} · ${esc(rec.edad?rec.edad+" años":"")} · desde ${esc(rec.desde||"—")}</p>
+      <p class="small muted">Órgano: ${esc(organName(rec.organo)||"—")} · ${esc(rec.edad?rec.edad+" años":"")} · desde ${esc(rec.desde||"—")} ${esc(rec.ocupacion?"· "+rec.ocupacion:"")}</p>
       <div class="row" style="margin-top:10px">
         <button class="btn btn-sm" onclick="document.getElementById('consultante-detalle').style.display='none'">Cerrar</button>
         <button class="btn btn-sm" id="cd-editar">Editar</button>
@@ -6350,7 +6356,7 @@ $("#import-file").addEventListener("change",e=>{
     el.innerHTML = `<div class="card-ficha" style="border-color:var(--accent)">
       <button class="btn btn-sm btn-ghost" onclick="showConsultantesList()" style="margin-bottom:10px">← Volver a consultantes</button>
       <div class="row" style="justify-content:space-between"><b>${esc(c.alias)} · ${esc(c.sintoma)}</b><span class="small muted">${esc(c.fecha)}</span></div>
-      <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")}</p>
+      <p class="small muted" style="margin-top:8px">Órgano: ${esc(organName(c.organo)||"—")} · ${esc(c.edad?c.edad+" años":"")} · desde ${esc(c.desde||"—")} · ${esc(c.identidad||"—")} ${esc(c.ocupacion?"· "+c.ocupacion:"")}</p>
       <p class="small" style="margin-top:8px;white-space:pre-wrap">${esc(c.contexto||"—")}</p>
       ${(c.timeline&&c.timeline.length?`<div style="margin-top:8px"><b class="small" style="color:var(--accent)">Línea de tiempo</b><div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0">${c.timeline.map(e=>`<span class="pill" style="font-size:11px">${esc((e.fecha||e.edad||"")+" · "+(e.titulo||"").slice(0,14))}</span>`).join(" ")}</div></div>`:"")}
       ${guiaHtml?`<div style="margin-top:10px"><b class="small" style="color:var(--accent)">Guía — este consultante</b>${guiaHtml}</div>`:""}
