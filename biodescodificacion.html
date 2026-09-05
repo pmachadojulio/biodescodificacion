@@ -5748,18 +5748,23 @@ const OCCUPATION_MAP = {
 };
 
 function triggerFunnel(){
+  try{
+  console.log("[TF] START");
   const sint = ($("#cf-sintoma")?.value||"").trim();
-  const org = $("#cf-organo")?.value||"";
+  const org = ($("#cf-organo")?.value||"");
   const edad = ($("#cf-edad")?.value||"").trim();
   const desde = ($("#cf-desde")?.value||"").trim();
   const ctx = ($("#cf-contexto")?.value||"").trim();
   const ocup = ($("#cf-ocupacion")?.value||"").trim().toLowerCase();
+  console.log("[TF] sint=",sint,"org=",org,"ocup=",ocup);
   const hasAny = sint || org || edad || desde || ctx || ocup;
+  console.log("[TF] hasAny=",hasAny);
   const sugWrap = $("#cf-sugerencias");
   const ascWrap = $("#cf-asocs");
   if(!hasAny){
     sugWrap.style.display="none";
     ascWrap.innerHTML="";
+    console.log("[TF] END: no data");
     return;
   }
   // ——— Match ocupación → zonas + conflictos (Prof. Sellam: "no es casualidad") ———
@@ -5816,8 +5821,8 @@ function triggerFunnel(){
       let hit=false;
       // Match por órgano del consultante
       if(trig.organo && org && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
-      // Match por concepto del consultante (solo si el órgano NO matcheó — evita falsos negativos cuando el concepto no está en el texto)
-      if(!hit && trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
+      // Match por concepto del consultante (en ctx, no solo en sint)
+      if(!hit && trig.concepto && norm(sint+" "+ctx+" "+ocup).includes(norm(trig.concepto))) hit=true;
       // Match por guía del consultante (temas que ya lleva puesto este paciente)
       if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
       if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
@@ -5836,7 +5841,7 @@ function triggerFunnel(){
       if(orgAsocs.length){
         // Extraer temas clave de las asociaciones del órgano (de los PDFs de Sellam)
         const temas = [...new Set(orgAsocs.flatMap(a=>{
-          const txt = norm((a.description||"")+" "+(a.title||"")+" "+assocTitle(a));
+          const txt = norm((a.description||"")+" "+(a.title||"")+" "+assocTitle(a)+" "+(a.tags||[]).join(" "));
           const kws = [];
           if(txt.includes("nutricion") || txt.includes("alimento") || txt.includes("comer")) kws.push("alimentación/nutrición");
           if(txt.includes("ira") || txt.includes("bronca") || txt.includes("enojo")) kws.push("ira/bronca");
@@ -5966,15 +5971,18 @@ function triggerFunnel(){
   // ——— INSPECTOR DERECHO: espejo de preguntas como botones ———
   (function renderInspectorSugerencias(){
     const insp = document.getElementById("inspector");
-    if(!insp) return;
+    if(!insp){ console.log("[TF] inspector NOT FOUND"); return; }
     const enConsultantes = document.getElementById("view-consultantes")?.classList.contains("active");
-    const formAbierto = document.getElementById("consultante-form-wrap")?.style.display !== "none";
+    const formEl = document.getElementById("consultante-form-wrap");
+    const formAbierto = formEl?.style.display !== "none";
+    console.log("[TF] insp:", !!insp, "enConsultantes:", enConsultantes, "formAbierto:", formAbierto, "formDisplay:", formEl?.style.display);
     if(!enConsultantes || !formAbierto){
       // si no estamos editando consultante, no tocar el inspector (deja fichas de órgano)
       if(!enConsultantes) return;
       insp.classList.remove("open"); return;
     }
     const todas = [...sugPregs.map(s=>s.txt), ...repsFiltradas];
+    console.log("[TF] sugPregs:", sugPregs.length, "repsFiltradas:", repsFiltradas.length, "todas:", todas.length);
     if(!todas.length){ insp.classList.remove("open"); insp.innerHTML=""; return; }
     insp.classList.add("open");
     insp.innerHTML = `<div style="display:flex;flex-direction:column;height:100%;max-height:calc(100vh - 90px)">
@@ -6119,6 +6127,7 @@ function triggerFunnel(){
   } else {
     ascWrap.innerHTML = org||sint?`<p class="small muted">Sin asociaciones directas para este filtro — probá otro órgano o agregá palabras al síntoma.</p>`:"";
   }
+  }catch(e){ console.error("[TF] CRASH:", e.message, e.stack); }
 }
 
 /* =====================================================================
