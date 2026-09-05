@@ -5804,7 +5804,7 @@ function triggerFunnel(){
         "¿Hay algo que sentís que no te damás permiso para hacer o ser?",
       ];
       // elegir 3-4 al azar
-      const shuffled = BANK.sort(()=> Math.random()-0.5);
+      const shuffled = BANK.slice().sort(()=> Math.random()-0.5);
       const elegidas = shuffled.slice(0, Math.min(4, shuffled.length));
       elegidas.forEach(q => addSug(q, "generico"));
     }
