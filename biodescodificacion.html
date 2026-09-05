@@ -5748,17 +5748,13 @@ const OCCUPATION_MAP = {
 };
 
 function triggerFunnel(){
-  try{
-  console.log("[TF] START");
   const sint = ($("#cf-sintoma")?.value||"").trim();
   const org = ($("#cf-organo")?.value||"");
   const edad = ($("#cf-edad")?.value||"").trim();
   const desde = ($("#cf-desde")?.value||"").trim();
   const ctx = ($("#cf-contexto")?.value||"").trim();
   const ocup = ($("#cf-ocupacion")?.value||"").trim().toLowerCase();
-  console.log("[TF] sint=",sint,"org=",org,"ocup=",ocup);
   const hasAny = sint || org || edad || desde || ctx || ocup;
-  console.log("[TF] hasAny=",hasAny);
   const sugWrap = $("#cf-sugerencias");
   const ascWrap = $("#cf-asocs");
   if(!hasAny){
@@ -6127,7 +6123,6 @@ function triggerFunnel(){
   } else {
     ascWrap.innerHTML = org||sint?`<p class="small muted">Sin asociaciones directas para este filtro — probá otro órgano o agregá palabras al síntoma.</p>`:"";
   }
-  }catch(e){ console.error("[TF] CRASH:", e.message, e.stack); }
 }
 
 /* =====================================================================
@@ -6369,9 +6364,9 @@ $("#import-file").addEventListener("change",e=>{
   if(q) q.addEventListener("input", renderConsultantes);
   const nbtn = document.getElementById("btn-nuevo-consultante");
   if(nbtn) nbtn.addEventListener("click", ()=> openCF({}));
-  ["cf-sintoma","cf-organo","cf-edad","cf-desde","cf-contexto"].forEach(id=>{
+  ["cf-sintoma","cf-organo","cf-edad","cf-desde","cf-contexto","cf-ocupacion","cf-identidad"].forEach(id=>{
     const el=document.getElementById(id);
-    if(el) el.addEventListener(el.tagName==="SELECT"?"change":"input", triggerFunnel);
+    if(el) el.addEventListener(el.tagName==="SELECT"?"change":(el.type==="number"?"change":"input"), triggerFunnel);
   });
   document.getElementById("cf-add-sesion")?.addEventListener("click", ()=>{
     sesionesDraft.push({id: uid("S"), fecha: new Date().toISOString().slice(0,10), notas:"", qa:[]});
