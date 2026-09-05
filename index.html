@@ -5657,18 +5657,31 @@ function triggerFunnel(){
     }
   }
   // 2) preguntas sugeridas del embudo (DB.sugerencias_embudo + guía)
+  // SOLAMENTE si hay datos del consultante actual; si no, no mostramos globales para evitar preguntas de otros pacientes
   let sugPregs=[];
   const addSug=(txt,tag)=>{
     if(!sugPregs.includes(txt)) sugPregs.push({txt,tag});
   };
-  // reglas del embudo
-  (DB.sugerencias_embudo||[]).forEach(rule=>{
-    const trig = rule.trigger||{};
-    let hit=false;
-    if(trig.organo && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
-    if(trig.concepto && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
-    if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
-  });
+  // reglas del embudo: solo si hay síntoma u órgano consultado
+  if(sint || org){
+    (DB.sugerencias_embudo||[]).forEach(rule=>{
+      const trig = rule.trigger||{};
+      let hit=false;
+      // Match por órgano del consultante
+      if(trig.organo && org && (trig.organo===org || norm(sint+" "+ctx).includes(norm(trig.organo).slice(0,6)))) hit=true;
+      // Match por concepto del consultante
+      if(trig.concepto && sint && norm(sint+" "+ctx).includes(norm(trig.concepto))) hit=true;
+      // Match por guía del consultante (temas que ya lleva puesto este paciente)
+      if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
+      if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
+    });
+    // Si aún no hay sugerencias y hay guía, sugerir basada en lo que el paciente ya tiene
+    if(!sugPregs.length && guiaDraft){
+      Object.values(guiaDraft).forEach(g=>{
+        if(g && g.length>5) addSug(`¿Sobre "${g.substring(0,40)}"... ¿qué sentido tiene para vos ahora?`, "guiadepaciente");
+      });
+    }
+  }
   // además: si hay edad+desde, sugerir ciclos
   if(edad && desde){
     addSug("¿Qué edad tenían tu mamá y tu papá cuando naciste? → buscar correspondencia con tu edad actual ("+esc(edad)+" años) y el ciclo (±7/10 días).", "ciclo");
