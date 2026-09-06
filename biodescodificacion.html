@@ -473,6 +473,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
         <div id="cf-cerebro" style="margin-top:14px"></div>
         <div class="form-actions">
           <button class="btn btn-ghost" id="cf-cancelar">Cancelar</button>
+          <button class="btn btn-sm" id="cf-ver-preguntas" title="Reabrir el panel de preguntas sugeridas (si lo cerraste)">💡 Preguntas</button>
           <button class="btn btn-primary" id="cf-guardar">Guardar consultante</button>
         </div>
       </div>
@@ -8091,7 +8092,12 @@ document.addEventListener("mousemove",e=>{
    INSPECTOR — fichas
    ===================================================================== */
 function inspOpen(html){
-  const el=$("#inspector");el.innerHTML=`<div class="insp-head"><div>${""}</div><button class="insp-close" data-insp-close aria-label="Cerrar">×</button></div>${html}`;
+  const el=$("#inspector");
+  const enCF=document.getElementById("view-consultantes")?.classList.contains("active")
+    && document.getElementById("consultante-form-wrap")?.style.display!=="none";
+  el.innerHTML=`<div class="insp-head"><div>${""}</div><div class="row" style="gap:6px">`
+    +(enCF?`<button class="btn btn-sm btn-ghost" onclick="triggerFunnel()" title="Volver a las preguntas sugeridas del consultante">← Preguntas</button>`:"")
+    +`<button class="insp-close" data-insp-close aria-label="Cerrar">×</button></div></div>${html}`;
   el.classList.add("open");
   el.querySelector("[data-insp-close]").onclick=()=>{el.classList.remove("open");el.innerHTML="";};
   el.scrollTop=0;
@@ -8451,12 +8457,25 @@ function renderMiniGraph(assocs){
     c.setAttribute("cx",n.x); c.setAttribute("cy",n.y); c.setAttribute("r", n.type==="concept"?"7":"5");
     c.setAttribute("fill", n.type==="concept"?"var(--accent)":"var(--accent-2)"); c.setAttribute("stroke","var(--surface)"); c.setAttribute("stroke-width","1.5");
     g.appendChild(c);
-    const txt=document.createElementNS(svgNS,"text");
+    // tooltip con el nombre completo
+    const ttl=document.createElementNS(svgNS,"title"); ttl.textContent=n.label; g.appendChild(ttl);
+    // label completo en hasta 2 líneas (antes se cortaba a 14 caracteres)
     const isC=n.type==="concept";
-    txt.setAttribute("x", isC? n.x+11 : n.x-11); txt.setAttribute("y", n.y+2.5);
-    txt.setAttribute("text-anchor", isC? "start":"end");
-    txt.setAttribute("font-size", "8"); txt.setAttribute("fill", isC?"var(--ink)":"var(--ink-muted)");
-    txt.textContent=n.label.slice(0,14); g.appendChild(txt);
+    const words=String(n.label||"").split(/\s+/).filter(Boolean);
+    const wlines=[]; let cur="";
+    words.forEach(wd=>{ if((cur+" "+wd).trim().length>15 && cur) { wlines.push(cur.trim()); cur=wd; } else cur+=" "+wd; });
+    if(cur.trim()) wlines.push(cur.trim());
+    const shown=wlines.slice(0,2);
+    if(wlines.length>2) shown[1]+="…";
+    if(!shown.length) shown.push("—");
+    const y0=shown.length===1 ? n.y+3 : n.y-2.5;
+    shown.forEach((ln,li)=>{
+      const t2=document.createElementNS(svgNS,"text");
+      t2.setAttribute("x", isC? n.x+11 : n.x-11); t2.setAttribute("y", y0+li*10);
+      t2.setAttribute("text-anchor", isC? "start":"end");
+      t2.setAttribute("font-size", "8.5"); t2.setAttribute("fill", isC?"var(--ink)":"var(--ink-muted)");
+      t2.textContent=ln; g.appendChild(t2);
+    });
     g.addEventListener("click", ()=>{
       // Abrir la ficha del nodo (órgano/concepto), igual que los pills del Cerebro
       // y los nodos de la Red conceptual: antes solo expandía (casi siempre
@@ -9847,6 +9866,11 @@ $("#import-file").addEventListener("change",e=>{
     renderCFTimeline(); renderCFArbol();
   });
   document.getElementById("cf-cancelar")?.addEventListener("click", closeCF);
+  document.getElementById("cf-ver-preguntas")?.addEventListener("click", ()=>{
+    triggerFunnel();
+    if(document.getElementById("inspector")?.classList.contains("open")) toast("Panel de preguntas abierto");
+    else toast("Sin sugerencias para estos datos todavía");
+  });
   // Volver desde detalle: delegar clicks en Volver
   document.getElementById("consultante-detalle")?.addEventListener("click", e=>{
     if(e.target.closest("button") && e.target.textContent.includes("Volver")){ showConsultantesList(); }
