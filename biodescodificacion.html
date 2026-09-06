@@ -328,6 +328,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
     <span class="chip-evidencia ev-B">B · Casos</span>
     <span class="chip-evidencia ev-C">C · Hipótesis</span>
   </div>
+  <span class="small muted" id="app-version" title="Versión de la app — si no coincide con la última, es caché">v2026.09.06-4</span>
 </header>
 
 <!-- ============ NAV ============ -->
@@ -7992,6 +7993,8 @@ const DB = {
  "clase_notas": []
 };;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+const APP_VERSION = "v2026.09.06-4";
+try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
 /* Datos del usuario (persisten en localStorage) */
 const store = {
   _mem:{},
