@@ -9291,7 +9291,8 @@ function triggerFunnel(){
     fallback.forEach(q=>{ if(!Array.from(yaRespondidas).some(r=> q.toLowerCase().includes(r.slice(0,12)))) repsFiltradas.push(q); });
   }
   // ——— INSPECTOR DERECHO: espejo de preguntas como botones ———
-  (function renderInspectorSugerencias(){
+  // (declarada como función para poder re-renderizarla DESPUÉS del pool/fallback)
+  function renderInspectorSugerencias(){
     const insp = document.getElementById("inspector");
     if(!insp){ console.log("[TF] inspector NOT FOUND"); return; }
     const enConsultantes = document.getElementById("view-consultantes")?.classList.contains("active");
@@ -9304,6 +9305,7 @@ function triggerFunnel(){
       insp.classList.remove("open"); return;
     }
     const todas = [...sugPregs.map(s=>s.txt), ...repsFiltradas];
+    const ocultasN = window._tfOcultas||0, repite = window._tfRepite===true;
     console.log("[TF] sugPregs:", sugPregs.length, "repsFiltradas:", repsFiltradas.length, "todas:", todas.length);
     if(!todas.length){ insp.classList.remove("open"); insp.innerHTML=""; return; }
     insp.classList.add("open");
@@ -9311,6 +9313,7 @@ function triggerFunnel(){
       <div style="flex:1;overflow-y:auto;padding-right:2px">
         <div class="insp-head"><div class="insp-kicker">Preguntas sugeridas</div><button class="insp-close" onclick="document.getElementById('inspector').classList.remove('open')">×</button></div>
         <p class="small muted" style="margin:8px 0">Tocá una pregunta — se agrega a la sesión al centro y se activa Wispr.</p>
+        ${ocultasN>0?`<p class="small" style="margin:0 0 8px;color:var(--ink-muted)">${ocultasN} ya preguntada${ocultasN>1?"s":""} y oculta${ocultasN>1?"s":""}${repite?" — abajo las repetimos para repreguntar":""}.</p>`:""}
         ${todas.map(q=>`<button class="btn btn-sm" data-inspector-q="${q.replace(/"/g,"&quot;")}" style="display:block;width:100%;text-align:left;white-space:normal;padding:8px 10px;margin-bottom:6px;background:var(--surface-2);border-color:var(--border)">${q}</button>`).join("")}
       </div>
       <div style="flex:1;display:flex;flex-direction:column;min-height:200px;border-top:1px solid var(--border);margin-top:8px;padding-top:8px">
@@ -9343,7 +9346,8 @@ function triggerFunnel(){
         toast("Pregunta agregada — dictá la respuesta con Wispr 🎙️");
       });
     });
-  })();
+  }
+  renderInspectorSugerencias();
 
   // Centro oculto: las sugerencias/repreguntas viven solo en el inspector derecho
   sugWrap.style.display="none"; sugWrap.innerHTML="";
@@ -9374,6 +9378,7 @@ function triggerFunnel(){
     poolCierre.slice(0, 3 - sugPregs.length).forEach(q=>addSug(q,"cierre"));
   }
   // deduplicar: no volver a sugerir preguntas ya respondidas (comparación laxa por primeras 40 chars)
+  const _genSug = sugPregs.length, _genRep = (typeof reps!=="undefined"?reps.length:0);
   yaRespondidas = new Set();
   try{ yaRespondidas = new Set(sesionesDraft.flatMap(s=>(s.qa||[]).map(x=> (x.q||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40)))); }catch(e){}
   try{ sugPregs = sugPregs.filter(s=> !yaRespondidas.has(s.txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").slice(0,40))); }catch(e){}
@@ -9387,6 +9392,18 @@ function triggerFunnel(){
   if(!repsFiltradas.length && (sint||org||ctx)){
     for(const q of poolCierreFallback){ if(!sugPregs.find(s=>s.txt===q) && !Array.from(yaRespondidas).some(r=> q.toLowerCase().slice(0,15).includes(r.slice(0,15)))) repsFiltradas.push(q); if(repsFiltradas.length>=2) break; }
   }
+  // Garantía real para fichas viejas con muchas sesiones: nunca dejar el inspector
+  // vacío si hay datos del consultante. Si todo se filtró, repetir 2 del pool igual.
+  let _ocultas = (_genSug + _genRep) - sugPregs.length - repsFiltradas.length;
+  window._tfOcultas = _ocultas>0 ? _ocultas : 0;
+  window._tfRepite = false;
+  if(!sugPregs.length && !repsFiltradas.length && (sint||org||ctx)){
+    poolCierreFallback.slice(0,2).forEach(q=>{ if(!sugPregs.find(s=>s.txt===q)) sugPregs.push({txt:q, tag:"cierre"}); });
+    window._tfRepite = true;
+  }
+  // Re-render del inspector con el estado FINAL (pool + fallback incluidos).
+  // Sin esto, fichas con muchas sesiones cerraban el panel antes del fallback.
+  renderInspectorSugerencias();
   // --- BIBLIO RELEVANTE (tiempo real): de asociaciones relacionadas ---
   const biblioWrap = document.getElementById("cf-biblio");
   const biblioIds = new Set();
