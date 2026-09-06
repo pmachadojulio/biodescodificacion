@@ -8349,55 +8349,67 @@ function renderRed(){
     card.querySelector("#red-empty")?.remove();
     card.insertAdjacentHTML("beforeend",`<div class="empty" id="red-empty"><b>Red vacía</b>Aparecerá cuando haya asociaciones registradas.</div>`); return; }
   svg.closest(".chart-card").querySelector("#red-empty")?.remove();
-  // Layout bipartito: conceptos a la izquierda, órganos a la derecha.
-  // Evita el "tejido" de los dos círculos concéntricos: cada arista cruza
-  // una sola vez el centro y los labels van laterales sin solaparse.
-  const W=900, PAD=46, ROW=30;
-  const H=Math.max(560, Math.max(concepts.length, organs.length)*ROW+PAD*2+30);
-  const X_C=210, X_O=690;
-  const yFor=(i,n)=> PAD+30 + (n===1 ? (H-PAD*2-30)/2 : i*(H-PAD*2-30)/(n-1));
+  // Circular mejorada: órganos en anillo interior, conceptos en anillo exterior.
+  // Mejoras vs la circular original: (1) aristas CURVAS hacia el centro en vez de
+  // rectas cruzadas (adiós "tejido"), (2) conceptos ordenados por baricentro de sus
+  // órganos vecinos (menos cruces), (3) labels radiales hacia afuera sin solaparse,
+  // (4) hover foco+contexto, (5) tamaño de nodo según cantidad de vínculos.
+  const W=900,H=600,cx=W/2,cy=H/2,R1=205,R2=98,YS=0.9;
+  const P=(r,a)=>[cx+Math.cos(a)*r, cy+Math.sin(a)*r*YS];
   const pos=new Map();
-  concepts.forEach((c,i)=>pos.set("concept:"+c.concept_id,[X_C,yFor(i,concepts.length)]));
-  organs.forEach((o,i)=>pos.set("organ:"+o.organ_id,[X_O,yFor(i,organs.length)]));
+  organs.forEach((o,i)=>{const a=-Math.PI/2+i*2*Math.PI/organs.length;const [x,y]=P(R2,a);pos.set("organ:"+o.organ_id,[x,y,a]);});
+  // baricentro: índice medio de los órganos vecinos → agrupa lo conectado
+  const oIdx=new Map(organs.map((o,i)=>[o.organ_id,i]));
+  concepts.forEach(c=>{
+    const nb=allAssoc()
+      .filter(a=>(a.source_type==="concept"&&a.source_id===c.concept_id&&a.target_type==="organ")||(a.target_type==="concept"&&a.target_id===c.concept_id&&a.source_type==="organ"))
+      .map(a=>oIdx.get(a.source_type==="organ"?a.source_id:a.target_id)).filter(i=>i!=null);
+    c._bary=nb.length?nb.reduce((s,i)=>s+i,0)/nb.length:-1;
+  });
+  concepts.sort((a,b)=>a._bary-b._bary);
+  concepts.forEach((c,i)=>{const a=-Math.PI/2+i*2*Math.PI/concepts.length;const [x,y]=P(R1,a);pos.set("concept:"+c.concept_id,[x,y,a]);});
   svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
   let edges="";
   allAssoc().forEach(a=>{
     const p1=pos.get(a.source_type+":"+a.source_id),p2=pos.get(a.target_type+":"+a.target_id);
     if(!p1||!p2) return;
     const c=capaOf(a.evidence_level);
-    const w=a.source_type==="concept"? deg.get("concept:"+a.source_id)||1 : deg.get("organ:"+a.source_id)||1;
-    edges+=`<line class="red-edge" data-n1="${a.source_type}:${a.source_id}" data-n2="${a.target_type}:${a.target_id}" x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${capaColor[c]}" stroke-opacity=".28" stroke-width="${Math.min(1+w/5,3)}"/>`;
+    const dg=deg.get(a.source_type+":"+a.source_id)||1;
+    const w=Math.min(0.8+dg/6,2.2).toFixed(2);
+    const mx=(p1[0]+p2[0])/2,my=(p1[1]+p2[1])/2;
+    const qx=(cx+(mx-cx)*0.42).toFixed(1),qy=(cy+(my-cy)*0.42).toFixed(1);
+    edges+=`<path class="red-edge" data-n1="${a.source_type}:${a.source_id}" data-n2="${a.target_type}:${a.target_id}" data-w="${w}" d="M${p1[0].toFixed(1)},${p1[1].toFixed(1)} Q${qx},${qy} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}" fill="none" stroke="${capaColor[c]}" stroke-opacity=".22" stroke-width="${w}"/>`;
   });
   let nodes="";
-  pos.forEach(([x,y],key)=>{
+  pos.forEach(([x,y,a],key)=>{
     const sep=key.indexOf(":");
     const t=key.slice(0,sep), id=key.slice(sep+1);
     const label=t==="concept"?conceptName(id):organName(id);
     const isC=t==="concept";
     const n=deg.get(key)||0;
+    const r=(isC?Math.min(6+n/4,10):Math.min(4.5+n/4,7.5)).toFixed(1);
+    let tx,ty;
+    if(isC){ const lr=R1+22; tx=cx+Math.cos(a)*lr; ty=cy+Math.sin(a)*(lr*YS)+4; }
+    else { tx=x; ty=y+16; }
     nodes+=`<g class="red-node" data-node="${key}" data-open="${t}:${id}" style="cursor:pointer">`
-      +`<circle cx="${x}" cy="${y}" r="${isC?7:5.5}" fill="${isC?"var(--accent)":"var(--accent-2)"}" stroke="var(--surface)" stroke-width="1.5"/>`
-      +(isC
-        ? `<text x="${x+13}" y="${y+4}" text-anchor="start" font-size="12" fill="var(--ink)">${esc(label)} <tspan fill="var(--ink-muted)" font-size="10">·${n}</tspan></text>`
-        : `<text x="${x-13}" y="${y+4}" text-anchor="end" font-size="12" fill="var(--ink)">${esc(label)} <tspan fill="var(--ink-muted)" font-size="10">·${n}</tspan></text>`)
+      +`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${isC?"var(--accent)":"var(--accent-2)"}" stroke="var(--surface)" stroke-width="1.5"/>`
+      +`<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" font-size="${isC?11.5:10}" fill="${isC?"var(--ink)":"var(--ink-muted)"}">${esc(label)}${isC?` <tspan fill="var(--ink-muted)" font-size="9">·${n}</tspan>`:""}</text>`
       +`</g>`;
   });
-  svg.innerHTML=`<text x="${X_C}" y="22" text-anchor="middle" font-size="11" letter-spacing="1.5" fill="var(--ink-muted)">CONCEPTOS (${concepts.length})</text>`
-    +`<text x="${X_O}" y="22" text-anchor="middle" font-size="11" letter-spacing="1.5" fill="var(--ink-muted)">ÓRGANOS (${organs.length})</text>`
-    +edges+nodes;
-  // Hover: resalta vecinos y atenúa el resto (buena práctica: foco + contexto)
+  svg.innerHTML=edges+nodes;
+  // Hover: resalta vecinos y atenúa el resto (foco + contexto)
   svg.querySelectorAll(".red-node").forEach(g=>{
     g.addEventListener("mouseenter", ()=>{
       const k=g.getAttribute("data-node");
       svg.querySelectorAll(".red-edge").forEach(l=>{
         const on=l.getAttribute("data-n1")===k||l.getAttribute("data-n2")===k;
-        l.setAttribute("stroke-opacity", on?".9":".06");
-        if(on) l.setAttribute("stroke-width","2.4");
+        l.setAttribute("stroke-opacity", on?".9":".05");
+        if(on) l.setAttribute("stroke-width","2.6");
       });
-      svg.querySelectorAll(".red-node").forEach(o=>{ o.setAttribute("opacity", o===g||svg.querySelector(`.red-edge[data-n1="${k}"][data-n2="${o.getAttribute("data-node")}"],.red-edge[data-n2="${k}"][data-n1="${o.getAttribute("data-node")}"]`)?"1":".45"); });
+      svg.querySelectorAll(".red-node").forEach(o=>{ o.setAttribute("opacity", o===g||svg.querySelector(`.red-edge[data-n1="${k}"][data-n2="${o.getAttribute("data-node")}"],.red-edge[data-n2="${k}"][data-n1="${o.getAttribute("data-node")}"]`)?"1":".4"); });
     });
     g.addEventListener("mouseleave", ()=>{
-      svg.querySelectorAll(".red-edge").forEach(l=>{ l.setAttribute("stroke-opacity",".28"); l.removeAttribute("stroke-width"); });
+      svg.querySelectorAll(".red-edge").forEach(l=>{ l.setAttribute("stroke-opacity",".22"); l.setAttribute("stroke-width",l.getAttribute("data-w")||"1"); });
       svg.querySelectorAll(".red-node").forEach(o=>o.removeAttribute("opacity"));
     });
   });
@@ -8446,13 +8458,11 @@ function renderMiniGraph(assocs){
     txt.setAttribute("font-size", "8"); txt.setAttribute("fill", isC?"var(--ink)":"var(--ink-muted)");
     txt.textContent=n.label.slice(0,14); g.appendChild(txt);
     g.addEventListener("click", ()=>{
-      const extra=allAssoc().filter(a=> a.source_id===n.id || a.target_id===n.id).slice(0,6);
-      if(extra.length){
-        const ids=new Set([...assocs.map(a=>a.association_id), ...extra.map(a=>a.association_id)]);
-        const expanded=allAssoc().filter(a=> ids.has(a.association_id));
-        renderMiniGraph(expanded);
-        toast("Red expandida desde: "+n.label);
-      } else toast(n.label+" — sin vecinos");
+      // Abrir la ficha del nodo (órgano/concepto), igual que los pills del Cerebro
+      // y los nodos de la Red conceptual: antes solo expandía (casi siempre
+      // idéntico) y parecía que el clic no hacía nada.
+      if(typeof openFicha==="function") openFicha(n.type, n.id);
+      else toast(n.label);
     });
     svg.appendChild(g);
   });
