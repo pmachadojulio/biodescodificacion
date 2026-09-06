@@ -8896,6 +8896,7 @@ function renderConsultantes(){
         <span class="small muted">${esc(c.fecha||"")}</span>
       </div>
       <div class="consultante-meta">${esc((c.sintoma||"—").slice(0,90))} · ${c.edad?esc(String(c.edad))+" años":"—"}${c.desde?" · desde "+esc(c.desde):""}</div>
+      <div class="row" style="margin-top:8px;justify-content:flex-end"><button class="btn btn-sm" data-edit-consultante="${esc(c.id)}">Editar</button></div>
     </div>`).join("");
 }
 function resetCF(){
@@ -9078,7 +9079,7 @@ function triggerFunnel(){
   const org = ($("#cf-organo")?.value||"");
   const edad = ($("#cf-edad")?.value||"").trim();
   const desde = ($("#cf-desde")?.value||"").trim();
-  const ctx = ($("#cf-contexto")?.value||"").trim();
+  let ctx = ($("#cf-contexto")?.value||"").trim();
   const ocup = ($("#cf-ocupacion")?.value||"").trim().toLowerCase();
   const hasAny = sint || org || edad || desde || ctx || ocup;
   const sugWrap = $("#cf-sugerencias");
@@ -9887,6 +9888,12 @@ $("#import-file").addEventListener("change",e=>{
   });
   // click en card → detalle
   document.getElementById("consultantes-list")?.addEventListener("click", e=>{
+    const ed=e.target.closest("[data-edit-consultante]");
+    if(ed){
+      const c=consultantes.find(x=>x.id===ed.dataset.editConsultante);
+      if(c) openCF(c);
+      return;
+    }
     const card=e.target.closest("[data-open-consultante]");
     if(!card) return;
     // Ocultar lista y busqueda para vista enfocada
