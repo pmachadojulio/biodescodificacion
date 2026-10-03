@@ -604,7 +604,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-09-14T08:16:35"
+  "integrado": "2026-10-03T20:12:09"
  },
  "bibliografia": [
   {
@@ -13146,6 +13146,60 @@ const DB = {
     "Pedir al universo: si tenés que pedir es porque carecés. ¿Pedís por necesidad? ¿En lugar de ofrecer? ¿Con doble intención? ¿Para otros? (domingo 13/09)",
     "¿Qué estás pidiendo exactamente? ¿Con miedo a no recibir… o a recibir?"
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "a-quien-convences"
+   },
+   "preguntas": [
+    "¿A quién estás convenciendo, a mí o a vos mismo? (Adrián, clase 03/10)",
+    "Equivalente: ¿a quién le decís esto? Lo que decís y repetís habla de vos: escuchalo con el corazón."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "quien-te-decia"
+   },
+   "preguntas": [
+    "Si sentís 'soy un imbécil / no sirvo / no soy suficiente': ¿quién te decía eso cuando eras niño/a? (Adrián, clase 03/10)",
+    "Decite hoy como adulto a tu niño/a que sí era suficiente, que ya crecimos, que ya no hay miedo: ¿qué le dirías?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "adulto-carencias"
+   },
+   "preguntas": [
+    "El adulto que lo dice refleja sus carencias en el niño: ¿qué carencia hablaba a través de esa frase? (Vero/Adrián, clase 03/10)",
+    "Solo vos podés saciar a tu niño de sus carencias: ¿qué necesita escuchar hoy?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "miedo-estres-carencia"
+   },
+   "preguntas": [
+    "¿Tu miedo previene que en el futuro no pases carencia? (Adrián, clase 03/10)",
+    "¿Tu estrés previene la carencia? ¿Qué beneficio te da tener miedo a la carencia? (tercera y matadora)"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "justificacion-tapar"
+   },
+   "preguntas": [
+    "¿Por qué intentás justificar eso? (Adrián, clase 03/10)",
+    "No te pregunté la justificación, te pregunté si era así: ¿sí o no? La justificación busca tapar/atenuar."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "repeticion-palabras"
+   },
+   "preguntas": [
+    "Atento a lo que dice y repite: lo que repetís habla de vos. ¿Qué palabra repetiste hoy? (Adrián, clase 03/10)",
+    "'Vos dijiste seis veces la palabra tal': lo que intento atenuar, negar o justificar es lo que más repito."
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -13311,7 +13365,7 @@ const DB = {
   }
  ],
  "clase_notas": []
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -14181,6 +14235,13 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "convenc": ["¿A quién estás convenciendo, a mí o a vos mismo? (Adrián, clase 03/10)", "Equivalente: ¿a quién le decís esto?"],
+  "justific": ["¿Por qué intentás justificar eso? (Adrián, clase 03/10)", "No te pregunté la justificación: ¿sí o no? La justificación busca tapar/atenuar."],
+  "imbecil": ["¿Quién te decía eso ('imbécil / no servís') cuando eras niño/a? (Adrián, clase 03/10)", "Decite hoy como adulto a tu niño/a que sí era suficiente, que ya crecimos, que ya no hay miedo."],
+  "inutil": ["¿Quién te decía 'inútil / no sos capaz' cuando eras niño/a? (Adrián, clase 03/10)", "El adulto que lo decía reflejaba sus carencias en vos: ¿qué carencia hablaba?"],
+  "suficiente": ["Decite hoy como adulto a tu niño/a que sí era suficiente, que ya crecimos, que ya no hay miedo (Adrián, clase 03/10)"],
+  "carencia": ["¿Tu miedo previene que no pases carencia? ¿Tu estrés la previene? (Adrián, clase 03/10)", "¿Qué beneficio te da tener miedo a la carencia? (tercera y matadora)"],
+  "repite": ["Atento a lo que dice y repite: lo que repetís habla de vos (Adrián, clase 03/10)", "¿Qué palabra repetiste hoy? ¿A quién se la decís?"],
   "tiroid": ["¿Dónde sentís que te apuran o te dejás apurar? (Hiper/Hipo)", "¿Qué no pudiste decir por falta de tiempo?"],
   "columna": ["¿Qué sostén sentís que te falta? ¿Qué te desvaloriza de no poder sostener?", "¿Qué columna/estructura de tu vida tambalea?"],
   "desvalorizacion": ["¿En qué sentís que no valés o no te valoran? ¿Desde cuándo?", "¿Qué te gustaría hacer y sentís que no podés sostener?"],
@@ -14196,6 +14257,14 @@ const REPREGUNTAS_TREE = {
   "desde": ["¿Qué cambió 30–60 días ANTES del inicio? (nunca hacia adelante)", "¿Qué pensaste/sentiste en ese momento? (A→B conflicto)"],
   "error": ["¿Qué te decís cuando cometés un error? ¿Hay memoria genética? (p.18)"],
 };
+// ——— Detector de repeticiones (Adrián, clase 03/10): lo que dice y repite habla del consultante ———
+const STOP_REP = new Set(("de,la,que,el,en,y,a,los,se,del,las,por,un,para,con,no,una,su,al,lo,como,mas,pero,sus,le,ya,esto,esta,este,eso,ese,esa,hay,muy,todo,toda,todos,todas,mi,mis,tu,tus,me,te,si,ni,tan,hasta,donde,cuando,porque,soy,eres,somos,estoy,estan,tengo,tiene,tienen,fue,son,era,eran,ser,vez,veces,cosa,cosas,algo,siempre,nunca,tambien,entonces,pues,quien,cual,ellos,ellas,ella,ello,estos,estas,otro,otra,otros,otras,mismo,misma,tanto,antes,ahora,hoy,persona,gente,vida,tiempo,momento,mientras,gran,grande,buen,buena,mejor,solo,sola,claro,igual,desde,hacia,pasar,puede,pueden,puedo,hacer,hecho,estaba,estaban,dice,dicen,dicho,alla,aqui,ustedes,nosotros,vamos,quiero,quiere,quieren,decia,ejemplo,encima,entre,sobre,cada,cuanto,menos,mucho,mucha,muchos,muchas,poco,poca,pocos,pocas,nada,algun,alguna,ningun,cualquiera,quienes,adonde,cuan,apenas,aunque,sino,siempre").split(","));
+function detectarRepeticiones(texto){
+  const words = norm(texto||"").split(/[^a-z0-9]+/i).filter(w=>w.length>3 && !STOP_REP.has(w));
+  const freq = {};
+  words.forEach(w=>{ freq[w]=(freq[w]||0)+1; });
+  return Object.entries(freq).filter(([w,c])=>c>=3).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([w,c])=>({w,n:c}));
+}
 function repreguntasPara(texto){
   const n = norm(texto||"");
   let out=[];
@@ -14509,6 +14578,15 @@ function triggerFunnel(){
       if(!hit && guiaDraft && Object.values(guiaDraft).some(g=> g && norm(g).includes(norm(trig.concepto||trig.organo||"")))) hit=true;
       if(hit) rule.preguntas.forEach(q=>addSug(q, trig.organo||trig.concepto));
     });
+    // ——— Alerta de repetición (Adrián, clase 03/10): salta sobre lo que dice y repite el consultante ———
+    {
+      const vozRep = [ctx, ...sesionesDraft.map(s=>s.notas||""), ...sesionesDraft.flatMap(s=>(s.qa||[]).map(x=>x.a||""))].join(" ");
+      const repsDet = detectarRepeticiones(vozRep);
+      repsDet.slice(0,3).forEach(r=>{
+        addSug(`⚠️ Repite ${r.n}× "${r.w}": ¿a quién estás convenciendo, a mí o a vos mismo? (Adrián, clase 03/10)`, "repeticion");
+      });
+      if(repsDet.length) addSug(`Lo que decís y repetís habla de vos: ¿a quién le decís esto?`, "repeticion");
+    }
     // Si aún no hay sugerencias y hay guía, sugerir basada en lo que el paciente ya tiene
     if(!sugPregs.length && guiaDraft){
       Object.values(guiaDraft).forEach(g=>{
