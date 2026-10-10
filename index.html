@@ -243,7 +243,7 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
 .cf-sugerencias h3{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:8px}
 .cf-sugerencias .sug-q{font-size:12.5px;margin:6px 0;padding-left:10px;border-left:2px solid var(--accent);color:var(--ink)}
 .cf-sugerencias .sug-tag{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
-.consultante-card{border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;background:var(--surface);cursor:pointer;transition:border-color .12s;margin-bottom:8px}
+.ent-case{border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;margin:8px 0;background:var(--surface-1)}.ent-frag{font-size:13.5px;font-style:italic;border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0;background:var(--surface-2)}.ent-opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:1px solid var(--border-strong);border-radius:var(--r-md);background:var(--surface-1);cursor:pointer;font-size:13px}.ent-opt:hover{background:var(--surface-2)}.ent-ok{border-color:green}.ent-bad{border-color:crimson}.ent-level{display:inline-block;margin-right:6px}.ent-score{font-size:11px;color:var(--ink-muted)}.consultante-card{border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;background:var(--surface);cursor:pointer;transition:border-color .12s;margin-bottom:8px}
 .consultante-card:hover{border-color:var(--border-strong)}
 .consultante-card b{font-size:13.5px}
 .consultante-meta{font-size:12px;color:var(--ink-muted);margin-top:4px}
@@ -358,7 +358,11 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
   <button data-view="asociaciones">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M7 8a4 4 0 1 0 0 8h2m8 0a4 4 0 0 0 0-8h-2"/></svg>
     Asociaciones</button>
-  <div class="group">Fuentes</div>
+  <div class="group">Práctica</div>
+  <button data-view="entrenar">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+    Entrenar repreguntas</button>
+<div class="group">Fuentes</div>
   <button data-view="bibliografia">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h7v16H6a2 2 0 0 1-2-2zM13 4h7v14a2 2 0 0 1-2 2h-5zM8 8h.01M17 8h.01"/></svg>
     Bibliografía</button>
@@ -563,7 +567,14 @@ h2.sect{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(-
     <div id="biblio-list"></div>
   </section>
 
-  <!-- PANEL -->
+  <!-- ENTRENAR -->
+  <section class="view" id="view-entrenar">
+    <h1 class="vtitle">Entrenar repreguntas</h1>
+    <p class="vsub">Casos de tus clases. Base Adrián + segunda oreja. Tu puntaje queda guardado en este equipo.</p>
+    <div id="ent-root"></div>
+  </section>
+
+<!-- PANEL -->
   <section class="view" id="view-panel">
     <h1 class="vtitle">Panel general</h1>
     <p class="vsub">Estado del corpus. Todo clickeable: cada número filtra su vista.</p>
@@ -604,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-04T19:35:49"
+  "integrado": "2026-10-10T13:31:18"
  },
  "bibliografia": [
   {
@@ -13661,8 +13672,130 @@ const DB = {
    "lente": "Sellam/Corbera: cierre activo + continuidad Hall"
   }
  ],
- "clase_notas": []
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ "clase_notas": [],
+ "entrenador_casos": [
+  {
+   "id": "mama-violenta",
+   "titulo": "'Éramos terribles'",
+   "motivo": "Consultante justifica la violencia materna.",
+   "fragmento": "Mi mamá era violenta, pero nosotros éramos terribles, éramos terribles, yo la entiendo.",
+   "pista": "terribles",
+   "esperadas": [
+    "corte",
+    "repeticion"
+   ],
+   "modelo": "No te pregunté la justificación: ¿tu mamá era violenta, sí o no? ¿Por qué intentás justificar eso?",
+   "fuente": "Clase 03/10 (Vero/Adrián)",
+   "d1": "¿Por qué creés que necesitás justificarla?",
+   "d2": "Tenés que dejar de justificar a tu mamá y ponerle límites."
+  },
+  {
+   "id": "quiero-pareja",
+   "titulo": "'Quiero pareja, quiero pareja'",
+   "motivo": "Repite el pedido sin para qué.",
+   "fragmento": "Quiero pareja, quiero pareja, necesito alguien a mi lado, no doy más sola.",
+   "pista": "pareja",
+   "esperadas": [
+    "para-que",
+    "repeticion"
+   ],
+   "modelo": "Quiero pareja, quiero pareja… ¿para qué la querés?",
+   "fuente": "Clase (Adrián)",
+   "d1": "¿Por qué creés que no conseguís pareja?",
+   "d2": "Tenés que salir más y conocer gente."
+  },
+  {
+   "id": "estoy-bien",
+   "titulo": "'Yo lo disfruto'",
+   "motivo": "Afirma de más; ¿a quién convence?",
+   "fragmento": "Yo estoy bien con mi trabajo, yo lo disfruto, yo estoy tranquila, hago lo que quiero.",
+   "pista": "disfruto",
+   "esperadas": [
+    "a-quien",
+    "repeticion"
+   ],
+   "modelo": "¿A quién estás convenciendo, a mí o a vos misma?",
+   "fuente": "Clase 03/10 (Adrián)",
+   "d1": "¿Por qué te cuesta disfrutar tu trabajo?",
+   "d2": "Me alegro, seguí así."
+  },
+  {
+   "id": "soy-imbecil",
+   "titulo": "'Soy un imbécil'",
+   "motivo": "Diálogo interno insultante.",
+   "fragmento": "Pienso que soy un imbécil, no sirvo para nada, todo me sale mal.",
+   "pista": "imbécil",
+   "esperadas": [
+    "a-quien",
+    "abierta"
+   ],
+   "modelo": "¿Quién te decía eso cuando eras niño? Decite hoy como adulto que sí eras suficiente.",
+   "fuente": "Clase 03/10 (Adrián)",
+   "d1": "¿Por qué pensás eso de vos mismo?",
+   "d2": "No digas eso, vos valés mucho."
+  },
+  {
+   "id": "miedo-carencia",
+   "titulo": "'Miedo a la carencia'",
+   "motivo": "Miedo + estrés que no previenen nada.",
+   "fragmento": "Tengo miedo de pasar carencia, me estresa, vivo a la defensiva todo el tiempo.",
+   "pista": "miedo",
+   "esperadas": [
+    "beneficio",
+    "abierta"
+   ],
+   "modelo": "¿Tu miedo previene que no pases carencia? ¿Qué beneficio te da tener ese miedo?",
+   "fuente": "Clase 03/10 (Adrián, tríada)",
+   "d1": "¿Por qué tenés miedo a la carencia?",
+   "d2": "Tenés que ahorrar y organizarte mejor."
+  },
+  {
+   "id": "plata-choreo",
+   "titulo": "'La plata es choreo'",
+   "motivo": "Creencia de casa sobre el dinero.",
+   "fragmento": "En casa decían que nadie hace plata trabajando. Si tengo plata van a pensar que soy corrupto.",
+   "pista": "plata",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "¿Qué se decía en tu casa sobre el dinero? ¿Qué imagen aparece cuando pensás en tener mucho?",
+   "fuente": "Clase 04/10 (Adrián)",
+   "d1": "¿Por qué relacionás plata con choreo?",
+   "d2": "La plata es buena, tenés que cambiar esa idea."
+  },
+  {
+   "id": "me-acomode",
+   "titulo": "'Me acomodé'",
+   "motivo": "Incómodo pero acomodado.",
+   "fragmento": "No estoy cómodo en mi pareja pero me acomodé, qué voy a hacer, es lo que hay.",
+   "pista": "acomod",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "No estás cómodo pero te acomodaste: ¿a qué te acomodaste? ¿Qué harías si no tuvieras que acomodarte?",
+   "fuente": "Clase (Adrián)",
+   "d1": "¿Por qué no te separás si no estás cómodo?",
+   "d2": "Tenés que luchar por tu felicidad."
+  },
+  {
+   "id": "no-termino",
+   "titulo": "'Les debo todo'",
+   "motivo": "Deuda con padres por carrera inconclusa.",
+   "fragmento": "No termino la carrera, mis padres me la pagaron, les debo todo, soy un desagradecido.",
+   "pista": "debo",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "¿Qué herencia te prometieron: título o bienes? ¿Vivís en deuda por no terminar?",
+   "fuente": "Clase 03/10 (Adrián)",
+   "d1": "¿Por qué no terminás la carrera?",
+   "d2": "Tenés que terminarla para devolverles el esfuerzo."
+  }
+ ]
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -13734,6 +13867,127 @@ RENDERERS.casos  = renderCasos;
 RENDERERS.asociaciones = renderAsocs;
 RENDERERS.bibliografia = renderBiblio;
 RENDERERS.panel  = renderPanel;
+RENDERERS.entrenar = renderEntrenar;
+/* =====================================================================
+   ENTRENAR REPREGUNTAS — casos de tus clases, rúbrica Adrián + 2da oreja
+   ===================================================================== */
+let entState = store.get("bio_entrenar_v1", {nivel:1, scores:{}});
+function entSave(){ store.set("bio_entrenar_v1", entState); }
+function entCasos(){ return DB.entrenador_casos||[]; }
+function entNivel(){ return entState.nivel||1; }
+const ENT_TAG_TXT = {
+  repeticion: ["Pescaste la palabra repetida: ahí está el conflicto.", "No pescaste la repetición: lo que más se repite es lo que se intenta tapar."],
+  "a-quien": ["Usaste el ¿a quién…?: lleva al vínculo real.", "Probá el ¿a quién…?: ¿a quién convencés / le decís / te decía?"],
+  "para-que": ["Preguntaste el para qué, no el qué.", "Falta el para qué: quiero X… ¿para qué?"],
+  beneficio: ["Tercera matadora: ¿qué beneficio te da…?", "Falta la matadora: ¿qué beneficio te da tener esto?"],
+  corte: ["Cortaste la justificación (¿sí o no?).", "Aceptaste justificación: no te pregunté la justificación: ¿sí o no?"],
+  abierta: ["Pregunta abierta: abre asociación.", "Muy cerrada o consejo: abrí con qué/cómo/quién/para qué."]
+};
+function renderEntrenar(){
+  const root = document.getElementById("ent-root");
+  if(!root) return;
+  const casos = entCasos();
+  const done = casos.filter(c=>entState.scores[c.id]).length;
+  const nivel = entNivel();
+  root.innerHTML =
+    '<div class="row" style="margin-bottom:10px">' +
+    [1,2,3].map(n=>'<button class="btn btn-sm '+(n===nivel?'':'btn-ghost')+'" data-ent-nivel="'+n+'">'+(n===1?'1 · Con rueditas':n===2?'2 · Libre':'3 · Ciego')+'</button>').join("") +
+    '<span class="ent-score">'+done+'/'+casos.length+' casos practicados</span></div>' +
+    '<p class="small muted">Nivel 1: elegí entre 3. Nivel 2: escribí libre (con pista). Nivel 3: escribí ciego (sin pista).</p>' +
+    casos.map(c=>{
+      const s = entState.scores[c.id];
+      return '<div class="ent-case"><b>'+esc(c.titulo)+'</b> <span class="ent-score">'+esc(c.motivo)+(s?' · mejor: '+s.best+'/'+s.max:'')+'</span>' +
+      '<div class="row" style="justify-content:flex-end;margin-top:6px"><button class="btn btn-sm" data-ent-play="'+esc(c.id)+'">Practicar</button></div></div>';
+    }).join("") +
+    '<div id="ent-play"></div>';
+}
+let entCurrent = null;
+function entPlay(id){
+  const c = entCasos().find(x=>x.id===id);
+  if(!c) return;
+  entCurrent = id;
+  const nivel = entNivel();
+  const wrap = document.getElementById("ent-play");
+  if(!wrap) return;
+  const frag = '<div class="ent-frag">Consultante: &ldquo;'+esc(c.fragmento)+'&rdquo;</div>';
+  let body = "";
+  if(nivel===1){
+    const opts = [{t:c.modelo, ok:true},{t:c.d1, ok:false},{t:c.d2, ok:false}];
+    const rot = c.id.length % 3;
+    const ord = [0,1,2].map(i=>opts[(i+rot)%3]);
+    body = '<p class="small muted">Repite: <b>'+esc(c.pista)+'</b> · Elegí la repregunta.</p>' +
+      ord.map(o=>'<button class="ent-opt" data-ent-pick="'+esc(c.id)+'" data-ent-idx="'+opts.indexOf(o)+'">'+esc(o.t)+'</button>').join("");
+  } else {
+    body = (nivel===2?'<p class="small muted">Pista: repite &ldquo;'+esc(c.pista)+'&rdquo;.</p>':'<p class="small muted">Sin pista. Escuchá con el corazón.</p>') +
+      '<textarea id="ent-answer" rows="2" style="width:100%" placeholder="Escribí tu repregunta…"></textarea>' +
+      '<div class="row" style="margin-top:6px"><button class="btn btn-sm" data-ent-eval>Evaluar</button> ' +
+      '<button class="btn btn-sm btn-ghost" data-ent-back>Volver</button></div>';
+  }
+  wrap.innerHTML = '<div class="ent-case"><b>'+esc(c.titulo)+'</b> <span class="ent-score">'+esc(c.fuente)+'</span>'+frag+'<div id="ent-zone">'+body+'</div></div>';
+  try{wrap.scrollIntoView({behavior:"smooth", block:"center"});}catch(_){}
+}
+function entTagCheck(tag, nq){
+  switch(tag){
+    case "repeticion": { const c = entCasos().find(x=>x.id===entCurrent); return !!(c && nq.includes(norm(c.pista))); }
+    case "a-quien": return nq.includes("a quien")||nq.includes("quien te");
+    case "para-que": return nq.includes("para qu");
+    case "beneficio": return nq.includes("beneficio");
+    case "corte": return nq.includes("si o no")||nq.includes("justific");
+    case "abierta": return /^(que|cual|cuales|como|cuando|donde|quien|quienes|a quien|para que|cuanto|hay|existe)/.test(nq.trim());
+    default: return false;
+  }
+}
+function entScore(caso, pregunta){
+  const nq = norm(pregunta||"");
+  let pts = 0; const lines = [];
+  caso.esperadas.forEach(tag=>{
+    if(entTagCheck(tag, nq)){ pts++; lines.push("✓ "+ENT_TAG_TXT[tag][0]); }
+    else lines.push("○ "+ENT_TAG_TXT[tag][1]);
+  });
+  return {pts, max: caso.esperadas.length, lines};
+}
+function entRecord(id, pts, max){
+  const prev = entState.scores[id];
+  if(!prev || pts>prev.best) entState.scores[id] = {best:pts, max};
+  entSave();
+}
+function entResultHTML(caso, r){
+  return '<p><b>Puntaje: '+r.pts+'/'+r.max+'</b></p>' +
+    r.lines.map(l=>'<div class="sug-q">'+esc(l)+'</div>').join("") +
+    '<div class="cf-sugerencias"><h3>Pregunta modelo</h3><div class="sug-q">'+esc(caso.modelo)+' <span class="sug-tag">'+esc(caso.fuente)+'</span></div></div>' +
+    '<div class="row" style="margin-top:8px"><button class="btn btn-sm btn-ghost" data-ent-back>Casos</button></div>';
+}
+function entPick(id, idx){
+  const caso = entCasos().find(x=>x.id===id);
+  if(!caso) return;
+  const opts = [{t:caso.modelo, ok:true},{t:caso.d1, ok:false},{t:caso.d2, ok:false}];
+  const o = opts[idx];
+  const zone = document.getElementById("ent-zone");
+  if(!zone||!o) return;
+  let r;
+  if(o.ok){ r = {pts: caso.esperadas.length, max: caso.esperadas.length, lines: caso.esperadas.map(t=>"✓ "+ENT_TAG_TXT[t][0])}; }
+  else { r = {pts:0, max:caso.esperadas.length, lines:[idx===1?"○ Pregunta racionalista: pide lógica, no abre nada ni corta nada.":"○ Consejo directo: el acompañante abre, no indica."]}; }
+  entRecord(id, r.pts, r.max);
+  zone.innerHTML = (o.ok?'<p><b>✓ Esa.</b></p>':'<p><b>Elegiste:</b> '+esc(o.t)+'</p>') + entResultHTML(caso, r);
+}
+function entEvalFree(){
+  const ta = document.getElementById("ent-answer");
+  const caso = entCasos().find(x=>x.id===entCurrent);
+  if(!ta||!caso) return;
+  const r = entScore(caso, ta.value);
+  entRecord(caso.id, r.pts, r.max);
+  document.getElementById("ent-zone").innerHTML = '<div class="ent-frag">Tu pregunta: &ldquo;'+esc(ta.value)+'&rdquo;</div>' + entResultHTML(caso, r);
+}
+document.addEventListener("click", e=>{
+  const nv = e.target.closest("[data-ent-nivel]");
+  if(nv){ entState.nivel = parseInt(nv.dataset.entNivel,10)||1; entSave(); renderEntrenar(); return; }
+  const pl = e.target.closest("[data-ent-play]");
+  if(pl){ entPlay(pl.dataset.entPlay); return; }
+  const pk = e.target.closest("[data-ent-pick]");
+  if(pk){ entPick(pk.dataset.entPick, parseInt(pk.dataset.entIdx,10)); return; }
+  if(e.target.closest("[data-ent-eval]")){ entEvalFree(); return; }
+  if(e.target.closest("[data-ent-back]")){ renderEntrenar(); return; }
+});
 
 document.addEventListener("click",e=>{
   const nav=e.target.closest(".nav [data-view]");
