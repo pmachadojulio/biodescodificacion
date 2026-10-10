@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-10T13:31:18"
+  "integrado": "2026-10-10T14:43:04"
  },
  "bibliografia": [
   {
@@ -13687,7 +13687,25 @@ const DB = {
    "modelo": "No te pregunté la justificación: ¿tu mamá era violenta, sí o no? ¿Por qué intentás justificar eso?",
    "fuente": "Clase 03/10 (Vero/Adrián)",
    "d1": "¿Por qué creés que necesitás justificarla?",
-   "d2": "Tenés que dejar de justificar a tu mamá y ponerle límites."
+   "d2": "Tenés que dejar de justificar a tu mamá y ponerle límites.",
+   "turno2": {
+    "siBien": {
+     "dice": "Sí, era violenta. Pero me da culpa decirlo.",
+     "pista": "culpa",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "La culpa requiere castigo: ¿qué castigo te imponés? ¿Y tu responsabilidad hoy?"
+    },
+    "siMal": {
+     "dice": "Bueno, tampoco era para tanto.",
+     "coach": "Atenúa: volvió la justificación. Cortá de nuevo: ¿sí o no?",
+     "pista": "violenta",
+     "espera": [
+      "corte"
+     ]
+    }
+   }
   },
   {
    "id": "quiero-pareja",
@@ -13702,7 +13720,26 @@ const DB = {
    "modelo": "Quiero pareja, quiero pareja… ¿para qué la querés?",
    "fuente": "Clase (Adrián)",
    "d1": "¿Por qué creés que no conseguís pareja?",
-   "d2": "Tenés que salir más y conocer gente."
+   "d2": "Tenés que salir más y conocer gente.",
+   "turno2": {
+    "siBien": {
+     "dice": "Para no estar sola… me da miedo la soledad.",
+     "pista": "soledad",
+     "espera": [
+      "a-quien",
+      "abierta"
+     ],
+     "modelo": "Si no sos feliz sola, no hay pareja que alcance. ¿Qué parte de tu soledad no mirás?"
+    },
+    "siMal": {
+     "dice": "Quiero a alguien que me quiera bien, ¿qué tiene de malo?",
+     "coach": "Se defiende: ¿hiciste rapport? Preguntá por la soledad, no por la pareja.",
+     "pista": "pareja",
+     "espera": [
+      "para-que"
+     ]
+    }
+   }
   },
   {
    "id": "estoy-bien",
@@ -13717,7 +13754,25 @@ const DB = {
    "modelo": "¿A quién estás convenciendo, a mí o a vos misma?",
    "fuente": "Clase 03/10 (Adrián)",
    "d1": "¿Por qué te cuesta disfrutar tu trabajo?",
-   "d2": "Me alegro, seguí así."
+   "d2": "Me alegro, seguí así.",
+   "turno2": {
+    "siBien": {
+     "dice": "(silencio) Bueno… a veces lloro cuando llego a casa.",
+     "pista": "casa",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿Qué pasa cuando llegás a casa? ¿A quién le mostrás eso?"
+    },
+    "siMal": {
+     "dice": "Te digo en serio, estoy bárbaro.",
+     "coach": "Puerta cerrada: no apretes. Rapport: 'te creo, y también escucho tu repetición.'",
+     "pista": "disfruto",
+     "espera": [
+      "rapport"
+     ]
+    }
+   }
   },
   {
    "id": "soy-imbecil",
@@ -13732,7 +13787,26 @@ const DB = {
    "modelo": "¿Quién te decía eso cuando eras niño? Decite hoy como adulto que sí eras suficiente.",
    "fuente": "Clase 03/10 (Adrián)",
    "d1": "¿Por qué pensás eso de vos mismo?",
-   "d2": "No digas eso, vos valés mucho."
+   "d2": "No digas eso, vos valés mucho.",
+   "turno2": {
+    "siBien": {
+     "dice": "Mi papá… me decía que no iba a llegar a nada.",
+     "pista": "papá",
+     "espera": [
+      "a-quien",
+      "abierta"
+     ],
+     "modelo": "El adulto reflejaba sus carencias: ¿qué carencia hablaba? Decile hoy que sí eras suficiente."
+    },
+    "siMal": {
+     "dice": "No sé, siempre fui así.",
+     "coach": "'Siempre fui así' es identidad, no historia. Preguntá por la primera vez.",
+     "pista": "primera",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
   },
   {
    "id": "miedo-carencia",
@@ -13747,7 +13821,25 @@ const DB = {
    "modelo": "¿Tu miedo previene que no pases carencia? ¿Qué beneficio te da tener ese miedo?",
    "fuente": "Clase 03/10 (Adrián, tríada)",
    "d1": "¿Por qué tenés miedo a la carencia?",
-   "d2": "Tenés que ahorrar y organizarte mejor."
+   "d2": "Tenés que ahorrar y organizarte mejor.",
+   "turno2": {
+    "siBien": {
+     "dice": "Solo me da estrés… y el estrés tampoco previene nada.",
+     "pista": "estrés",
+     "espera": [
+      "beneficio"
+     ],
+     "modelo": "¿Qué beneficio te da estar a la defensiva?"
+    },
+    "siMal": {
+     "dice": "Pero si no me preocupo yo, ¿quién lo hace?",
+     "coach": "Te llevó a su lógica: no discutas la preocupación, volvé a la tríada.",
+     "pista": "preocupo",
+     "espera": [
+      "beneficio"
+     ]
+    }
+   }
   },
   {
    "id": "plata-choreo",
@@ -13762,7 +13854,25 @@ const DB = {
    "modelo": "¿Qué se decía en tu casa sobre el dinero? ¿Qué imagen aparece cuando pensás en tener mucho?",
    "fuente": "Clase 04/10 (Adrián)",
    "d1": "¿Por qué relacionás plata con choreo?",
-   "d2": "La plata es buena, tenés que cambiar esa idea."
+   "d2": "La plata es buena, tenés que cambiar esa idea.",
+   "turno2": {
+    "siBien": {
+     "dice": "Mi mamá decía eso… y yo quiero progresar pero me freno.",
+     "pista": "freno",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿Qué te frena exactamente? ¿La voz de mamá o la tuya?"
+    },
+    "siMal": {
+     "dice": "Es la realidad, la plata corrompe.",
+     "coach": "Generalidad = defensa. Pedí escena concreta: ¿cuándo viste corromperse a alguien?",
+     "pista": "corrompe",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
   },
   {
    "id": "me-acomode",
@@ -13777,7 +13887,26 @@ const DB = {
    "modelo": "No estás cómodo pero te acomodaste: ¿a qué te acomodaste? ¿Qué harías si no tuvieras que acomodarte?",
    "fuente": "Clase (Adrián)",
    "d1": "¿Por qué no te separás si no estás cómodo?",
-   "d2": "Tenés que luchar por tu felicidad."
+   "d2": "Tenés que luchar por tu felicidad.",
+   "turno2": {
+    "siBien": {
+     "dice": "Si me desacomodo me quedo sola y no sé estar sola.",
+     "pista": "sola",
+     "espera": [
+      "a-quien",
+      "abierta"
+     ],
+     "modelo": "¿Qué parte de tu soledad no mirás? Si no sos feliz sola, ninguna pareja alcanza."
+    },
+    "siMal": {
+     "dice": "A mi edad ya no cambio.",
+     "coach": "La edad como sentencia: ¿quién te dijo que a tu edad no…?",
+     "pista": "edad",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
   },
   {
    "id": "no-termino",
@@ -13792,10 +13921,294 @@ const DB = {
    "modelo": "¿Qué herencia te prometieron: título o bienes? ¿Vivís en deuda por no terminar?",
    "fuente": "Clase 03/10 (Adrián)",
    "d1": "¿Por qué no terminás la carrera?",
-   "d2": "Tenés que terminarla para devolverles el esfuerzo."
+   "d2": "Tenés que terminarla para devolverles el esfuerzo.",
+   "turno2": {
+    "siBien": {
+     "dice": "Siento culpa cada vez que veo el título en la pared del living.",
+     "pista": "culpa",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿De quién es esa culpa? ¿Qué castigo te imponés por no terminar?"
+    },
+    "siMal": {
+     "dice": "Ya fue, no sirvo para estudiar.",
+     "coach": "'No sirvo' = diálogo interno: ¿quién te decía eso de niño?",
+     "pista": "sirvo",
+     "espera": [
+      "a-quien"
+     ]
+    }
+   }
+  },
+  {
+   "id": "celoso-control",
+   "titulo": "'Yo soy muy celoso'",
+   "motivo": "Celos + control del celular.",
+   "fragmento": "Yo soy muy celoso, controlo el celular, no lo puedo evitar, me pongo mal.",
+   "pista": "celoso",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "¿Qué te asegura ese control? ¿Miedo al abandono o al rechazo?",
+   "fuente": "Por vos voy a sufrir (Adrián)",
+   "d1": "¿Por qué sos tan celoso?",
+   "d2": "Tenés que confiar más en tu pareja.",
+   "turno2": {
+    "siBien": {
+     "dice": "Reviso el celular cada noche… si no lo hago no duermo.",
+     "pista": "noche",
+     "espera": [
+      "beneficio",
+      "abierta"
+     ],
+     "modelo": "¿Qué beneficio te da no dormir revisando? ¿Qué pasaría si una noche no lo hacés?"
+    },
+    "siMal": {
+     "dice": "Pero es que ella me da motivos.",
+     "coach": "Justifica el control: cortá — ¿el control te da paz o te da más celos?",
+     "pista": "celos",
+     "espera": [
+      "alternativa"
+     ]
+    }
+   }
+  },
+  {
+   "id": "el-que-la-caga",
+   "titulo": "'Yo soy el que la caga'",
+   "motivo": "Rompe parejas y repite el tipo.",
+   "fragmento": "Estoy rebién con un novio y yo soy el que la caga, hago cosas para que el otro cometa errores.",
+   "pista": "caga",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "Siempre el mismo tipo de persona: ¿qué programa reparás rompiendo vos primero?",
+   "fuente": "Por vos voy a sufrir (Adrián)",
+   "d1": "¿Por qué arruinás tus relaciones?",
+   "d2": "Tenés que valorarte más y dejar de sabotearte.",
+   "turno2": {
+    "siBien": {
+     "dice": "Siempre busco el mismo tipo… el que no se compromete.",
+     "pista": "compromete",
+     "espera": [
+      "a-quien",
+      "abierta"
+     ],
+     "modelo": "El que necesita compromiso… ¿adiviná quién es? ¿Vos con quién no te comprometés?"
+    },
+    "siMal": {
+     "dice": "Es que todos me fallan.",
+     "coach": "Todos = generalidad defensiva. Pedí el último caso concreto, con fecha.",
+     "pista": "fallan",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
+  },
+  {
+   "id": "vitiligo-padre",
+   "titulo": "'Para mi padre no existo'",
+   "motivo": "Mirada paterna + mancha en cara.",
+   "fragmento": "Mi relación con mi padre no es buena, no me mira, no existo para mi padre.",
+   "pista": "padre",
+   "esperadas": [
+    "a-quien",
+    "abierta"
+   ],
+   "modelo": "¿Qué mirada necesitabas de tu padre? ¿A quién mirás hoy esperando esa mirada?",
+   "fuente": "WhatsApp docentes (vitiligo)",
+   "d1": "¿Por qué tu padre no te mira?",
+   "d2": "Tenés que hablar con tu padre y perdonarlo.",
+   "turno2": {
+    "siBien": {
+     "dice": "Quiero más a mamá que a papá… me cuesta mirarlo igual.",
+     "pista": "mamá",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "El árbol pide mirada igualitaria: ¿qué le debés a papá que no le diste? ¿Y a mamá?"
+    },
+    "siMal": {
+     "dice": "Mi padre es así, no va a cambiar.",
+     "coach": "Sentencia sobre el padre: no discutas al padre, preguntá por el niño que espera.",
+     "pista": "cambiar",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
+  },
+  {
+   "id": "enojo-autocastigo",
+   "titulo": "'Mi enojo me castiga a mí'",
+   "motivo": "Enojo que solo sufre quien lo siente.",
+   "fragmento": "Tengo este enojo por lo que hicieron ellos, ellos ni se enteran pero yo sufro mi enojo.",
+   "pista": "enojo",
+   "esperadas": [
+    "abierta",
+    "para-que"
+   ],
+   "modelo": "¿Para qué te enojás si ellos ni se enteran? ¿A quién castigás con tu enojo?",
+   "fuente": "WhatsApp docentes (Adrián)",
+   "d1": "¿Por qué te hicieron eso?",
+   "d2": "Tenés que soltar ese enojo, te hace mal.",
+   "turno2": {
+    "siBien": {
+     "dice": "¿Para qué?… para nada. Me auto castigo, ¿no?",
+     "pista": "castigo",
+     "espera": [
+      "beneficio"
+     ],
+     "modelo": "¿Qué beneficio te da auto castigarte? ¿Qué culpa paga ese castigo?"
+    },
+    "siMal": {
+     "dice": "Es que lo que hicieron no tiene perdón.",
+     "coach": "Te llevó al perdón (tema de ellos). Volvé al enojo (tema tuyo): ¿dónde lo sentís en el cuerpo?",
+     "pista": "perdón",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
+  },
+  {
+   "id": "rechazo-madre",
+   "titulo": "'Rechazo el rechazo'",
+   "motivo": "Rechazo a la madre + culpa por sentirlo.",
+   "fragmento": "Tengo un sentimiento de rechazo hacia mi madre, pero no me gusta, rechazo sentir rechazo.",
+   "pista": "rechazo",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "Rechazás el rechazo: ¿qué parte te da culpa? ¿Qué necesitarías para mirar sin juzgar?",
+   "fuente": "Clase 08-08 (Adrián)",
+   "d1": "¿Por qué rechazás a tu madre?",
+   "d2": "Es tu madre, tenés que aceptarla como es.",
+   "turno2": {
+    "siBien": {
+     "dice": "Me da culpa… soy mala hija por sentir esto.",
+     "pista": "culpa",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿De quién es esa culpa? Responsable no es culpable: ¿qué respondés hoy?"
+    },
+    "siMal": {
+     "dice": "Prefiero no hablar de mi madre.",
+     "coach": "Puerta cerrada con culpa: rapport primero, no apretes. 'Te creo, y te escucho.'",
+     "pista": "madre",
+     "espera": [
+      "rapport"
+     ]
+    }
+   }
+  },
+  {
+   "id": "sobrepeso-comodin",
+   "titulo": "'El comodín de la baraja'",
+   "motivo": "Sobrepeso que evita algo peor + no poder parar.",
+   "fragmento": "El sobrepeso es mi comodín, para que no me dé algo peor. Y tengo que comer algo con el té, si no, no puedo.",
+   "pista": "puedo",
+   "esperadas": [
+    "beneficio",
+    "abierta"
+   ],
+   "modelo": "¿De qué te protege el comodín? ¿Qué sería 'algo peor'?",
+   "fuente": "Clase 08-09 / 08-08 (Adrián)",
+   "d1": "¿Por qué comés si sabés que te hace mal?",
+   "d2": "Tenés que hacer dieta y fuerza de voluntad.",
+   "turno2": {
+    "siBien": {
+     "dice": "Si no como me pongo de mal humor, sin razón, todo el día.",
+     "pista": "humor",
+     "espera": [
+      "abierta",
+      "repeticion"
+     ],
+     "modelo": "Mal humor sin razón: ¿qué diálogo interno suena cuando no comés? ¿Quién habla ahí?"
+    },
+    "siMal": {
+     "dice": "Es ansiedad, necesito comer, es médico.",
+     "coach": "Se refugia en etiqueta médica: no discutas el diagnóstico, preguntá por el momento exacto del impulso.",
+     "pista": "ansiedad",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
+  },
+  {
+   "id": "soy-yaciente",
+   "titulo": "'Soy yaciente de alguien'",
+   "motivo": "Nombre/fechas de un muerto + vida prestada.",
+   "fragmento": "Me llamo como mi abuelo que murió antes de que yo naciera. Siento que vivo una vida que no es mía.",
+   "pista": "abuelo",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "¿Qué le pasó a tu abuelo? ¿Qué duelo quedó sin hacer? ¿Qué fechas se repiten?",
+   "fuente": "Clase 12/09 (Adrián)",
+   "d1": "¿Por qué sentís que tu vida no es tuya?",
+   "d2": "Tenés que hacer tu propio camino y no pensar en eso.",
+   "turno2": {
+    "siBien": {
+     "dice": "Murió joven, mi mamá nunca lo lloró… yo lloro sin saber por qué.",
+     "pista": "lloro",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿De quién son esas lágrimas? ¿Qué duelo de mamá cargás vos?"
+    },
+    "siMal": {
+     "dice": "Eso de los muertos no creo.",
+     "coach": "No pelees la creencia: pedí datos fríos — fechas, nombres, causas. El árbol habla solo.",
+     "pista": "abuelo",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
+  },
+  {
+   "id": "inseguridad-carencia",
+   "titulo": "'Nací inseguro'",
+   "motivo": "Inseguridad por carencias afectivas.",
+   "fragmento": "Tengo inseguridad siempre, en todo. Me faltó cariño de chico, supongo, qué sé yo.",
+   "pista": "inseguridad",
+   "esperadas": [
+    "a-quien",
+    "abierta"
+   ],
+   "modelo": "¿Quién te hacía sentir que no ibas a poder? ¿Qué carencia afectiva pesa hoy?",
+   "fuente": "Clase 08-08 (Adrián)",
+   "d1": "¿Por qué sos tan inseguro?",
+   "d2": "Tenés que tener más confianza en vos mismo.",
+   "turno2": {
+    "siBien": {
+     "dice": "De chico me decían que no iba a llegar a nada…",
+     "pista": "chico",
+     "espera": [
+      "a-quien"
+     ],
+     "modelo": "¿Quién te decía eso? El adulto reflejaba sus carencias: decite hoy que sí eras suficiente."
+    },
+    "siMal": {
+     "dice": "Soy así, nací inseguro.",
+     "coach": "'Nací así' cierra la historia: preguntá por la primera vez que lo sentiste, con edad.",
+     "pista": "vez",
+     "espera": [
+      "abierta"
+     ]
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -13881,6 +14294,8 @@ const ENT_TAG_TXT = {
   "para-que": ["Preguntaste el para qué, no el qué.", "Falta el para qué: quiero X… ¿para qué?"],
   beneficio: ["Tercera matadora: ¿qué beneficio te da…?", "Falta la matadora: ¿qué beneficio te da tener esto?"],
   corte: ["Cortaste la justificación (¿sí o no?).", "Aceptaste justificación: no te pregunté la justificación: ¿sí o no?"],
+  alternativa: ["Bien: alternativa que desarma (¿paz o más celos?).", "Ofrecé una alternativa concreta: ¿X o Y?"],
+  rapport: ["Rapport antes de apretar: bien.", "Primero rapport (te creo, te escucho) — después se aprieta."],
   abierta: ["Pregunta abierta: abre asociación.", "Muy cerrada o consejo: abrí con qué/cómo/quién/para qué."]
 };
 function renderEntrenar(){
@@ -13926,22 +14341,24 @@ function entPlay(id){
   wrap.innerHTML = '<div class="ent-case"><b>'+esc(c.titulo)+'</b> <span class="ent-score">'+esc(c.fuente)+'</span>'+frag+'<div id="ent-zone">'+body+'</div></div>';
   try{wrap.scrollIntoView({behavior:"smooth", block:"center"});}catch(_){}
 }
-function entTagCheck(tag, nq){
+function entTagCheck(tag, nq, pistaOverride){
   switch(tag){
-    case "repeticion": { const c = entCasos().find(x=>x.id===entCurrent); return !!(c && nq.includes(norm(c.pista))); }
+    case "repeticion": { const c = entCasos().find(x=>x.id===entCurrent); const pw = pistaOverride || (c && c.pista); return !!(pw && nq.includes(norm(pw))); }
     case "a-quien": return nq.includes("a quien")||nq.includes("quien te");
     case "para-que": return nq.includes("para qu");
     case "beneficio": return nq.includes("beneficio");
     case "corte": return nq.includes("si o no")||nq.includes("justific");
-    case "abierta": return /^(que|cual|cuales|como|cuando|donde|quien|quienes|a quien|para que|cuanto|hay|existe)/.test(nq.trim());
+    case "alternativa": return /[?¿][^?]*\so\s[^?]*\?/.test(nq);
+    case "rapport": return /(gracias|te creo|te escucho|te entiendo|contame|te acompaño)/.test(nq);
+    case "abierta": return /(que|cual|cuales|como|cuando|donde|quien|quienes|para que|cuanto)\b[^?]*\?/.test(nq);
     default: return false;
   }
 }
-function entScore(caso, pregunta){
+function entScore(caso, pregunta, pistaOverride){
   const nq = norm(pregunta||"");
   let pts = 0; const lines = [];
   caso.esperadas.forEach(tag=>{
-    if(entTagCheck(tag, nq)){ pts++; lines.push("✓ "+ENT_TAG_TXT[tag][0]); }
+    if(entTagCheck(tag, nq, pistaOverride)){ pts++; lines.push("✓ "+ENT_TAG_TXT[tag][0]); }
     else lines.push("○ "+ENT_TAG_TXT[tag][1]);
   });
   return {pts, max: caso.esperadas.length, lines};
@@ -13951,12 +14368,13 @@ function entRecord(id, pts, max){
   if(!prev || pts>prev.best) entState.scores[id] = {best:pts, max};
   entSave();
 }
-function entResultHTML(caso, r){
+function entResultHTML(caso, r, _extra){
   return '<p><b>Puntaje: '+r.pts+'/'+r.max+'</b></p>' +
     r.lines.map(l=>'<div class="sug-q">'+esc(l)+'</div>').join("") +
     '<div class="cf-sugerencias"><h3>Pregunta modelo</h3><div class="sug-q">'+esc(caso.modelo)+' <span class="sug-tag">'+esc(caso.fuente)+'</span></div></div>' +
     '<div class="row" style="margin-top:8px"><button class="btn btn-sm btn-ghost" data-ent-back>Casos</button></div>';
 }
+let entT1 = null;
 function entPick(id, idx){
   const caso = entCasos().find(x=>x.id===id);
   if(!caso) return;
@@ -13967,16 +14385,54 @@ function entPick(id, idx){
   let r;
   if(o.ok){ r = {pts: caso.esperadas.length, max: caso.esperadas.length, lines: caso.esperadas.map(t=>"✓ "+ENT_TAG_TXT[t][0])}; }
   else { r = {pts:0, max:caso.esperadas.length, lines:[idx===1?"○ Pregunta racionalista: pide lógica, no abre nada ni corta nada.":"○ Consejo directo: el acompañante abre, no indica."]}; }
+  entT1 = {id, r, picked: o.t, ok: o.ok};
+  if(caso.turno2){ entAfterT1(caso, r, o.ok?null:o.t); return; }
   entRecord(id, r.pts, r.max);
-  zone.innerHTML = (o.ok?'<p><b>✓ Esa.</b></p>':'<p><b>Elegiste:</b> '+esc(o.t)+'</p>') + entResultHTML(caso, r);
+  zone.innerHTML = (o.ok?'<p><b>✓ Esa.</b></p>':'<p><b>Elegiste:</b> '+esc(o.t)+'</p>') + entResultHTML(caso, r, null);
 }
 function entEvalFree(){
   const ta = document.getElementById("ent-answer");
   const caso = entCasos().find(x=>x.id===entCurrent);
   if(!ta||!caso) return;
-  const r = entScore(caso, ta.value);
+  const r = entScore(caso, ta.value, null);
+  entT1 = {id: caso.id, r, picked: ta.value, ok: null};
+  if(caso.turno2){ entAfterT1(caso, r, ta.value); return; }
   entRecord(caso.id, r.pts, r.max);
-  document.getElementById("ent-zone").innerHTML = '<div class="ent-frag">Tu pregunta: &ldquo;'+esc(ta.value)+'&rdquo;</div>' + entResultHTML(caso, r);
+  document.getElementById("ent-zone").innerHTML = '<div class="ent-frag">Tu pregunta: &ldquo;'+esc(ta.value)+'&rdquo;</div>' + entResultHTML(caso, r, null);
+}
+function entAfterT1(caso, r, pickedTxt){
+  const rama = r.pts >= Math.ceil(r.max/2) ? "siBien" : "siMal";
+  entT1.rama = rama;
+  const t2 = caso.turno2[rama];
+  const nivel = entNivel();
+  let html = '';
+  if(pickedTxt!=null) html += '<div class="ent-frag">Tu pregunta: &ldquo;'+esc(pickedTxt)+'&rdquo; ('+r.pts+'/'+r.max+')</div>';
+  else html += '<p><b>'+(r.pts>=Math.ceil(r.max/2)?'✓ Bien.':'○ Flojo.')+'</b> Turno 1: '+r.pts+'/'+r.max+'</p>';
+  if(rama==="siMal") html += '<div class="cf-sugerencias"><h3>Se cerró · coach</h3><div class="sug-q">'+esc(t2.coach)+'</div></div>';
+  html += '<div class="ent-frag">Consultante: &ldquo;'+esc(t2.dice)+'&rdquo;</div>';
+  html += (nivel===3?'<p class="small muted">Turno 2, sin pista.</p>':'<p class="small muted">Turno 2' + (t2.pista?', pista: &ldquo;'+esc(t2.pista)+'&rdquo;':'') + '.</p>') +
+    '<textarea id="ent-answer2" rows="2" style="width:100%" placeholder="Tu repregunta al giro…"></textarea>' +
+    '<div class="row" style="margin-top:6px"><button class="btn btn-sm" data-ent-eval2>Evaluar turno 2</button> ' +
+    '<button class="btn btn-sm btn-ghost" data-ent-back>Volver</button></div>';
+  document.getElementById("ent-zone").innerHTML = html;
+  try{document.getElementById("ent-play").scrollIntoView({behavior:"smooth", block:"center"});}catch(_){}
+}
+function entEvalT2(){
+  const ta = document.getElementById("ent-answer2");
+  const caso = entCasos().find(x=>x.id===entCurrent);
+  if(!ta||!caso||!entT1) return;
+  const t2 = caso.turno2[entT1.rama];
+  const pista2 = t2.pista || caso.pista;
+  const r2 = entScore({esperadas: t2.espera||[]}, ta.value, pista2);
+  const tot = entT1.r.pts + r2.pts, mx = entT1.r.max + r2.max;
+  entRecord(caso.id, tot, mx);
+  let html = '<div class="ent-frag">Turno 2, tu pregunta: &ldquo;'+esc(ta.value)+'&rdquo; ('+r2.pts+'/'+r2.max+')</div>' +
+    r2.lines.map(l=>'<div class="sug-q">'+esc(l)+'</div>').join("") +
+    '<p><b>Total del caso: '+tot+'/'+mx+'</b></p>' +
+    '<div class="cf-sugerencias"><h3>Preguntas modelo</h3><div class="sug-q">T1: '+esc(caso.modelo)+' <span class="sug-tag">'+esc(caso.fuente)+'</span></div>' +
+    '<div class="sug-q">T2: '+esc(t2.modelo||caso.modelo)+'</div>' + '</div>' +
+    '<div class="row" style="margin-top:8px"><button class="btn btn-sm btn-ghost" data-ent-back>Casos</button></div>';
+  document.getElementById("ent-zone").innerHTML = html;
 }
 document.addEventListener("click", e=>{
   const nv = e.target.closest("[data-ent-nivel]");
@@ -13986,6 +14442,7 @@ document.addEventListener("click", e=>{
   const pk = e.target.closest("[data-ent-pick]");
   if(pk){ entPick(pk.dataset.entPick, parseInt(pk.dataset.entIdx,10)); return; }
   if(e.target.closest("[data-ent-eval]")){ entEvalFree(); return; }
+  if(e.target.closest("[data-ent-eval2]")){ entEvalT2(); return; }
   if(e.target.closest("[data-ent-back]")){ renderEntrenar(); return; }
 });
 
