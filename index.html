@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-10T21:59:36"
+  "integrado": "2026-10-10T22:08:21"
  },
  "bibliografia": [
   {
@@ -1105,6 +1105,16 @@ const DB = {
    "title": "Escritos / Seminarios (equívoco, puntuación, corte)",
    "type": "libro",
    "notes": "Fuente NotebookLM 'Lacan' (3 fuentes). Segunda oreja del entrenador: resonar homofonía, aislar término, cortar. Fundamento del detector. Ver bibliografia/notebooklm_lacan_equivoco.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B44",
+   "author": "Sigmund Freud",
+   "year": 1923,
+   "title": "El Yo y el Ello (+ Esquema del psicoanálisis)",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Yo y Ello' (3 fuentes). Instancias, jinete y caballo (racionalización), señales por dominancia, reacción terapéutica negativa. Ver bibliografia/notebooklm_yo_ello_superyo.md.",
    "verified": true,
    "group": "psicoanalisis"
   }
@@ -3205,6 +3215,42 @@ const DB = {
     "aislar"
    ],
    "description": "Aislar/repetir término sin agregar sentido; obliga a escucharse. (B43)"
+  },
+  {
+   "concept_id": "superyo",
+   "concept": "Superyó",
+   "category": "escucha",
+   "synonyms": [
+    "superyó",
+    "tiranía moral",
+    "castigo",
+    "deber ser"
+   ],
+   "description": "Heredero de Edipo: observa, censura, castiga. 'Merezco estar mal' = su voz. (B44)"
+  },
+  {
+   "concept_id": "jinete-racionalizacion",
+   "concept": "Jinete y caballo",
+   "category": "escucha",
+   "synonyms": [
+    "jinete",
+    "racionalización",
+    "lógica",
+    "explicación"
+   ],
+   "description": "El Yo disfraza la voluntad del Ello como propia. Explicación lógica = sospechosa. (B44)"
+  },
+  {
+   "concept_id": "reaccion-terapeutica-negativa",
+   "concept": "Reacción terapéutica negativa",
+   "category": "clinica",
+   "synonyms": [
+    "empeora",
+    "tras mejorar",
+    "castigo",
+    "expiación"
+   ],
+   "description": "Empeorar tras mejorar por necesidad de castigo (superyó + envidia). No retaliar. (B44/B39)"
   }
  ],
  "associations": [
@@ -14092,6 +14138,33 @@ const DB = {
     "Repetí su palabra exacta sin agregar sentido: que se escuche. (B43)",
     "Cortá ante la palabra crucial: el vacío sitúa el deseo."
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "superyo"
+   },
+   "preguntas": [
+    "¿Tiranía moral inflexible? ¿Castigo que merecés? Esa voz es el superyó, no vos. (B44)",
+    "'Así debes ser / así no': ¿de quién son esas frases?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "jinete"
+   },
+   "preguntas": [
+    "¿Jinete o caballo? Tu explicación lógica: ¿racionalización del Ello? (B44)",
+    "¿Quién quiere ir ahí: vos o la montura?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "reaccion-negativa"
+   },
+   "preguntas": [
+    "¿Empeorás tras mejorar? Necesidad de castigo, no fracaso. (B44/B39)",
+    "¿Expiación vía martirio? ¿Qué culpa paga el síntoma?"
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -15019,9 +15092,37 @@ const DB = {
      "coach": "Se cierra: no apretes el sueño. Rapport y volvé al día previo, lo concreto."
     }
    }
+  },
+  {
+   "id": "merezco-estar-mal",
+   "titulo": "'Merezco estar mal'",
+   "motivo": "Tiranía del superyó + expiación.",
+   "fragmento": "Merezco estar mal, soy mala persona, no merezco mejorar, así es.",
+   "pista": "merezco",
+   "esperadas": [
+    "a-quien"
+   ],
+   "modelo": "'Merezco estar mal': ¿de quién es esa voz? El superyó juzga; ¿quién habla?",
+   "fuente": "Freud (superyó)",
+   "d1": "¿Por qué creés que merecés estar mal?",
+   "d2": "No digas eso, vos merecés ser feliz.",
+   "turno2": {
+    "siBien": {
+     "dice": "Mi mamá decía que las que se portan mal la pagan.",
+     "pista": "pagan",
+     "espera": [
+      "a-quien"
+     ],
+     "modelo": "Ahí está el heredero de Edipo: ¿mamá o tu voz hoy?"
+    },
+    "siMal": {
+     "dice": "Es la verdad, soy así.",
+     "coach": "'Es la verdad' = sentencia del superyó. Preguntá por la primera condena, con edad."
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -16056,6 +16157,9 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "superyo": ["¿Tiranía moral? ¿Castigo merecido? Esa voz no sos vos. (Freud)", "'Así debes ser': ¿de quién es la frase?"],
+  "jinete": ["¿Jinete o caballo? ¿Racionalización del Ello? (Freud)", "¿Quién quiere ir ahí realmente?"],
+  "castigo": ["¿Necesidad de castigo? ¿Expiación vía síntoma? (Freud)", "¿Qué culpa paga el malestar?"],
   "melancol": ["¿Vacío en el mundo o en tu valía? ¿Autoacusación? (Freud)", "¿Sabés a quién pero no qué perdiste?"],
   "inhib": ["¿Qué dejaste de hacer para evitar malestar? (Freud 1926)", "¿Freno o síntoma?"],
   "angustia": ["¿Opresión o catástrofe, con motivo o sin? (Freud 1926)", "La angustia avisa: ¿qué peligro anuncia?"],
