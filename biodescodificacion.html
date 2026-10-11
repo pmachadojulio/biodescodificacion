@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-11T10:11:55"
+  "integrado": "2026-10-11T11:03:48"
  },
  "bibliografia": [
   {
@@ -1147,6 +1147,46 @@ const DB = {
    "notes": "Fuente NotebookLM 'Psicoanalisis' (7 fuentes: RSI 1953, Escritos, amor). Media naranja, dar-lo-que-no-se-tiene, transferencia motor, 4 preguntas. Ver bibliografia/notebooklm_amor_registros.md.",
    "verified": false,
    "group": "pareja"
+  },
+  {
+   "reference_id": "B48",
+   "author": "Donald Winnicott",
+   "year": null,
+   "title": "Obras completas (sostén, transicional, self)",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Winnicott'. Madre suficiente, objeto transicional, falso/verdadero self, terror al derrumbe. Ver bibliografia/notebooklm_winnicott_sosten.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B49",
+   "author": "Sigmund Freud",
+   "year": 1915,
+   "title": "La represión / Lo inconsciente",
+   "type": "articulo",
+   "notes": "Fuente NotebookLM 'Represión'. Representante vs afecto, retorno (síntoma/sueño/lapsus), 3 señales. Ver bibliografia/notebooklm_represion_inconsciente.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B50",
+   "author": "VV.AA. (cuaderno)",
+   "year": null,
+   "title": "Amor en psicoanálisis: RSI y transferencia",
+   "type": "material",
+   "notes": "Fuente NotebookLM 'Psicoanalisis' (7 fuentes). Media naranja, dar-lo-que-no-se-tiene, transferencia motor, 4 preguntas. Ver bibliografia/notebooklm_amor_registros.md.",
+   "verified": false,
+   "group": "pareja"
+  },
+  {
+   "reference_id": "B51",
+   "author": "Sigmund Freud",
+   "year": 1930,
+   "title": "El malestar en la cultura (Tomo XXI)",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Cultura'. Superyó cultural, culpa colectiva difusa con falsas justificaciones, paradoja culpa-virtud. Ver bibliografia/notebooklm_cultura_superyo.md.",
+   "verified": true,
+   "group": "psicoanalisis"
   }
  ],
  "organs": [
@@ -3329,6 +3369,42 @@ const DB = {
     "lapsus"
    ],
    "description": "Tropiezo asociativo, ajenidad, angustia irruptiva = núcleo acercándose. Sostener. (B46)"
+  },
+  {
+   "concept_id": "madre-suficiente",
+   "concept": "Madre suficiente",
+   "category": "vínculo",
+   "synonyms": [
+    "sostén",
+    "holding",
+    "adaptación",
+    "desilusión"
+   ],
+   "description": "Ni perfecta ni ausente: adaptación activa que luego cede. Falla = irrealidad, mente desbocada, derrumbe. (B48)"
+  },
+  {
+   "concept_id": "superyo-cultural",
+   "concept": "Superyó cultural",
+   "category": "escucha",
+   "synonyms": [
+    "cultura",
+    "mandato",
+    "virtud",
+    "malestar"
+   ],
+   "description": "Ideales colectivos + castigo con culpa difusa y falsas justificaciones. (B51)"
+  },
+  {
+   "concept_id": "culpa-virtud",
+   "concept": "Paradoja culpa-virtud",
+   "category": "clinica",
+   "synonyms": [
+    "recto",
+    "virtuoso",
+    "exigente",
+    "severo"
+   ],
+   "description": "Más recto = superyó más severo; reprocha intenciones como actos. (B51)"
   }
  ],
  "associations": [
@@ -12989,6 +13065,63 @@ const DB = {
     "¿Qué se te escapó recién?",
     "¿Ajenidad ante lo dicho?"
    ]
+  },
+  {
+   "association_id": "A204",
+   "source_type": "concept",
+   "source_id": "madre-suficiente",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "marco_interpretativo",
+   "description": "Sostén materno como base de continuidad existencial; sin holding, amor congelado e irrealidad.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B48)",
+   "tags": [
+    "madre suficiente",
+    "corazon"
+   ],
+   "sugerencias_preguntas": [
+    "¿Quién te sostuvo?",
+    "¿Qué es real en tu vida?"
+   ]
+  },
+  {
+   "association_id": "A205",
+   "source_type": "concept",
+   "source_id": "superyo-cultural",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Mandatos colectivos introyectados como vigilancia punitiva; culpa difusa con falsas justificaciones.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B51)",
+   "tags": [
+    "superyo cultural",
+    "cabeza-mente"
+   ],
+   "sugerencias_preguntas": [
+    "¿Mandato de quién?",
+    "¿Virtuoso y peor?"
+   ]
+  },
+  {
+   "association_id": "A206",
+   "source_type": "concept",
+   "source_id": "falso-self",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Mente como autosostén sustituto: control analítico desconectado de afectos y cuerpo.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B48)",
+   "tags": [
+    "falso self",
+    "cabeza-mente"
+   ],
+   "sugerencias_preguntas": [
+    "¿Farsa o vida?",
+    "¿Qué protege actuar?"
+   ]
   }
  ],
  "guia_fases": [
@@ -14640,6 +14773,33 @@ const DB = {
     "¿Tropiezo, ajenidad o angustia recién? Lo reprimido emerge: sostener, no retroceder. (B46)",
     "¿Qué se acercó a tu conciencia que te asusta?"
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "madre-suficiente"
+   },
+   "preguntas": [
+    "¿Adaptación o perfección mecánica? ¿Quién sostuvo tu gesto? (B48)",
+    "¿Irrealidad, mente desbocada o terror al derrumbe?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "superyo-cultural"
+   },
+   "preguntas": [
+    "¿Mandato de quién: familia o cultura? Culpa difusa con falsas justificaciones. (B51)",
+    "¿Virtuoso y cada vez peor? Paradoja culpa-virtud."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "represion-retorno"
+   },
+   "preguntas": [
+    "¿Tropiezo, ajenidad o angustia? Lo reprimido presiona: sostener. (B49)",
+    "¿Qué se acercó que asusta? Nombrarlo quita fuerza."
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -15651,9 +15811,37 @@ const DB = {
      "coach": "Todo afuera: volvé adentro — ¿qué vacío le encargás tapar a la pareja?"
     }
    }
+  },
+  {
+   "id": "soy-virtuoso-peor",
+   "titulo": "'Soy bueno y me va peor'",
+   "motivo": "Paradoja culpa-virtud.",
+   "fragmento": "Soy buena persona, hago todo bien, no falto nunca, y cada vez me va peor, no entiendo.",
+   "pista": "bien",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "Más recto y peor: ¿superyó sádico? ¿Qué intención te reprochás como si fuera acto?",
+   "fuente": "Freud (cultura/superyó)",
+   "d1": "¿Por qué te va mal si sos buena?",
+   "d2": "Seguí así que ya va a mejorar.",
+   "turno2": {
+    "siBien": {
+     "dice": "Me culpo hasta por pensar mal de alguien.",
+     "pista": "culpo",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "Culpa por pensamientos: ¿mandato cultural o familiar? ¿Quién te enseñó a vigilarte?"
+    },
+    "siMal": {
+     "dice": "La vida es injusta.",
+     "coach": "Generalidad: pedí la última vez concreta que 'hizo todo bien y salió mal'."
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -16688,6 +16876,8 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "reprimido": ["¿Tropiezo, ajenidad o angustia? Lo reprimido presiona. (Freud)", "Sostener, no retroceder."],
+  "cultural": ["¿Mandato familiar o cultural? Culpa difusa con falsas justificaciones. (Freud)", "¿Virtuoso y peor? Paradoja culpa-virtud."],
   "farsa": ["¿Adaptación impecable pero farsa? ¿Qué se siente real? (Winnicott)", "¿Qué protege esa actuación?"],
   "sosten": ["¿Quién sostuvo tu gesto de niño? (Winnicott)", "¿Irrealidad, mente desbocada o terror al derrumbe?"],
   "complet": ["¿Exigís que te completen o das desde tu falta? (Lacan)", "¿Media naranja o alteridad?"],
