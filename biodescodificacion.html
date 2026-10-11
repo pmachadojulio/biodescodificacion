@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-10T21:11:29"
+  "integrado": "2026-10-10T21:29:22"
  },
  "bibliografia": [
   {
@@ -1057,6 +1057,16 @@ const DB = {
    "notes": "Fuente NotebookLM (14 fuentes: capturas + audio). 6 fases, 8 señales de duelo bloqueado en pareja, 5 preguntas clínicas. Ver bibliografia/notebooklm_duelo_pareja.md.",
    "verified": false,
    "group": "duelo"
+  },
+  {
+   "reference_id": "B39",
+   "author": "Melanie Klein (y otros)",
+   "year": 1957,
+   "title": "Envidia y gratitud / Posiciones esquizo-paranoide y depresiva",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Mecanismos' (11 fuentes). Escisión, identificación proyectiva, envidia primaria, culpa reparatoria. Ver bibliografia/notebooklm_klein_posiciones.md.",
+   "verified": true,
+   "group": "psicoanalisis"
   }
  ],
  "organs": [
@@ -3014,6 +3024,53 @@ const DB = {
     "3 generaciones"
    ],
    "description": "3 generaciones de padres ejerciendo estructuran la psiquis; vacíos = fallas de límites. (B33)"
+  },
+  {
+   "concept_id": "escision",
+   "concept": "Escisión",
+   "category": "escucha",
+   "synonyms": [
+    "todo bueno",
+    "todo malo",
+    "dicotomía",
+    "blanco o negro"
+   ],
+   "description": "Relato polarizado sin matices; defensa esquizo-paranoide. Preguntar por el polo negado. (B39)"
+  },
+  {
+   "concept_id": "identificacion-proyectiva",
+   "concept": "Identificación proyectiva",
+   "category": "escucha",
+   "synonyms": [
+    "me hace sentir",
+    "inducción",
+    "depositar",
+    "rol"
+   ],
+   "description": "Lo escindido expulsado en el otro; presiona a actuarlo. Dato: lo que sentís vos. (B39)"
+  },
+  {
+   "concept_id": "envidia",
+   "concept": "Envidia",
+   "category": "escucha",
+   "synonyms": [
+    "desvaloriza",
+    "no agradece",
+    "crítica",
+    "reacción negativa"
+   ],
+   "description": "Ataque a lo bueno por bueno; desvalorización tras el alivio. Leer como señal, no fracaso. (B39)"
+  },
+  {
+   "concept_id": "culpa-reparatoria",
+   "concept": "Culpa reparatoria",
+   "category": "clinica",
+   "synonyms": [
+    "enmendar",
+    "reparar",
+    "ambivalencia"
+   ],
+   "description": "Dolor por haber dañado + anhelo de enmendar = tránsito a depresiva = avance. (B39)"
   }
  ],
  "associations": [
@@ -13793,6 +13850,42 @@ const DB = {
     "¿A qué edad empezó? ¿Qué pasó a esa edad en tu clan? (B32)",
     "Fechas que se repiten ±edad: ¿qué drama ancestral cumple años con vos?"
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "escision"
+   },
+   "preguntas": [
+    "¿Todo bueno o todo malo? ¿Qué polo negás? La escisión protege del temor a dañar. (B39)",
+    "¿Y si ambos sentimientos fueran al mismo objeto?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "proyeccion"
+   },
+   "preguntas": [
+    "Lo que te irrita del otro: ¿qué parte tuya depositaste ahí? (B39)",
+    "¿Qué te hace sentir que nada sirve? Ojo: lo inducido es dato."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "envidia"
+   },
+   "preguntas": [
+    "Tras el alivio desvalorizás: ¿qué te cuesta agradecer? (B39)",
+    "¿Rencor a lo bueno por bueno? La envidia teme necesitar."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "culpa-reparatoria"
+   },
+   "preguntas": [
+    "¿Te duele haber dañado? Ese dolor + ganas de enmendar = avance. (B39)",
+    "Del autorreproche a cuidar el vínculo: ¿qué reparás hoy?"
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -14607,9 +14700,66 @@ const DB = {
      "coach": "Justificación que tapa (otra vez): cortá con amor — ¿sí o no, estaba apagada?"
     }
    }
+  },
+  {
+   "id": "todo-bueno-malo",
+   "titulo": "'O santos o demonios'",
+   "motivo": "Dicotomía absoluta sin matices.",
+   "fragmento": "Mi ex es un demonio, me arruinó. Mi mamá en cambio es una santa, nunca hizo nada mal.",
+   "pista": "demonio",
+   "esperadas": [
+    "abierta",
+    "repeticion"
+   ],
+   "modelo": "¿Todo malo él, todo buena ella? ¿Qué parte negás de cada uno? ¿Y si ambos sentimientos fueran al mismo objeto?",
+   "fuente": "Klein (escisión)",
+   "d1": "¿Por qué tu ex te arruinó?",
+   "d2": "Tu mamá suena ideal, aferrate a ella.",
+   "turno2": {
+    "siBien": {
+     "dice": "Bueno… mi mamá también me controlaba todo.",
+     "pista": "controlaba",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "Ahí aparece el matiz: ¿qué te cuesta ver lo frustrante en lo idealizado?"
+    },
+    "siMal": {
+     "dice": "No, mi mamá es perfecta, punto.",
+     "coach": "Idealización blindada: no la rompas. Preguntá por un hecho concreto, no por la madre."
+    }
+   }
+  },
+  {
+   "id": "despues-alivio",
+   "titulo": "'Llegaste tarde'",
+   "motivo": "Desvalorización tras mejorar (envidia).",
+   "fragmento": "Sí, estoy mejor desde la sesión, pero eso que dijiste era obvio, cualquiera lo ve.",
+   "pista": "obvio",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "Mejoraste y lo obvio no te sirve: ¿qué te cuesta agradecer? ¿Qué te da rencor de lo bueno?",
+   "fuente": "Klein (envidia)",
+   "d1": "¿Por qué desvalorizás mi trabajo?",
+   "d2": "Bueno, lo importante es que estás mejor.",
+   "turno2": {
+    "siBien": {
+     "dice": "Me cuesta… cuando algo me alivia me enojo, no sé por qué.",
+     "pista": "enojo",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "El alivio trae enojo: ¿a qué le temés si necesitás lo bueno?"
+    },
+    "siMal": {
+     "dice": "Da igual, yo ya sabía todo eso.",
+     "coach": "Reacción terapéutica negativa (envidia): no retalíes. Contené y señalá: 'noto que cuando algo sirve aparece descalificarlo'."
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -15644,6 +15794,10 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "escisi": ["¿Todo bueno o todo malo? ¿Qué polo negás? (Klein)", "¿Y si ambos sentimientos fueran al mismo objeto?"],
+  "proyecci": ["Lo que te irrita del otro: ¿qué parte tuya está ahí? (Klein)", "¿Qué te hace sentir que nada sirve?"],
+  "envidia": ["Tras el alivio desvalorizás: ¿qué cuesta agradecer? (Klein)", "¿Rencor a lo bueno por bueno?"],
+  "ambival": ["Ambivalencia + ganas de enmendar = avance, no recaída. (Klein)", "¿Qué reparás hoy?"],
   "foja": ["¿Tus exigencias a tu pareja son reclamos a tu origen? (Boszormenyi-Nagy)", "¿Qué cuenta no saldada paga tu pareja?"],
   "parentaliz": ["¿Cuidás a tus padres? ¿Quién cuida a quién? (Boszormenyi-Nagy)", "¿Agotamiento por ser progenitor de tus padres?"],
   "aniversario": ["¿A qué edad empezó? ¿Qué pasó a esa edad en tu clan? (Schützenberger)", "¿Qué drama cumple años con vos?"],
