@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-10T22:12:05"
+  "integrado": "2026-10-11T10:11:55"
  },
  "bibliografia": [
   {
@@ -1117,6 +1117,36 @@ const DB = {
    "notes": "Fuente NotebookLM 'Yo y Ello' (3 fuentes). Instancias, jinete y caballo (racionalización), señales por dominancia, reacción terapéutica negativa. Ver bibliografia/notebooklm_yo_ello_superyo.md.",
    "verified": true,
    "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B45",
+   "author": "Donald Winnicott",
+   "year": null,
+   "title": "Obras completas (madre suficiente, transicional, self)",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Winnicott'. Sostén/holding, falso self, terror al derrumbe. Ver bibliografia/notebooklm_winnicott_sosten.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B46",
+   "author": "Sigmund Freud",
+   "year": 1915,
+   "title": "La represión / Lo inconsciente",
+   "type": "articulo",
+   "notes": "Fuente NotebookLM 'Represión'. Representante vs afecto, retorno (síntoma/sueño/lapsus), 3 señales. Ver bibliografia/notebooklm_represion_inconsciente.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B47",
+   "author": "VV.AA. (cuaderno)",
+   "year": null,
+   "title": "Amor en psicoanálisis: RSI y transferencia",
+   "type": "material",
+   "notes": "Fuente NotebookLM 'Psicoanalisis' (7 fuentes: RSI 1953, Escritos, amor). Media naranja, dar-lo-que-no-se-tiene, transferencia motor, 4 preguntas. Ver bibliografia/notebooklm_amor_registros.md.",
+   "verified": false,
+   "group": "pareja"
   }
  ],
  "organs": [
@@ -3251,6 +3281,54 @@ const DB = {
     "expiación"
    ],
    "description": "Empeorar tras mejorar por necesidad de castigo (superyó + envidia). No retaliar. (B44/B39)"
+  },
+  {
+   "concept_id": "falso-self",
+   "concept": "Falso self",
+   "category": "escucha",
+   "synonyms": [
+    "farsa",
+    "irreal",
+    "impostura",
+    "adaptación impecable"
+   ],
+   "description": "Defensa que oculta al verdadero; impecable afuera, farsa adentro. Señal de falla del sostén. (B45)"
+  },
+  {
+   "concept_id": "sosten-holding",
+   "concept": "Sostén (holding)",
+   "category": "vínculo",
+   "synonyms": [
+    "sostén",
+    "sostener",
+    "derrumbe",
+    "caída"
+   ],
+   "description": "Adaptación materna que habilita continuidad; su falla: irrealidad, mente desbocada, terror al derrumbe. (B45)"
+  },
+  {
+   "concept_id": "amor-falta",
+   "concept": "Amor y falta",
+   "category": "pareja",
+   "synonyms": [
+    "media naranja",
+    "completar",
+    "dar",
+    "falta"
+   ],
+   "description": "Amar = dar lo que no se tiene; exigir completud es imaginario. (B47)"
+  },
+  {
+   "concept_id": "retorno-reprimido",
+   "concept": "Retorno de lo reprimido",
+   "category": "escucha",
+   "synonyms": [
+    "tropiezo",
+    "ajeno",
+    "angustia",
+    "lapsus"
+   ],
+   "description": "Tropiezo asociativo, ajenidad, angustia irruptiva = núcleo acercándose. Sostener. (B46)"
   }
  ],
  "associations": [
@@ -12835,6 +12913,82 @@ const DB = {
     "¿Qué dejaste de hacer?",
     "¿Tu ritmo o el que te imponen?"
    ]
+  },
+  {
+   "association_id": "A200",
+   "source_type": "concept",
+   "source_id": "falso-self",
+   "target_type": "organ",
+   "target_id": "cabeza-mente",
+   "relationship_type": "marco_interpretativo",
+   "description": "Adaptación impecable con vivencia de farsa: mente como autosostén desconectado de afectos y cuerpo.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B45)",
+   "tags": [
+    "falso self",
+    "cabeza-mente"
+   ],
+   "sugerencias_preguntas": [
+    "¿Farsa o vida real?",
+    "¿Qué parte actuás?"
+   ]
+  },
+  {
+   "association_id": "A201",
+   "source_type": "concept",
+   "source_id": "sosten-holding",
+   "target_type": "organ",
+   "target_id": "corazon",
+   "relationship_type": "marco_interpretativo",
+   "description": "Holding materno como base de continuidad existencial; su falla deja irrealidad y terror al derrumbe.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B45)",
+   "tags": [
+    "sosten holding",
+    "corazon"
+   ],
+   "sugerencias_preguntas": [
+    "¿Quién te sostuvo?",
+    "¿Qué se derrumba si fallan?"
+   ]
+  },
+  {
+   "association_id": "A202",
+   "source_type": "concept",
+   "source_id": "amor-falta",
+   "target_type": "organ",
+   "target_id": "utero-prostata",
+   "relationship_type": "marco_interpretativo",
+   "description": "Vínculos desde la exigencia de completud (imaginario) vs desde la falta consentida (simbólico).",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B47)",
+   "tags": [
+    "amor falta",
+    "utero-prostata"
+   ],
+   "sugerencias_preguntas": [
+    "¿Te completen o te acompañen?",
+    "¿Das desde tu falta?"
+   ]
+  },
+  {
+   "association_id": "A203",
+   "source_type": "concept",
+   "source_id": "retorno-reprimido",
+   "target_type": "organ",
+   "target_id": "garganta",
+   "relationship_type": "marco_interpretativo",
+   "description": "Lapsus y tropiezos como retorno: lo que la palabra deja escapar por los bordes de la censura.",
+   "evidence_level": "referencia_teorica",
+   "source_reference": "NotebookLM (B46)",
+   "tags": [
+    "retorno reprimido",
+    "garganta"
+   ],
+   "sugerencias_preguntas": [
+    "¿Qué se te escapó recién?",
+    "¿Ajenidad ante lo dicho?"
+   ]
   }
  ],
  "guia_fases": [
@@ -14450,6 +14604,42 @@ const DB = {
     "¿Empeorás tras mejorar? Necesidad de castigo, no fracaso. (B44/B39)",
     "¿Expiación vía martirio? ¿Qué culpa paga el síntoma?"
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "falso-self"
+   },
+   "preguntas": [
+    "¿Adaptación impecable pero farsa? ¿Falso self protegiendo al verdadero? (B45)",
+    "¿Qué se siente real en tu vida y qué actuado?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "sosten"
+   },
+   "preguntas": [
+    "¿Quién sostuvo tu gesto de niño? Irrealidad, mente desbocada, terror al derrumbe = falla de sostén. (B45)",
+    "¿Tu rapport hoy sostiene o exige?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "amor-falta"
+   },
+   "preguntas": [
+    "¿Exigís que te completen o das desde tu falta? 'Dar lo que no se tiene'. (B47)",
+    "¿Media naranja o alteridad? ¿Reclamo o reconocimiento?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "retorno"
+   },
+   "preguntas": [
+    "¿Tropiezo, ajenidad o angustia recién? Lo reprimido emerge: sostener, no retroceder. (B46)",
+    "¿Qué se acercó a tu conciencia que te asusta?"
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -15405,9 +15595,65 @@ const DB = {
      "coach": "'Es la verdad' = sentencia del superyó. Preguntá por la primera condena, con edad."
     }
    }
+  },
+  {
+   "id": "todo-bien-farsa",
+   "titulo": "'Todo bien, pero farsa'",
+   "motivo": "Falso self impecable, vacío adentro.",
+   "fragmento": "En el trabajo todo bien, impecable, pero siento que es una farsa, nada se siente real.",
+   "pista": "farsa",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "Adaptación impecable pero farsa: ¿qué se siente real en tu vida? ¿Qué protege esa actuación?",
+   "fuente": "Winnicott (falso self)",
+   "d1": "¿Por qué sentís que es una farsa?",
+   "d2": "Si te va bien, disfrutalo, no le busques la vuelta.",
+   "turno2": {
+    "siBien": {
+     "dice": "Nunca empecé a existir de verdad, siempre actué para mamá.",
+     "pista": "mamá",
+     "espera": [
+      "a-quien"
+     ],
+     "modelo": "¿Para quién actuás desde chico? ¿Qué gesto tuyo no fue sostenido?"
+    },
+    "siMal": {
+     "dice": "Bah, son ideas mías.",
+     "coach": "Minimiza ('ideas mías'): no discutas la vivencia. Preguntá cuándo empezó la farsa."
+    }
+   }
+  },
+  {
+   "id": "quiero-que-complete",
+   "titulo": "'Quiero que me complete'",
+   "motivo": "Exigencia de completud a la pareja.",
+   "fragmento": "Quiero alguien que me complete, mi media naranja, que llene este vacío.",
+   "pista": "complete",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "¿Exigís que te completen o podés dar desde tu falta? 'Dar lo que no se tiene'.",
+   "fuente": "Lacan (amor/falta)",
+   "d1": "¿Por qué necesitás que te completen?",
+   "d2": "Ya va a llegar la persona indicada.",
+   "turno2": {
+    "siBien": {
+     "dice": "Nadie me completa nunca, siempre falta algo.",
+     "pista": "falta",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "Esa falta que nadie colma: ¿de qué origen es? ¿La consentís o la exigís tapar?"
+    },
+    "siMal": {
+     "dice": "El problema son los otros, no se comprometen.",
+     "coach": "Todo afuera: volvé adentro — ¿qué vacío le encargás tapar a la pareja?"
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -16442,6 +16688,10 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "farsa": ["¿Adaptación impecable pero farsa? ¿Qué se siente real? (Winnicott)", "¿Qué protege esa actuación?"],
+  "sosten": ["¿Quién sostuvo tu gesto de niño? (Winnicott)", "¿Irrealidad, mente desbocada o terror al derrumbe?"],
+  "complet": ["¿Exigís que te completen o das desde tu falta? (Lacan)", "¿Media naranja o alteridad?"],
+  "tropiezo": ["¿Tropiezo, ajenidad o angustia? Lo reprimido emerge. (Freud)", "Sostener, no retroceder: ¿qué se acercó?"],
   "superyo": ["¿Tiranía moral? ¿Castigo merecido? Esa voz no sos vos. (Freud)", "'Así debes ser': ¿de quién es la frase?"],
   "jinete": ["¿Jinete o caballo? ¿Racionalización del Ello? (Freud)", "¿Quién quiere ir ahí realmente?"],
   "castigo": ["¿Necesidad de castigo? ¿Expiación vía síntoma? (Freud)", "¿Qué culpa paga el malestar?"],
