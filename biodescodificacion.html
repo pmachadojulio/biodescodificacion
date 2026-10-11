@@ -615,7 +615,7 @@ const DB = {
   "version": 2,
   "generado": "2026-08-25",
   "nota_metodologica": "Capa A: asociaciones 'teoria_sellam' de fuentes citadas (entrevista La Vanguardia 2013 vía desarrolloconsciente.com + réplica verificada enpositivo.com; libros verificados, ed. Bérangel). Capa B ('observacion_clinica'): casuística y método dictado por el profesor en clases (transcripciones WisprFlow 08-09/08/26 + nota 'por vos voy a sufrir', ver carpeta transcripciones/) — material docente vivo, no bibliografía canónica. Verificación 2026-08-25 vía búsqueda Exa: Tomo 13 Bérangel (páncreas) confirmado; rodilla-sumisión corroborada por docente de línea Sellam. WhatsApp BioConexion 2025 (Vero/Adrián, 261 intervenciones, 97 audios transcriptos Whisper) aporta 4 asociaciones nuevas de estómago/ojos/vesícula/boca. Las 'NO VERIFICADO' son conocimiento difuso del ecosistema SIN fuente puntual: usar solo como pista.\n\n2026-08-25 — Confirmación de Julio: las notas de clase (Caso 2) citan explícitamente a Hamer (NMG), Sellam, V. Frankl y Laura Gutman; autores verificados y añadidos como referencias B20-B23. Las 7 asociaciones nuevas de Caso 2 se cargan en capa 'observacion_clinica' (casuística), NO en teoría Sellam.\n\n2026-08-30: +441p Sellam (proyecto sentido 7p, desordenes amorosos 33p, transgeneracional 117p San Cugat, yaciente II 230p, osteo 15/39p) — merge estructurado 40+20+38 asociaciones, 8+13+6 conceptos, 18+15 triggers embudo, B27-B28.\n\n2026-09-12: +222 asociaciones HOUSE-001..222 (capa 'ficcion_serie', 177 capítulos Dr. House, lectura órgano→conflicto según cuadernos Caso 2/Clavo/Exola/05-04) — personajes FICTICIOS, solo pedagógico, chip 'Sin verificar'.",
-  "integrado": "2026-10-10T21:29:22"
+  "integrado": "2026-10-10T21:59:36"
  },
  "bibliografia": [
   {
@@ -1065,6 +1065,46 @@ const DB = {
    "title": "Envidia y gratitud / Posiciones esquizo-paranoide y depresiva",
    "type": "libro",
    "notes": "Fuente NotebookLM 'Mecanismos' (11 fuentes). Escisión, identificación proyectiva, envidia primaria, culpa reparatoria. Ver bibliografia/notebooklm_klein_posiciones.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B40",
+   "author": "Sigmund Freud",
+   "year": 1917,
+   "title": "Duelo y melancolía",
+   "type": "articulo",
+   "notes": "Fuente NotebookLM. Duelo vs melancolía, sombra del objeto sobre el yo, autorreproches revertidos. Ver bibliografia/notebooklm_duelo_melancolia.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B41",
+   "author": "Sigmund Freud",
+   "year": 1900,
+   "title": "La interpretación de los sueños",
+   "type": "libro",
+   "notes": "Fuente NotebookLM. Manifiesto/latente, condensación, desplazamiento, 4 preguntas (fragmentar, restos diurnos, asociación, afecto). Alimenta vista Sueños. Ver bibliografia/notebooklm_suenos_freud.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B42",
+   "author": "Sigmund Freud",
+   "year": 1926,
+   "title": "Inhibición, síntoma y angustia",
+   "type": "libro",
+   "notes": "Fuente NotebookLM. Inhibición vs síntoma vs angustia; señal vs automática; 3 preguntas. Angustia como MOTOR. Ver bibliografia/notebooklm_inhibicion_sintoma_angustia.md.",
+   "verified": true,
+   "group": "psicoanalisis"
+  },
+  {
+   "reference_id": "B43",
+   "author": "Jacques Lacan",
+   "year": null,
+   "title": "Escritos / Seminarios (equívoco, puntuación, corte)",
+   "type": "libro",
+   "notes": "Fuente NotebookLM 'Lacan' (3 fuentes). Segunda oreja del entrenador: resonar homofonía, aislar término, cortar. Fundamento del detector. Ver bibliografia/notebooklm_lacan_equivoco.md.",
    "verified": true,
    "group": "psicoanalisis"
   }
@@ -3071,6 +3111,100 @@ const DB = {
     "ambivalencia"
    ],
    "description": "Dolor por haber dañado + anhelo de enmendar = tránsito a depresiva = avance. (B39)"
+  },
+  {
+   "concept_id": "duelo-melancolia",
+   "concept": "Duelo / melancolía",
+   "category": "clinica",
+   "synonyms": [
+    "duelo",
+    "melancolía",
+    "autoestima",
+    "vacío"
+   ],
+   "description": "Duelo: mundo pobre, yo intacto. Melancolía: yo indigno, autoacusación, castigo. (B40)"
+  },
+  {
+   "concept_id": "autorreproche-revertido",
+   "concept": "Autorreproche revertido",
+   "category": "escucha",
+   "synonyms": [
+    "autorreproche",
+    "me digo",
+    "reclamo"
+   ],
+   "description": "Lo que se dice a sí mismo = reclamo a la amada rebotado. Preguntar a quién se lo diría. (B40)"
+  },
+  {
+   "concept_id": "inhibicion",
+   "concept": "Inhibición",
+   "category": "clinica",
+   "synonyms": [
+    "freno",
+    "dejé de",
+    "trabado",
+    "evitar"
+   ],
+   "description": "Reducción de función para evitar malestar; no necesariamente patológica. (B42)"
+  },
+  {
+   "concept_id": "angustia-senial",
+   "concept": "Angustia señal",
+   "category": "clinica",
+   "synonyms": [
+    "angustia",
+    "opresión",
+    "alarma",
+    "catástrofe"
+   ],
+   "description": "Reproducción atenuada preventiva ante peligro; ≠ automática que inunda. Motor, no consecuencia. (B42)"
+  },
+  {
+   "concept_id": "contenido-latente",
+   "concept": "Contenido latente",
+   "category": "suenos",
+   "synonyms": [
+    "sueño",
+    "latente",
+    "condensación",
+    "desplazamiento"
+   ],
+   "description": "Deseos reprimidos tras el relato; lo esencial pasa a detalle banal. (B41)"
+  },
+  {
+   "concept_id": "resto-diurno",
+   "concept": "Resto diurno",
+   "category": "suenos",
+   "synonyms": [
+    "sueño",
+    "día previo",
+    "ayer",
+    "conecta"
+   ],
+   "description": "Punto de apoyo inmediato del sueño en el día previo. (B41)"
+  },
+  {
+   "concept_id": "equivoco",
+   "concept": "Equívoco",
+   "category": "escucha",
+   "synonyms": [
+    "lapsus",
+    "tropiezo",
+    "doble sentido",
+    "homofonía"
+   ],
+   "description": "Lo material del lenguaje desarma sentido único; resonarlo sin traducir. (B43)"
+  },
+  {
+   "concept_id": "puntuacion-tropiezo",
+   "concept": "Puntuación del tropiezo",
+   "category": "escucha",
+   "synonyms": [
+    "repetir su palabra",
+    "subrayar",
+    "aislar"
+   ],
+   "description": "Aislar/repetir término sin agregar sentido; obliga a escucharse. (B43)"
   }
  ],
  "associations": [
@@ -13886,6 +14020,78 @@ const DB = {
     "¿Te duele haber dañado? Ese dolor + ganas de enmendar = avance. (B39)",
     "Del autorreproche a cuidar el vínculo: ¿qué reparás hoy?"
    ]
+  },
+  {
+   "trigger": {
+    "concepto": "duelo-melancolia"
+   },
+   "preguntas": [
+    "¿Vacío en el mundo o en tu valía? ¿Autoacusaciones y castigo? Duelo vs melancolía. (B40)",
+    "¿Sabés a quién perdiste pero no QUÉ perdiste en él?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "autorreproche"
+   },
+   "preguntas": [
+    "Eso que te decís: ¿a quién se lo dirías en realidad? Reclamos rebotados. (B40)",
+    "¿Querella al otro disfrazada de culpa propia?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "inhibicion"
+   },
+   "preguntas": [
+    "¿Qué actividades dejaste para evitar malestar? Freno ≠ síntoma. (B42)",
+    "¿Renuncia para no chocar o empobrecimiento de energía?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "angustia-senial"
+   },
+   "preguntas": [
+    "¿Opresión o catástrofe, con motivo o sin? Señal previene, automática inunda. (B42)",
+    "La angustia es motor, no consecuencia: ¿qué peligro anuncia?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "sueno-fragmentar"
+   },
+   "preguntas": [
+    "Dividí el sueño: ¿qué imagen te llama? No en bloque. (B41)",
+    "¿Qué del día previo conecta con ese elemento? Restos diurnos."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "resto-diurno"
+   },
+   "preguntas": [
+    "¿Qué vivencia del día previo se asoció? Punto de apoyo del sueño. (B41)",
+    "¿Qué emoción del sueño resuena con tu pasado temprano?"
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "equivoco"
+   },
+   "preguntas": [
+    "¿Qué tropiezo o doble sentido apareció? No lo expliques: hacelo resonar. (B43)",
+    "Lapsus = saber inconsciente asomando: repetilo literal."
+   ]
+  },
+  {
+   "trigger": {
+    "concepto": "puntuacion"
+   },
+   "preguntas": [
+    "Repetí su palabra exacta sin agregar sentido: que se escuche. (B43)",
+    "Cortá ante la palabra crucial: el vacío sitúa el deseo."
+   ]
   }
  ],
  "simbolos_oniricos": [
@@ -14757,9 +14963,65 @@ const DB = {
      "coach": "Reacción terapéutica negativa (envidia): no retalíes. Contené y señalá: 'noto que cuando algo sirve aparece descalificarlo'."
     }
    }
+  },
+  {
+   "id": "autorreproche-rebote",
+   "titulo": "'Me lo merezco'",
+   "motivo": "Autorreproches que son reclamos rebotados.",
+   "fragmento": "Soy un desastre, un inútil, no valgo nada, me lo merezco todo lo malo.",
+   "pista": "inútil",
+   "esperadas": [
+    "a-quien"
+   ],
+   "modelo": "Eso que te decís: ¿a quién se lo dirías en realidad? Son reclamos que rebotaron.",
+   "fuente": "Freud (duelo/melancolía)",
+   "d1": "¿Por qué te castigás tanto?",
+   "d2": "No digas eso, vos valés un montón.",
+   "turno2": {
+    "siBien": {
+     "dice": "A mi ex… le tengo una bronca que no se va.",
+     "pista": "bronca",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "Ahí está el objeto: ¿qué reclamo le harías en la cara?"
+    },
+    "siMal": {
+     "dice": "A nadie, es la verdad, soy así.",
+     "coach": "'Es la verdad' cierra: preguntá por la primera vez que lo sentiste, con edad."
+    }
+   }
+  },
+  {
+   "id": "sueno-inundacion",
+   "titulo": "'La casa inundada'",
+   "motivo": "Sueño para fragmentar + restos diurnos.",
+   "fragmento": "Soñé que se inundaba la casa de mi infancia y yo miraba sin hacer nada.",
+   "pista": "inundaba",
+   "esperadas": [
+    "abierta"
+   ],
+   "modelo": "Dividilo: ¿qué imagen te llama? ¿Qué del día previo conecta con el agua?",
+   "fuente": "Freud (sueños)",
+   "d1": "¿Por qué soñaste eso?",
+   "d2": "El agua es emoción, tenés emociones reprimidas.",
+   "turno2": {
+    "siBien": {
+     "dice": "El agua… mi mamá llorando el día que me fui de casa.",
+     "pista": "llorando",
+     "espera": [
+      "abierta"
+     ],
+     "modelo": "¿Qué emoción sentías en el sueño y con qué pasado resuena?"
+    },
+    "siMal": {
+     "dice": "No me acuerdo más del sueño.",
+     "coach": "Se cierra: no apretes el sueño. Rapport y volvé al día previo, lo concreto."
+    }
+   }
   }
  ]
-};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+};;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 const APP_VERSION = "v2026.09.06-4";
 try{ console.log("%cBio·descodificación " + APP_VERSION, "font-weight:bold"); const _av=document.getElementById("app-version"); if(_av) _av.textContent=APP_VERSION; }catch(e){}
@@ -15794,6 +16056,11 @@ const REPREGUNTAS_TREE = {
   "tiempo": ["¿Para qué necesitás más tiempo — para leer, para ser niña, para hablar? (Hipo: tiempo)", "¿Qué perderías si te dieras ese tiempo? ¿Qué ganarías?"],
   "apurar": ["¿Quién te apura? (hipotiroidismo)", "¿Para qué te apurás?"],
   "decir": ["¿A quién le decís esto?", "¿Qué te gustaría decirle sin miedo?"],
+  "melancol": ["¿Vacío en el mundo o en tu valía? ¿Autoacusación? (Freud)", "¿Sabés a quién pero no qué perdiste?"],
+  "inhib": ["¿Qué dejaste de hacer para evitar malestar? (Freud 1926)", "¿Freno o síntoma?"],
+  "angustia": ["¿Opresión o catástrofe, con motivo o sin? (Freud 1926)", "La angustia avisa: ¿qué peligro anuncia?"],
+  "sueno": ["Dividí el sueño: ¿qué imagen te llama? (Freud)", "¿Qué del día previo conecta?"],
+  "equivoc": ["¿Qué lapsus o doble sentido apareció? Hacelo resonar. (Lacan)", "Repetí su palabra exacta, sin agregar sentido."],
   "escisi": ["¿Todo bueno o todo malo? ¿Qué polo negás? (Klein)", "¿Y si ambos sentimientos fueran al mismo objeto?"],
   "proyecci": ["Lo que te irrita del otro: ¿qué parte tuya está ahí? (Klein)", "¿Qué te hace sentir que nada sirve?"],
   "envidia": ["Tras el alivio desvalorizás: ¿qué cuesta agradecer? (Klein)", "¿Rencor a lo bueno por bueno?"],
